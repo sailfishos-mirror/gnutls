@@ -232,6 +232,11 @@ static void check_scts(const gnutls_datum_t *ext)
 			fail("Signature sizes for SCT %d do not match", i);
 		if (memcmp(sig.data, expected_data[i].sig.data, sig.size) != 0)
 			fail("Signatures for SCT %d do not match", i);
+
+		gnutls_free(logid.data);
+		gnutls_free(sig.data);
+		logid.size = 0;
+		sig.size = 0;
 	}
 
 	if (i != NUM_EXPECTED_SCTS)
@@ -288,6 +293,7 @@ void doit(void)
 				fail("gnutls_x509_crt_get_extension_data2");
 			check_scts(&ext);
 			scts_printed = 1;
+			gnutls_free(ext.data);
 			break;
 		}
 	}
