@@ -3464,3 +3464,550 @@ int gnutls_x509_tlsfeatures_add(gnutls_x509_tlsfeatures_t f, unsigned int featur
 
 	return 0;
 }
+
+#define SCT_V1_LOGID_SIZE 32
+struct ct_sct_st {
+	int version;
+	uint8_t logid[SCT_V1_LOGID_SIZE];
+	uint64_t timestamp;
+	gnutls_sign_algorithm_t sigalg;
+	gnutls_datum_t signature;
+};
+
+struct gnutls_x509_ct_scts_st {
+	struct ct_sct_st *scts;
+	unsigned int size;
+};
+
+static void _gnutls_free_scts(struct gnutls_x509_ct_scts_st *scts)
+{
+	for (unsigned i = 0; i < scts->size; i++)
+		_gnutls_free_datum(&scts->scts[i].signature);
+	gnutls_free(scts->scts);
+	scts->size = 0;
+}
+
+int gnutls_x509_ext_ct_scts_init(gnutls_x509_ct_scts_t * scts)
+{
+	*scts = gnutls_calloc(1, sizeof(struct gnutls_x509_ct_scts_st));
+	if (*scts == NULL)
+		return gnutls_assert_val(GNUTLS_E_MEMORY_ERROR);
+	return 0;
+}
+
+void gnutls_x509_ext_ct_scts_deinit(gnutls_x509_ct_scts_t scts)
+{
+	_gnutls_free_scts(scts);
+	gnutls_free(scts);
+}
+
+static gnutls_sign_algorithm_t get_sigalg_for_md5(uint8_t sig_algo)
+{
+	switch (sig_algo) {
+	default:
+	case 0: /* anon */
+	case 2: /* dsa */
+	case 3: /* ecdsa */
+		/* DSA and ECDSA with MD5 are not supported */
+		return GNUTLS_E_UNSUPPORTED_SIGNATURE_ALGORITHM;
+	case 1: /* rsa */
+		return GNUTLS_SIGN_RSA_MD5;
+	}
+}
+
+static gnutls_sign_algorithm_t get_sigalg_for_sha1(uint8_t sig_algo)
+{
+	switch (sig_algo) {
+	default:
+	case 0: /* anon */
+		return GNUTLS_E_UNSUPPORTED_SIGNATURE_ALGORITHM;
+	case 1: /* rsa */
+		return GNUTLS_SIGN_RSA_SHA1;
+	case 2: /* dsa */
+		return GNUTLS_SIGN_DSA_SHA1;
+	case 3: /* ecdsa */
+		return GNUTLS_SIGN_ECDSA_SHA1;
+	}
+}
+
+static gnutls_sign_algorithm_t get_sigalg_for_sha224(uint8_t sig_algo)
+{
+	switch (sig_algo) {
+	default:
+	case 0: /* anon */
+		return GNUTLS_E_UNSUPPORTED_SIGNATURE_ALGORITHM;
+	case 1: /* rsa */
+		return GNUTLS_SIGN_RSA_SHA224;
+	case 2: /* dsa */
+		return GNUTLS_SIGN_DSA_SHA224;
+	case 3: /* ecdsa */
+		return GNUTLS_SIGN_ECDSA_SHA224;
+	}
+}
+
+static gnutls_sign_algorithm_t get_sigalg_for_sha256(uint8_t sig_algo)
+{
+	switch (sig_algo) {
+	default:
+	case 0: /* anon */
+		return GNUTLS_E_UNSUPPORTED_SIGNATURE_ALGORITHM;
+	case 1: /* rsa */
+		return GNUTLS_SIGN_RSA_SHA256;
+	case 2: /* dsa */
+		return GNUTLS_SIGN_DSA_SHA256;
+	case 3: /* ecdsa */
+		return GNUTLS_SIGN_ECDSA_SHA256;
+	}
+}
+
+static gnutls_sign_algorithm_t get_sigalg_for_sha384(uint8_t sig_algo)
+{
+	switch (sig_algo) {
+	default:
+	case 0: /* anon */
+		return GNUTLS_E_UNSUPPORTED_SIGNATURE_ALGORITHM;
+	case 1: /* rsa */
+		return GNUTLS_SIGN_RSA_SHA384;
+	case 2: /* dsa */
+		return GNUTLS_SIGN_DSA_SHA384;
+	case 3: /* ecdsa */
+		return GNUTLS_SIGN_ECDSA_SHA384;
+	}
+}
+
+static gnutls_sign_algorithm_t get_sigalg_for_sha512(uint8_t sig_algo)
+{
+	switch (sig_algo) {
+	default:
+	case 0: /* anon */
+		return GNUTLS_E_UNSUPPORTED_SIGNATURE_ALGORITHM;
+	case 1: /* rsa */
+		return GNUTLS_SIGN_RSA_SHA512;
+	case 2: /* dsa */
+		return GNUTLS_SIGN_DSA_SHA512;
+	case 3: /* ecdsa */
+		return GNUTLS_SIGN_ECDSA_SHA3_512;
+	}
+}
+
+static gnutls_sign_algorithm_t get_sigalg(uint8_t hash_algo, uint8_t sig_algo)
+{
+	switch (hash_algo) {
+	default:
+	case 0:
+		return GNUTLS_E_UNSUPPORTED_SIGNATURE_ALGORITHM;
+	case 1: /* md5 */
+		return get_sigalg_for_md5(sig_algo);
+	case 2: /* sha1 */
+		return get_sigalg_for_sha1(sig_algo);
+	case 3: /* sha224 */
+		return get_sigalg_for_sha224(sig_algo);
+	case 4: /* sha256 */
+		return get_sigalg_for_sha256(sig_algo);
+	case 5: /* sha384 */
+		return get_sigalg_for_sha384(sig_algo);
+	case 6: /* sha512 */
+		return get_sigalg_for_sha512(sig_algo);
+	}
+}
+
+static int write_sigalg(gnutls_sign_algorithm_t sigalg, uint8_t *out)
+{
+	switch (sigalg) {
+	case GNUTLS_SIGN_RSA_MD5:
+		out[0] = 1;
+		out[1] = 1;
+		break;
+	case GNUTLS_SIGN_RSA_SHA1:
+		out[0] = 2;
+		out[1] = 1;
+		break;
+	case GNUTLS_SIGN_RSA_SHA224:
+		out[0] = 3;
+		out[1] = 1;
+		break;
+	case GNUTLS_SIGN_RSA_SHA256:
+		out[0] = 4;
+		out[1] = 1;
+		break;
+	case GNUTLS_SIGN_RSA_SHA384:
+		out[0] = 5;
+		out[1] = 1;
+		break;
+	case GNUTLS_SIGN_DSA_SHA1:
+		out[0] = 2;
+		out[1] = 2;
+		break;
+	case GNUTLS_SIGN_DSA_SHA224:
+		out[0] = 3;
+		out[1] = 2;
+		break;
+	case GNUTLS_SIGN_DSA_SHA256:
+		out[0] = 4;
+		out[1] = 2;
+		break;
+	case GNUTLS_SIGN_DSA_SHA384:
+		out[0] = 5;
+		out[1] = 2;
+		break;
+	case GNUTLS_SIGN_ECDSA_SHA1:
+		out[0] = 2;
+		out[1] = 3;
+		break;
+	case GNUTLS_SIGN_ECDSA_SHA224:
+		out[0] = 3;
+		out[1] = 3;
+		break;
+	case GNUTLS_SIGN_ECDSA_SHA256:
+		out[0] = 4;
+		out[1] = 3;
+		break;
+	case GNUTLS_SIGN_ECDSA_SHA384:
+		out[0] = 5;
+		out[1] = 3;
+		break;
+	default:
+		return GNUTLS_E_UNSUPPORTED_SIGNATURE_ALGORITHM;
+	}
+
+	return 0;
+}
+
+static int _gnutls_parse_ct_sct(uint8_t *ptr, uint16_t length,
+				struct ct_sct_st *sct)
+{
+	int ret;
+	uint16_t sig_length;
+	uint8_t hash_algo, sig_algo;
+
+	sct->signature.size = 0;
+	sct->signature.data = NULL;
+
+	sct->version = (int) *ptr;
+	ptr++;
+	length--;
+
+	/* LogID
+	 * In version 1, it has a fixed length of 32 bytes.
+	 */
+	if (length <= SCT_V1_LOGID_SIZE) {
+		gnutls_assert();
+		ret = GNUTLS_E_PREMATURE_TERMINATION;
+		goto cleanup;
+	}
+
+	memcpy(sct->logid, ptr, SCT_V1_LOGID_SIZE);
+	ptr += SCT_V1_LOGID_SIZE;
+	length -= SCT_V1_LOGID_SIZE;
+
+	/* Timestamp */
+	if (length <= sizeof(uint64_t)) {
+		gnutls_assert();
+		ret = GNUTLS_E_PREMATURE_TERMINATION;
+		goto cleanup;
+	}
+
+	sct->timestamp = (uint64_t) _gnutls_read_uint64(ptr);
+	ptr += sizeof(uint64_t);
+	length -= sizeof(uint64_t);
+
+	/*
+	 * There are no extensions defined in SCT v1.
+	 * Check that there are actually no extensions - the following two bytes should be zero.
+	 */
+	if (*ptr != 0 || *(ptr+1) != 0) {
+		gnutls_assert();
+		ret = GNUTLS_E_UNEXPECTED_EXTENSIONS_LENGTH;
+		goto cleanup;
+	}
+	ptr += 2;
+	length -= 2;
+
+	/*
+	 * Hash and signature algorithms, modeled after
+	 * SignatureAndHashAlgorithm structure, as defined in
+	 * RFC 5246, section 7.4.1.4.1.
+	 * We take both values separately (hash and signature),
+	 * and return them as a gnutls_sign_algorithm_t enum value.
+	 */
+	if (length <= 2) {
+		gnutls_assert();
+		ret = GNUTLS_E_PREMATURE_TERMINATION;
+		goto cleanup;
+	}
+
+	hash_algo = *ptr++;
+	sig_algo = *ptr++;
+	length -= 2;
+
+	sct->sigalg = get_sigalg(hash_algo, sig_algo);
+	if (sct->sigalg < 0) {
+		gnutls_assert();
+		ret = sct->sigalg;
+		goto cleanup;
+	}
+
+	/* Signature, length and content */
+	sig_length = _gnutls_read_uint16(ptr);
+	ptr += sizeof(uint16_t);
+	length -= sizeof(uint16_t);
+	if (sig_length == 0) {
+		gnutls_assert();
+		ret = GNUTLS_E_PREMATURE_TERMINATION;
+		goto cleanup;
+	}
+
+	if (_gnutls_set_datum(&sct->signature, ptr, sig_length) < 0) {
+		gnutls_assert();
+		ret = GNUTLS_E_MEMORY_ERROR;
+		goto cleanup;
+	}
+
+	ptr += sig_length;
+	length -= sig_length;
+
+	if (length) {
+		/* Remaining length should be zero at this point.
+		 * If not, that means there is more data than what the length field said it was,
+		 * and hence we must treat this as an error. */
+		gnutls_assert();
+		ret = GNUTLS_E_ASN1_DER_OVERFLOW;
+		goto cleanup;
+	}
+
+	return 0;
+
+cleanup:
+	_gnutls_free_datum(&sct->signature);
+	return ret;
+}
+
+static int _gnutls_ct_sct_add(struct ct_sct_st *sct,
+			      struct ct_sct_st **scts, unsigned int *size)
+{
+	struct ct_sct_st *new_scts;
+
+	new_scts = gnutls_realloc(*scts, (*size + 1) * sizeof(struct ct_sct_st));
+	if (new_scts == NULL)
+		return gnutls_assert_val(GNUTLS_E_MEMORY_ERROR);
+
+	memcpy(&new_scts[*size], sct, sizeof(struct ct_sct_st));
+	(*size)++;
+	*scts = new_scts;
+
+	return 0;
+}
+
+static int _gnutls_export_ct_v1_sct(const struct ct_sct_st *sct, size_t base_size, uint8_t *out)
+{
+	int written = 0;
+	uint8_t *p = out;
+
+	/* Length field */
+	_gnutls_write_uint16(base_size + sct->signature.size - sizeof(uint16_t), p);
+	p += sizeof(uint16_t);
+	written += sizeof(uint16_t);
+
+	/* Version */
+	*p++ = (uint8_t) sct->version;
+	written++;
+
+	/* Log ID - has a fixed 32-byte size in version 1 */
+	memcpy(p, sct->logid, SCT_V1_LOGID_SIZE);
+	p += SCT_V1_LOGID_SIZE;
+	written += SCT_V1_LOGID_SIZE;
+
+	/* Timestamp */
+	_gnutls_write_uint64(sct->timestamp, p);
+	p += sizeof(uint64_t);
+	written += sizeof(uint64_t);
+
+	/* Extensions - no extensions defined for v1 */
+	*p++ = 0;
+	*p++ = 0;
+	written += 2;
+
+	/* Hash and signature algorithms */
+	if (write_sigalg(sct->sigalg, p) < 0) {
+		gnutls_assert();
+		return -1;
+	}
+
+	p += 2;
+	written += 2;
+
+	/* Signature */
+	_gnutls_write_uint16(sct->signature.size, p);
+	p += sizeof(uint16_t);
+	written += sizeof(uint16_t);
+	memcpy(p, sct->signature.data, sct->signature.size);
+	p += sct->signature.size;
+	written += sct->signature.size;
+
+	return written;
+}
+
+int gnutls_x509_ext_ct_import_scts(const gnutls_datum_t *ext, gnutls_x509_ct_scts_t scts)
+{
+	int retval;
+	uint8_t *ptr;
+	uint16_t length, sct_length;
+	struct ct_sct_st sct;
+	gnutls_datum_t scts_content;
+
+	retval =
+		_gnutls_x509_decode_string(ASN1_ETYPE_OCTET_STRING,
+					   ext->data, ext->size, &scts_content,
+					   0);
+	if (retval < 0)
+		return gnutls_assert_val(retval);
+
+	length = _gnutls_read_uint16(scts_content.data);
+	if (length <= 4) {
+		gnutls_free(scts_content.data);
+		return GNUTLS_E_REQUESTED_DATA_NOT_AVAILABLE;
+	}
+
+	ptr = &scts_content.data[2];
+	while (length > 0) {
+		sct_length = _gnutls_read_uint16(ptr);
+		if (sct_length == 0 || sct_length > length)
+			break;
+
+		ptr += sizeof(uint16_t);
+		length -= sizeof(uint16_t);
+
+		if (_gnutls_parse_ct_sct(ptr, sct_length, &sct) < 0)
+			break;
+		if (_gnutls_ct_sct_add(&sct, &scts->scts, &scts->size) < 0)
+			break;
+
+		ptr += sct_length;
+		length -= sct_length;
+	}
+
+	gnutls_free(scts_content.data);
+
+	if (length > 0) {
+		gnutls_assert();
+		_gnutls_free_scts(scts);
+		return GNUTLS_E_REQUESTED_DATA_NOT_AVAILABLE;
+	}
+
+	return GNUTLS_E_SUCCESS;
+}
+
+int gnutls_x509_ext_ct_export_scts(const gnutls_x509_ct_scts_t scts, gnutls_datum_t *ext)
+{
+	size_t ttl_size, base_size;
+	int ret, written;
+	unsigned int offset;
+	uint8_t *out;
+
+	base_size = sizeof(uint16_t)  /* length of the whole part */
+		    + 1  /* version */
+		    + SCT_V1_LOGID_SIZE  /* Log ID */
+		    + sizeof(uint64_t)  /* Timestamp */
+		    + 2  /* Extensions */
+		    + 2  /* hash and signature algorithms */
+		    + sizeof(uint16_t);  /* Signature length */
+
+	ttl_size = 0;
+	for (unsigned i = 0; i < scts->size; i++)
+		ttl_size += base_size + scts->scts[i].signature.size;
+
+	out = gnutls_malloc(ttl_size+2);  /* leave extra room for the 2 length bytes */
+	if (!out) {
+		gnutls_assert();
+		ret = GNUTLS_E_MEMORY_ERROR;
+		goto cleanup;
+	}
+
+	/* Start with the length of the whole string */
+	_gnutls_write_uint16(ttl_size, out);
+
+	offset = 2;
+	for (unsigned i = 0; i < scts->size; i++) {
+		written = _gnutls_export_ct_v1_sct(&scts->scts[i], base_size, out+offset);
+		if (written < 0) {
+			gnutls_assert();
+			ret = -1;
+			goto cleanup;
+		}
+		offset += written;
+	}
+
+	/* DER-encode the whole thing as an opaque OCTET STRING, as the spec mandates */
+	ret =
+		_gnutls_x509_encode_string(ASN1_ETYPE_OCTET_STRING,
+					   out, ttl_size+2,  /* again, leave extra room for 2 length bytes */
+					   ext);
+	if (ret < 0) {
+		gnutls_assert();
+		goto cleanup;
+	}
+
+	ret = GNUTLS_E_SUCCESS;
+
+cleanup:
+	if (out)
+		gnutls_free(out);
+	return ret;
+}
+
+int gnutls_x509_ct_sct_get_version(gnutls_x509_ct_scts_t scts, unsigned idx,
+				   unsigned int *version_out)
+{
+	int version;
+
+	if (idx >= scts->size)
+		return GNUTLS_E_REQUESTED_DATA_NOT_AVAILABLE;
+
+	/*
+	 * Currently, only version 1 SCTs are defined (RFC 6962).
+	 * A version 1 SCT has actually the value 0 in the 'version' field.
+	 */
+	version = scts->scts[idx].version;
+	if (version != 0 || version_out == NULL)
+		return -1;
+
+	*version_out = 1;
+	return GNUTLS_E_SUCCESS;
+}
+
+int gnutls_x509_ct_sct_v1_get(const gnutls_x509_ct_scts_t scts, unsigned idx,
+			      time_t *timestamp,
+			      gnutls_datum_t *logid,
+			      gnutls_sign_algorithm_t *sigalg,
+			      gnutls_datum_t *signature)
+{
+	int retval = 0;
+	struct ct_sct_st *sct;
+
+	if (idx >= scts->size)
+		return GNUTLS_E_REQUESTED_DATA_NOT_AVAILABLE;
+
+	sct = &scts->scts[idx];
+	if (sct->version != 0)
+		return -1;
+	if (signature)
+		retval = _gnutls_set_datum(signature,
+					   sct->signature.data,
+					   sct->signature.size);
+	if (retval < 0)
+		return retval;
+	if (logid)
+		retval = _gnutls_set_datum(logid,
+					   sct->logid,
+					   SCT_V1_LOGID_SIZE);
+	if (retval < 0) {
+		_gnutls_free_datum(signature);
+		return retval;
+	}
+	if (timestamp)
+		*timestamp = (sct->timestamp / 1000);
+	if (sigalg)
+		*sigalg = sct->sigalg;
+
+	return GNUTLS_E_SUCCESS;
+}
