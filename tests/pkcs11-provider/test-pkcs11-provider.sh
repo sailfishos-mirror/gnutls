@@ -58,14 +58,14 @@ _EOF_
 echo "Initializing token"
 
 # init token
-"$P11TOOL" --initialize --label "${LABEL}" --set-so-pin "${PIN}" "pkcs11:?module-path=${MODULE}" >/dev/null
+"$P11TOOL" --initialize --label "${LABEL}" --set-so-pin "${PIN}" --provider "${MODULE}" pkcs11: >/dev/null
 if test $? != 0; then
 	echo "failed to initialize token"
 	exit 1
 fi
 
 # set user pin
-"$P11TOOL" --initialize-pin --set-so-pin "${PIN}" --set-pin "${PIN}" "pkcs11:?module-path=${MODULE}" >/dev/null
+"$P11TOOL" --initialize-pin --set-so-pin "${PIN}" --set-pin "${PIN}" --provider "${MODULE}" pkcs11: >/dev/null
 if test $? != 0; then
 	echo "failed to set user pin"
 	exit 1
