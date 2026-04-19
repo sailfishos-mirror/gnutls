@@ -1413,7 +1413,7 @@ int gnutls_x509_ext_import_basic_constraints(const gnutls_datum_t *ext,
 	 */
 	len = sizeof(str) - 1;
 	result = asn1_read_value(c2, "cA", str, &len);
-	if (result == ASN1_SUCCESS && strcmp(str, "TRUE") == 0)
+	if (result == ASN1_SUCCESS && streq(str, "TRUE"))
 		*ca = 1;
 	else
 		*ca = 0;
@@ -1695,10 +1695,10 @@ static int decode_user_notice(const void *data, size_t size,
 		goto cleanup;
 	}
 
-	if (strcmp(choice_type, "utf8String") != 0 &&
-	    strcmp(choice_type, "ia5String") != 0 &&
-	    strcmp(choice_type, "bmpString") != 0 &&
-	    strcmp(choice_type, "visibleString") != 0) {
+	if (!streq(choice_type, "utf8String") &&
+	    !streq(choice_type, "ia5String") &&
+	    !streq(choice_type, "bmpString") &&
+	    !streq(choice_type, "visibleString")) {
 		gnutls_assert();
 		ret = GNUTLS_E_PARSING_ERROR;
 		goto cleanup;
@@ -1712,7 +1712,7 @@ static int decode_user_notice(const void *data, size_t size,
 		goto cleanup;
 	}
 
-	if (strcmp(choice_type, "bmpString") == 0) { /* convert to UTF-8 */
+	if (streq(choice_type, "bmpString")) { /* convert to UTF-8 */
 		ret = _gnutls_ucs2_to_utf8(td.data, td.size, &utd, 1);
 		_gnutls_free_datum(&td);
 		if (ret < 0) {
@@ -1947,7 +1947,7 @@ int gnutls_x509_ext_import_policies(const gnutls_datum_t *ext,
 				goto full_cleanup;
 			}
 
-			if (strcmp(tmpoid, "1.3.6.1.5.5.7.2.1") == 0) {
+			if (streq(tmpoid, "1.3.6.1.5.5.7.2.1")) {
 				snprintf(tmpstr, sizeof(tmpstr),
 					 "?%u.policyQualifiers.?%u.qualifier",
 					 j + 1, i + 1);
@@ -1966,7 +1966,7 @@ int gnutls_x509_ext_import_policies(const gnutls_datum_t *ext,
 				td.data = NULL;
 				policies->policy[j].qualifier[i].type =
 					GNUTLS_X509_QUALIFIER_URI;
-			} else if (strcmp(tmpoid, "1.3.6.1.5.5.7.2.2") == 0) {
+			} else if (streq(tmpoid, "1.3.6.1.5.5.7.2.2")) {
 				gnutls_datum_t txt = { NULL, 0 };
 
 				snprintf(tmpstr, sizeof(tmpstr),

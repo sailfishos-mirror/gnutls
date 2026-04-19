@@ -426,7 +426,7 @@ error:
 cfg_option_t cfg_next(const cfg_option_t options, const char *name)
 {
 	for (size_t i = 0; options[i].name; i++) {
-		if (strcmp(options[i].name, name) == 0) {
+		if (streq(options[i].name, name)) {
 			return &options[i];
 		}
 	}

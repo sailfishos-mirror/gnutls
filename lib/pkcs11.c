@@ -4273,7 +4273,7 @@ static enum distrust_purpose distrust_purpose_from_oid(const char *oid)
 	size_t i;
 
 	for (i = 0; i < sizeof(map) / sizeof(map[0]); i++) {
-		if (strcmp(map[i].oid, oid) == 0) {
+		if (streq(map[i].oid, oid)) {
 			return map[i].purpose;
 		}
 	}
