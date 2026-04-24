@@ -81,6 +81,15 @@ used, they are used to document something that is not obvious, or the protocol
 expectations. Though we haven't followed that rule strictly in the past, it
 should be followed on new code.
 
+# Coding conventions
+
+To improve readability and avoid common mistakes, prefer helper
+functions over raw comparisons when available.
+
+- Use `streq(a, b)` instead of `strcmp(a, b) == 0` or `!strcmp(a, b)`
+  for string equality checks.
+
+This reduces the risk of errors, especially in more complex conditions.
 
 # Function names:
 
