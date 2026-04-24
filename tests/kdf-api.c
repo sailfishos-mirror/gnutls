@@ -30,6 +30,7 @@
 #include <stdint.h>
 
 #include "utils.h"
+#include "gl/string.h"
 
 #define MAX_BUF 1024
 
@@ -69,7 +70,7 @@ static void test_hkdf(gnutls_mac_algorithm_t mac, const char *ikm_hex,
 	prk.size = strlen(prk_hex) / 2;
 	assert(gnutls_hex_encode2(&prk, &hex) >= 0);
 
-	if (strcmp((char *)hex.data, prk_hex))
+	if (!streq((char *)hex.data, prk_hex))
 		fail("prk doesn't match: %s != %s\n", (char *)hex.data,
 		     prk_hex);
 
@@ -97,7 +98,7 @@ static void test_hkdf(gnutls_mac_algorithm_t mac, const char *ikm_hex,
 	okm.size = strlen(okm_hex) / 2;
 	assert(gnutls_hex_encode2(&okm, &hex) >= 0);
 
-	if (strcmp((char *)hex.data, okm_hex))
+	if (!streq((char *)hex.data, okm_hex))
 		fail("okm doesn't match: %s != %s\n", (char *)hex.data,
 		     okm_hex);
 
@@ -154,7 +155,7 @@ static void test_pbkdf2(gnutls_mac_algorithm_t mac, const char *ikm_hex,
 	okm.size = length;
 	assert(gnutls_hex_encode2(&okm, &hex) >= 0);
 
-	if (strcmp((char *)hex.data, okm_hex))
+	if (!streq((char *)hex.data, okm_hex))
 		fail("okm doesn't match: %s != %s\n", (char *)hex.data,
 		     okm_hex);
 

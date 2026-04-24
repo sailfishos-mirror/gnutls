@@ -31,6 +31,8 @@
 #include <gnutls/gnutls.h>
 #include <gnutls/crypto.h>
 
+#include "gl/string.h"
+
 static int test_mac(gnutls_mac_algorithm_t alg, const char *key,
 		    size_t key_size, const char *ptext, size_t ptext_size,
 		    const char *exp_digest)
@@ -202,7 +204,7 @@ static int test_hkdf(gnutls_mac_algorithm_t mac, const char *ikm_hex,
 		return ret;
 	}
 
-	if (strcmp((char *)hex.data, prk_hex) != 0) {
+	if (!streq((char *)hex.data, prk_hex)) {
 		fprintf(stderr, "HKDF: prk doesn't match: %s != %s\n",
 			(char *)hex.data, prk_hex);
 		gnutls_free(hex.data);
@@ -236,7 +238,7 @@ static int test_hkdf(gnutls_mac_algorithm_t mac, const char *ikm_hex,
 		return ret;
 	}
 
-	if (strcmp((char *)hex.data, okm_hex) != 0) {
+	if (!streq((char *)hex.data, okm_hex)) {
 		fprintf(stderr, "HKDF: okm doesn't match: %s != %s\n",
 			(char *)hex.data, okm_hex);
 		gnutls_free(hex.data);
@@ -293,7 +295,7 @@ static int test_pbkdf2(gnutls_mac_algorithm_t mac, const char *ikm_hex,
 		return ret;
 	}
 
-	if (strcmp((char *)hex.data, okm_hex) != 0) {
+	if (!streq((char *)hex.data, okm_hex)) {
 		fprintf(stderr, "PBKDF2: okm doesn't match: %s != %s\n",
 			(char *)hex.data, okm_hex);
 		gnutls_free(hex.data);

@@ -34,6 +34,7 @@
 #include <gnutls/x509-ext.h>
 
 #include "utils.h"
+#include "gl/string.h"
 
 /* Tests the gnutls_pkcs11_obj_get_exts API */
 
@@ -100,7 +101,7 @@ void doit(void)
 		exit(1);
 	}
 
-	if (strcmp(exts[0].oid, "2.5.29.19") != 0) {
+	if (!streq(exts[0].oid, "2.5.29.19")) {
 		fail("Found OID for %d: %s\n", 0, exts[0].oid);
 	}
 
@@ -121,7 +122,7 @@ void doit(void)
 		}
 	}
 
-	if (strcmp(exts[1].oid, "2.5.29.15") != 0) {
+	if (!streq(exts[1].oid, "2.5.29.15")) {
 		fail("Found OID for %d: %s\n", 1, exts[1].oid);
 	}
 

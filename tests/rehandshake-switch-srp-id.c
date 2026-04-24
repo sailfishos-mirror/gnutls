@@ -40,6 +40,7 @@ int main(void)
 #include <gnutls/gnutls.h>
 #include "utils.h"
 #include "eagain-common.h"
+#include "gl/string.h"
 
 /* This test checks whether the server switching certificates is detected
  * by the client */
@@ -95,7 +96,7 @@ static int srpfunc(gnutls_session_t session, const char *username,
 	if (ret < 0)
 		fail("error in gnutls_srp_base64_decode2 -prime\n");
 
-	if (strcmp(username, "test1") == 0) {
+	if (streq(username, "test1")) {
 		ret = gnutls_srp_base64_decode2(&test1_verif, verifier);
 		if (ret < 0)
 			fail("error in gnutls_srp_base64_decode2 -verif\n");
@@ -103,7 +104,7 @@ static int srpfunc(gnutls_session_t session, const char *username,
 		ret = gnutls_srp_base64_decode2(&test1_salt, salt);
 		if (ret < 0)
 			fail("error in gnutls_srp_base64_decode2 -salt\n");
-	} else if (strcmp(username, "test2") == 0) {
+	} else if (streq(username, "test2")) {
 		ret = gnutls_srp_base64_decode2(&test2_verif, verifier);
 		if (ret < 0)
 			fail("error in gnutls_srp_base64_decode2 -verif\n");

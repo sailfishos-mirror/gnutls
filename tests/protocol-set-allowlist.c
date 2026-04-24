@@ -19,6 +19,10 @@
  * along with GnuTLS.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <errno.h>
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -31,6 +35,7 @@
 #include <gnutls/x509.h>
 
 #include "utils.h"
+#include "gl/string.h"
 
 /*
  * This is not a test by itself.
@@ -231,13 +236,13 @@ void doit(void)
 			*e = '\0';
 		if (!*cmd_buf)
 			continue;
-		else if (!strcmp(cmd_buf, "> connect"))
+		else if (streq(cmd_buf, "> connect"))
 			cmd_connect(ca_file, port);
 		else if ((p = unprefix(cmd_buf, "> protocol_set_disabled ")))
 			cmd_protocol_set_disabled(p);
 		else if ((p = unprefix(cmd_buf, "> protocol_set_enabled ")))
 			cmd_protocol_set_enabled(p);
-		else if (!strcmp(cmd_buf, "> reinit"))
+		else if (streq(cmd_buf, "> reinit"))
 			cmd_reinit();
 		else if ((p = unprefix(cmd_buf, "> ")))
 			_fail("Unknown command `%s`\n", p);

@@ -37,6 +37,7 @@
 #define P11_KIT_FUTURE_UNSTABLE_API
 #include <p11-kit/p11-kit.h>
 #include "cert-common.h"
+#include "gl/string.h"
 
 /* lists the registered PKCS#11 modules by p11-kit.
  */
@@ -90,9 +91,9 @@ int main(int argc, char **argv)
 			break;
 		case 't':
 			/* specify the object type to list */
-			if (strcmp(optarg, "all") == 0)
+			if (streq(optarg, "all"))
 				attrs = GNUTLS_PKCS11_OBJ_ATTR_ALL;
-			else if (strcmp(optarg, "privkey") == 0)
+			else if (streq(optarg, "privkey"))
 				attrs = GNUTLS_PKCS11_OBJ_ATTR_PRIVKEY;
 			else {
 				fprintf(stderr, "Unknown object type %s\n",

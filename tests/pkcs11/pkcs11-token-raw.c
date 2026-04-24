@@ -39,6 +39,7 @@
 #include <p11-kit/pkcs11.h>
 
 #include "utils.h"
+#include "gl/string.h"
 
 /* Tests whether a gnutls_pkcs11_token_get_ptr returns valid handles. */
 
@@ -120,7 +121,7 @@ void doit(void)
 		ret = gnutls_pkcs11_token_get_info(
 			url, GNUTLS_PKCS11_TOKEN_LABEL, buf, &size);
 		assert(ret == 0);
-		assert(strcmp(buf, TOKEN_NAME) == 0);
+		assert(streq(buf, TOKEN_NAME));
 		assert(size == strlen(TOKEN_NAME));
 
 		gnutls_free(buf);

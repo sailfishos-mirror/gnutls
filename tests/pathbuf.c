@@ -26,6 +26,7 @@
 #include "utils.h"
 #include <string.h>
 #include <assert.h>
+#include "gl/string.h"
 
 static char long_path[GNUTLS_PATH_MAX + 2];
 
@@ -37,12 +38,12 @@ void doit(void)
 
 	ret = _gnutls_pathbuf_init(&pathbuf, "./x509certs");
 	assert(ret == 0);
-	assert(strcmp(pathbuf.ptr, "./x509certs") == 0);
+	assert(streq(pathbuf.ptr, "./x509certs"));
 	assert(pathbuf.len == sizeof("./x509certs") - 1);
 
 	ret = _gnutls_pathbuf_append(&pathbuf, "cert.pem");
 	assert(ret == 0);
-	assert(strcmp(pathbuf.ptr, "./x509certs/cert.pem") == 0);
+	assert(streq(pathbuf.ptr, "./x509certs/cert.pem"));
 	assert(pathbuf.len == sizeof("./x509certs/cert.pem") - 1);
 	_gnutls_pathbuf_deinit(&pathbuf);
 
@@ -52,15 +53,14 @@ void doit(void)
 
 		ret = _gnutls_pathbuf_init(&pathbuf, long_path);
 		assert(ret == 0);
-		assert(strcmp(pathbuf.ptr, long_path) == 0);
+		assert(streq(pathbuf.ptr, long_path));
 		assert(pathbuf.len == (size_t)GNUTLS_PATH_MAX + i);
 
 		ret = _gnutls_pathbuf_append(&pathbuf, "cert.pem");
 		assert(ret == 0);
 		assert(memcmp(pathbuf.ptr, long_path, GNUTLS_PATH_MAX + i) ==
 		       0);
-		assert(strcmp(&pathbuf.ptr[GNUTLS_PATH_MAX + i], "/cert.pem") ==
-		       0);
+		assert(streq(&pathbuf.ptr[GNUTLS_PATH_MAX + i], "/cert.pem"));
 		assert(pathbuf.len ==
 		       GNUTLS_PATH_MAX + i + sizeof("/cert.pem") - 1);
 		_gnutls_pathbuf_deinit(&pathbuf);

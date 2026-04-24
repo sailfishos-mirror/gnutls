@@ -49,6 +49,7 @@ int main(int argc, char **argv)
 #include <gnutls/gnutls.h>
 #include "cert-common.h"
 #include "utils.h"
+#include "gl/string.h"
 
 /* A very basic TLS client, with PSK authentication.
  */
@@ -178,7 +179,7 @@ static int psk_server_func(gnutls_session_t session, const char *username,
 	if (debug)
 		printf("psk: username %s\n", username);
 
-	if (strcmp(username, "test") != 0) {
+	if (!streq(username, "test")) {
 		fail("error in received username: '%s'\n", username);
 	}
 

@@ -31,6 +31,7 @@
 #include <gnutls/x509.h>
 
 #include "utils.h"
+#include "gl/string.h"
 
 static const char simple1[] =
 	/* CRL */
@@ -203,7 +204,7 @@ void doit(void)
 			exit(1);
 		}
 
-		if (strcmp(oid, crl_list[i].sign_oid) != 0) {
+		if (!streq(oid, crl_list[i].sign_oid)) {
 			fail("%s: error on the extracted signature algorithm: %s\n",
 			     crl_list[i].name, oid);
 			exit(1);

@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>
  */
 #include <assert.h>
+#include "gl/string.h"
 
 typedef struct test_case_st {
 	const char *name;
@@ -87,11 +88,11 @@ static void try(test_case_st *test)
 		char *desc1 = gnutls_session_get_desc(server);
 		char *desc2 = gnutls_session_get_desc(client);
 
-		if (strcmp(desc1, desc2) != 0)
+		if (!streq(desc1, desc2))
 			fail("server and client session description don't match (%s, %s)\n",
 			     desc1, desc2);
 
-		if (strcmp(desc1, test->desc) != 0)
+		if (!streq(desc1, test->desc))
 			fail("session and expected session description don't match (%s, %s)\n",
 			     desc1, test->desc);
 		gnutls_free(desc1);

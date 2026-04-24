@@ -28,6 +28,7 @@
 #include <gnutls/x509.h>
 #include <gnutls/x509-ext.h>
 #include "utils.h"
+#include "gl/string.h"
 
 static char invalid_cert[] = /* v1 certificate with extensions */
 	"-----BEGIN CERTIFICATE-----\n"
@@ -136,7 +137,7 @@ static int cmp_name(unsigned type, gnutls_datum_t *name, unsigned expected_type,
 		return -1;
 	}
 
-	if (strcmp((char *)name->data, expected_name) != 0) {
+	if (!streq((char *)name->data, expected_name)) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
@@ -279,7 +280,7 @@ static int ext_key_usage(const gnutls_datum_t *der)
 		return ret;
 	}
 
-	if (strcmp((char *)oid.data, "1.3.6.1.5.5.7.3.3") != 0) {
+	if (!streq((char *)oid.data, "1.3.6.1.5.5.7.3.3")) {
 		fprintf(stderr, "error in %d: %s\n", __LINE__,
 			(char *)oid.data);
 		return -1;
@@ -291,7 +292,7 @@ static int ext_key_usage(const gnutls_datum_t *der)
 		return ret;
 	}
 
-	if (strcmp((char *)oid.data, "1.3.6.1.5.5.7.3.9") != 0) {
+	if (!streq((char *)oid.data, "1.3.6.1.5.5.7.3.9")) {
 		fprintf(stderr, "error in %d: %s\n", __LINE__,
 			(char *)oid.data);
 		return -1;
@@ -341,7 +342,7 @@ static int crt_policies(const gnutls_datum_t *der)
 				Note: This is a short policy
 				URI: http://www.example.com/another-policy-to-read
 */
-	if (strcmp(policy.oid, "1.3.6.1.4.1.5484.1.10.99.1.0") != 0 ||
+	if (!streq(policy.oid, "1.3.6.1.4.1.5484.1.10.99.1.0") ||
 	    policy.qualifiers != 2) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
@@ -356,8 +357,8 @@ static int crt_policies(const gnutls_datum_t *der)
 	if (policy.qualifier[1].type != GNUTLS_X509_QUALIFIER_URI ||
 	    policy.qualifier[1].size !=
 		    strlen("http://www.example.com/a-policy-to-read") ||
-	    strcmp("http://www.example.com/a-policy-to-read",
-		   policy.qualifier[1].data) != 0) {
+	    !streq("http://www.example.com/a-policy-to-read",
+		   policy.qualifier[1].data)) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
@@ -368,7 +369,7 @@ static int crt_policies(const gnutls_datum_t *der)
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return ret;
 	}
-	if (strcmp(policy.oid, "1.3.6.1.4.1.5484.1.10.99.1.1") != 0 ||
+	if (!streq(policy.oid, "1.3.6.1.4.1.5484.1.10.99.1.1") ||
 	    policy.qualifiers != 2) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
@@ -383,8 +384,8 @@ static int crt_policies(const gnutls_datum_t *der)
 	if (policy.qualifier[1].type != GNUTLS_X509_QUALIFIER_URI ||
 	    policy.qualifier[1].size !=
 		    strlen("http://www.example.com/another-policy-to-read") ||
-	    strcmp("http://www.example.com/another-policy-to-read",
-		   policy.qualifier[1].data) != 0) {
+	    !streq("http://www.example.com/another-policy-to-read",
+		   policy.qualifier[1].data)) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
@@ -485,7 +486,7 @@ static int crl_dist_points(const gnutls_datum_t *der)
 	}
 
 	if (type != GNUTLS_SAN_URI || flags != 0 ||
-	    strcmp((char *)url.data, "http://www.getcrl.crl/getcrl1/") != 0) {
+	    !streq((char *)url.data, "http://www.getcrl.crl/getcrl1/")) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
@@ -497,7 +498,7 @@ static int crl_dist_points(const gnutls_datum_t *der)
 	}
 
 	if (type != GNUTLS_SAN_URI || flags != 0 ||
-	    strcmp((char *)url.data, "http://www.getcrl.crl/getcrl2/") != 0) {
+	    !streq((char *)url.data, "http://www.getcrl.crl/getcrl2/")) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
@@ -509,7 +510,7 @@ static int crl_dist_points(const gnutls_datum_t *der)
 	}
 
 	if (type != GNUTLS_SAN_URI || flags != 0 ||
-	    strcmp((char *)url.data, "http://www.getcrl.crl/getcrl3/") != 0) {
+	    !streq((char *)url.data, "http://www.getcrl.crl/getcrl3/")) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
@@ -562,7 +563,7 @@ static int name_constraints(const gnutls_datum_t *der)
 	}
 
 	if (type != GNUTLS_SAN_DNSNAME || name.size != 11 ||
-	    strcmp((char *)name.data, "example.com") != 0) {
+	    !streq((char *)name.data, "example.com")) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
@@ -574,7 +575,7 @@ static int name_constraints(const gnutls_datum_t *der)
 	}
 
 	if (type != GNUTLS_SAN_RFC822NAME || name.size != 17 ||
-	    strcmp((char *)name.data, "nmav@@example.net") != 0) {
+	    !streq((char *)name.data, "nmav@@example.net")) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
@@ -593,7 +594,7 @@ static int name_constraints(const gnutls_datum_t *der)
 	}
 
 	if (type != GNUTLS_SAN_DNSNAME || name.size != 16 ||
-	    strcmp((char *)name.data, "test.example.com") != 0) {
+	    !streq((char *)name.data, "test.example.com")) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
@@ -605,7 +606,7 @@ static int name_constraints(const gnutls_datum_t *der)
 	}
 
 	if (type != GNUTLS_SAN_RFC822NAME || name.size != 12 ||
-	    strcmp((char *)name.data, ".example.com") != 0) {
+	    !streq((char *)name.data, ".example.com")) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
@@ -652,13 +653,13 @@ static int ext_aia(const gnutls_datum_t *der)
 		return ret;
 	}
 
-	if (strcmp((char *)oid.data, "1.3.6.1.5.5.7.48.1") != 0) {
+	if (!streq((char *)oid.data, "1.3.6.1.5.5.7.48.1")) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
 
 	if (type != GNUTLS_SAN_URI || name.size != 26 ||
-	    strcmp((char *)name.data, "http://my.ocsp.server/ocsp") != 0) {
+	    !streq((char *)name.data, "http://my.ocsp.server/ocsp")) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}
@@ -753,7 +754,7 @@ void doit(void)
 				break;
 			}
 
-			if (strcmp(handlers[j].oid, oid) == 0) {
+			if (streq(handlers[j].oid, oid)) {
 				if (critical != handlers[j].critical) {
 					fail("error in %d (%s)\n", __LINE__,
 					     oid);

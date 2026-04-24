@@ -30,6 +30,7 @@
 #include <string.h>
 #include <gnutls/gnutls.h>
 #include <cmocka.h>
+#include "gl/string.h"
 
 #define GLOBAL_FLAGS 0
 
@@ -45,8 +46,8 @@
 		} else {                                                       \
 			assert_int_equal(ret, 0);                              \
 		}                                                              \
-		assert_int_equal(strcmp((char *)out.data, (char *)normalized), \
-				 0);                                           \
+		assert_int_equal(streq((char *)out.data, (char *)normalized),  \
+				 1);                                           \
 		gnutls_free(out.data);                                         \
 	}
 
@@ -61,7 +62,7 @@
 					      &out, 0);                       \
 		assert_int_equal(ret, 0);                                     \
                                                                               \
-		assert_int_equal(strcmp((char *)out.data, (char *)str), 0);   \
+		assert_int_equal(streq((char *)out.data, (char *)str), 1);    \
 		gnutls_free(out.data);                                        \
 	}                                                                     \
 	MATCH_FUNC(fname, str, normalized)

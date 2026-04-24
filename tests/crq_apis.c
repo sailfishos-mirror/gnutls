@@ -31,6 +31,7 @@
 #include <assert.h>
 
 #include "utils.h"
+#include "gl/string.h"
 
 static void tls_log_func(int level, const char *str)
 {
@@ -158,7 +159,7 @@ static gnutls_x509_crq_t generate_crq(void)
 
 	s = 10;
 	ret = gnutls_x509_crq_get_challenge_password(crq, smallbuf, &s);
-	if (ret != 0 || s != 3 || strcmp(smallbuf, "foo") != 0)
+	if (ret != 0 || s != 3 || !streq(smallbuf, "foo"))
 		fail("%d: gnutls_x509_crq_get_challenge_password3 %d/%d/%s\n",
 		     __LINE__, ret, (int)s, smallbuf);
 
@@ -489,8 +490,8 @@ static void run_set_extension_by_oid(gnutls_x509_crq_t crq)
 	if (ret != 0)
 		fail("gnutls_x509_crt_get_extension_info\n");
 
-	if (strcmp(oid, GNUTLS_X509EXT_OID_EXTENDED_KEY_USAGE) != 0)
-		fail("strcmp\n");
+	if (!streq(oid, GNUTLS_X509EXT_OID_EXTENDED_KEY_USAGE))
+		fail("streq\n");
 
 	ret = gnutls_x509_crt_get_extension_data2(crt, 0, &out);
 	if (ret != 0)
@@ -502,7 +503,7 @@ static void run_set_extension_by_oid(gnutls_x509_crq_t crq)
 							 NULL);
 		if (ret < 0)
 			fail("loop: ext not found: %s\n", gnutls_strerror(ret));
-		if (strcmp(oid, GNUTLS_X509EXT_OID_EXTENDED_KEY_USAGE) == 0) {
+		if (streq(oid, GNUTLS_X509EXT_OID_EXTENDED_KEY_USAGE)) {
 			ret = gnutls_x509_crq_get_extension_data2(crq, 3,
 								  &out2);
 			if (ret != 0)

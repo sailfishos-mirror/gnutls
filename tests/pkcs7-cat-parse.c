@@ -32,6 +32,7 @@
 #include <assert.h>
 
 #include "utils.h"
+#include "gl/string.h"
 
 const char pkcs7_data[] =
 	"-----BEGIN PKCS7-----\n"
@@ -118,7 +119,7 @@ void doit(void)
 		exit(1);
 	}
 
-	assert(strcmp(oid, "1.3.6.1.4.1.311.10.1") == 0);
+	assert(streq(oid, "1.3.6.1.4.1.311.10.1"));
 
 	ret = gnutls_pkcs7_get_embedded_data(pkcs7, GNUTLS_PKCS7_EDATA_GET_RAW,
 					     &data);

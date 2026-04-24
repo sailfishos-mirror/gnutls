@@ -27,6 +27,7 @@
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
 #include "utils.h"
+#include "gl/string.h"
 
 static char pem[] =
 	"-----BEGIN CERTIFICATE-----\n"
@@ -122,8 +123,8 @@ void doit(void)
 		fail("gnutls_x509_dn_get_str %d\n", ret);
 
 	if (strdn.size != 44 ||
-	    strcmp((char *)strdn.data,
-		   "CN=CAcert WoT User,EMAIL=simon@josefsson.org") != 0) {
+	    !streq((char *)strdn.data,
+		   "CN=CAcert WoT User,EMAIL=simon@josefsson.org")) {
 		fail("gnutls_x509_dn_get_str string comparison failed: '%s'/%d\n",
 		     strdn.data, strdn.size);
 	}
@@ -134,8 +135,8 @@ void doit(void)
 	if (ret < 0)
 		fail("gnutls_x509_dn_get_str2 %d\n", ret);
 	if (strdn.size != 44 ||
-	    strcmp((char *)strdn.data,
-		   "EMAIL=simon@josefsson.org,CN=CAcert WoT User") != 0) {
+	    !streq((char *)strdn.data,
+		   "EMAIL=simon@josefsson.org,CN=CAcert WoT User")) {
 		fail("gnutls_x509_dn_get_str2 string comparison failed: '%s'/%d\n",
 		     strdn.data, strdn.size);
 	}
@@ -146,8 +147,8 @@ void doit(void)
 	if (ret < 0)
 		fail("gnutls_x509_dn_get_str2 %d\n", ret);
 	if (strdn.size != 44 ||
-	    strcmp((char *)strdn.data,
-		   "CN=CAcert WoT User,EMAIL=simon@josefsson.org") != 0) {
+	    !streq((char *)strdn.data,
+		   "CN=CAcert WoT User,EMAIL=simon@josefsson.org")) {
 		fail("gnutls_x509_dn_get_str2 string comparison failed: '%s'/%d\n",
 		     strdn.data, strdn.size);
 	}

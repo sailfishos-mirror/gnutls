@@ -52,6 +52,7 @@ int main(int argc, char **argv)
 
 #include "utils.h"
 #include "cert-common.h"
+#include "gl/string.h"
 
 const char *side = "";
 
@@ -186,7 +187,7 @@ static void client(int sd, const char *name, const char *prio, unsigned flags,
 
 	ext_name =
 		gnutls_ext_get_name2(session, TLSEXT_TYPE_IGN, GNUTLS_EXT_ANY);
-	if (ext_name == NULL || strcmp(ext_name, "ext_ign"))
+	if (ext_name == NULL || !streq(ext_name, "ext_ign"))
 		myfail("client: retrieve name of extension %u\n",
 		       TLSEXT_TYPE_IGN);
 

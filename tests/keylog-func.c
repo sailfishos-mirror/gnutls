@@ -49,6 +49,7 @@ int main(int argc, char **argv)
 
 #include "cert-common.h"
 #include "utils.h"
+#include "gl/string.h"
 
 /* This program tests whether a keylog function is called.
  */
@@ -85,7 +86,7 @@ static int keylog_func(gnutls_session_t session, const char *label,
 	if (*call_count >= sizeof(exp_labels) / sizeof(exp_labels[0]))
 		fail("unexpected secret at call count %u\n", *call_count);
 
-	if (strcmp(label, exp_labels[*call_count]) != 0)
+	if (!streq(label, exp_labels[*call_count]))
 		fail("unexpected %s at call count %u\n", label, *call_count);
 	else if (debug)
 		success("received %s at call count %u\n", label, *call_count);

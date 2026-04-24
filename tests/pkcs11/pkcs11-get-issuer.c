@@ -35,6 +35,7 @@
 #include "../utils.h"
 #include "../test-chains.h"
 #include "softhsm.h"
+#include "gl/string.h"
 
 #define CONFIG "softhsm-issuer.config"
 
@@ -96,7 +97,7 @@ void doit(void)
 	for (j = 0;; j++) {
 		if (chains[j].name == NULL)
 			break;
-		if (strcmp(chains[j].name, "verisign.com v1 ok") == 0) {
+		if (streq(chains[j].name, "verisign.com v1 ok")) {
 			idx = j;
 			break;
 		}
