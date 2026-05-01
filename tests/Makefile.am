@@ -93,7 +93,8 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/extra/includes		\
 	-I$(top_builddir)/extra/includes	\
 	-I$(top_srcdir)/lib			\
-	-I$(top_srcdir)/doc/examples
+	-I$(top_srcdir)/doc/examples		\
+	-I$(top_srcdir)/gl
 
 AM_LDFLAGS = -no-install
 COMMON_GNUTLS_LDADD = ../lib/libgnutls.la

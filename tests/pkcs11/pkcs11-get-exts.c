@@ -34,7 +34,6 @@
 #include <gnutls/x509-ext.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 /* Tests the gnutls_pkcs11_obj_get_exts API */
 

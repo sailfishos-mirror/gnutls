@@ -29,7 +29,6 @@
 #include "cert-common.h"
 #include "eagain-common.h"
 #include "utils.h"
-#include "gl/string.h"
 
 const char *side = "";
 

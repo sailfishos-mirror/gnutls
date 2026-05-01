@@ -27,7 +27,6 @@
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
 #include "utils.h"
-#include "gl/string.h"
 
 static char pem[] =
 	"-----BEGIN CERTIFICATE-----\n"

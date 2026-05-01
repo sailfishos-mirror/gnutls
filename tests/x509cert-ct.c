@@ -36,7 +36,6 @@
 #include <gnutls/x509-ext.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 static char pem[] =
 	"-----BEGIN CERTIFICATE-----\n"

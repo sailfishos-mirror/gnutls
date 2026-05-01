@@ -31,7 +31,6 @@
 #include <gnutls/x509.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 static const char simple1[] =
 	/* CRL */

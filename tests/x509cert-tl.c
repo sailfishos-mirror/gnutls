@@ -34,7 +34,6 @@
 #include <gnutls/x509.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 /* gnutls_trust_list_*().
  */

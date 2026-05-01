@@ -57,7 +57,6 @@ int main(int argc, char **argv)
 #include "utils.h"
 #include "cert-common.h"
 #include "virt-time.h"
-#include "gl/string.h"
 
 static void wrap_db_init(void);
 static void wrap_db_deinit(void);

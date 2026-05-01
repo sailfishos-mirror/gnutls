@@ -35,7 +35,6 @@
 #include "../utils.h"
 #include "../test-chains.h"
 #include "softhsm.h"
-#include "gl/string.h"
 
 #define CONFIG "softhsm-issuer.config"
 

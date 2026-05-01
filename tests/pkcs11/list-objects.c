@@ -37,7 +37,6 @@
 #define P11_KIT_FUTURE_UNSTABLE_API
 #include <p11-kit/p11-kit.h>
 #include "cert-common.h"
-#include "gl/string.h"
 
 /* lists the registered PKCS#11 modules by p11-kit.
  */

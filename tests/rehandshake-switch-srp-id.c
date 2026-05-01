@@ -40,7 +40,6 @@ int main(void)
 #include <gnutls/gnutls.h>
 #include "utils.h"
 #include "eagain-common.h"
-#include "gl/string.h"
 
 /* This test checks whether the server switching certificates is detected
  * by the client */

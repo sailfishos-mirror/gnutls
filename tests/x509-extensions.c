@@ -28,7 +28,6 @@
 #include <gnutls/x509.h>
 #include <gnutls/x509-ext.h>
 #include "utils.h"
-#include "gl/string.h"
 
 static char invalid_cert[] = /* v1 certificate with extensions */
 	"-----BEGIN CERTIFICATE-----\n"

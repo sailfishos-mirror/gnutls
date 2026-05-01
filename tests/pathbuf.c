@@ -26,7 +26,6 @@
 #include "utils.h"
 #include <string.h>
 #include <assert.h>
-#include "gl/string.h"
 
 static char long_path[GNUTLS_PATH_MAX + 2];
 

@@ -30,7 +30,6 @@
 #include <assert.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 /* This test verifies the correct operation of system-wide priority
  * strings. The test suite sets the GNUTLS_SYSTEM_PRIORITY_FILE environment

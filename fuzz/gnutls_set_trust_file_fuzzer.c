@@ -22,7 +22,6 @@
 
 #include <gnutls/gnutls.h>
 #include "fuzzer.h"
-#include "gl/string.h"
 
 static const uint8_t *g_data;
 static size_t g_size;
@@ -37,7 +36,7 @@ FILE *fopen(const char *pathname, const char *mode)
 		(FILE * (*)(const char *, const char *))
 			dlsym(RTLD_NEXT, "fopen");
 
-	if (streq(pathname, "ca_or_crl"))
+	if (!strcmp(pathname, "ca_or_crl"))
 		return fmemopen((void *)g_data, g_size, mode);
 
 	return libc_fopen(pathname, mode);

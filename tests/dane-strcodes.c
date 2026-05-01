@@ -30,7 +30,6 @@
 #include <gnutls/dane.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 /* Check whether the DANE string functions will return a non-repeated and
  * non null value.

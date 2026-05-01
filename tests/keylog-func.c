@@ -49,7 +49,6 @@ int main(int argc, char **argv)
 
 #include "cert-common.h"
 #include "utils.h"
-#include "gl/string.h"
 
 /* This program tests whether a keylog function is called.
  */

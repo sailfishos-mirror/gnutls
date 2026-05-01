@@ -30,7 +30,6 @@
 #include <gnutls/dane.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 unsigned _gnutls_ecc_curve_is_supported(gnutls_ecc_curve_t);
 

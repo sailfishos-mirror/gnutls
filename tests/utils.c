@@ -45,7 +45,6 @@
 #include <sys/types.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 int debug = 0;
 int error_count = 0;

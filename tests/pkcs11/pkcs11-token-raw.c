@@ -39,7 +39,6 @@
 #include <p11-kit/pkcs11.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 /* Tests whether a gnutls_pkcs11_token_get_ptr returns valid handles. */
 

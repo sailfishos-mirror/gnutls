@@ -53,7 +53,6 @@ int main(int argc, char **argv)
 #include "utils.h"
 #include "extras/hex.h"
 #include "cert-common.h"
-#include "gl/string.h"
 
 /* A very basic TLS client, with PSK authentication.
  */

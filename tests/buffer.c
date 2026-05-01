@@ -27,7 +27,6 @@
 
 #include <gnutls_int.h>
 #include "utils.h"
-#include "gl/string.h"
 
 void doit(void)
 {

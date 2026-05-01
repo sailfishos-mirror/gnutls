@@ -102,7 +102,6 @@
 #include <time.h>
 #include <assert.h>
 #include <sys/wait.h>
-#include "gl/string.h"
 
 #if _POSIX_TIMERS && (_POSIX_TIMERS - 200112L) >= 0
 

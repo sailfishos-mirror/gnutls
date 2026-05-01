@@ -49,7 +49,6 @@ int main(int argc, char **argv)
 #include <gnutls/gnutls.h>
 #include "cert-common.h"
 #include "utils.h"
-#include "gl/string.h"
 
 /* A very basic TLS client, with PSK authentication.
  */

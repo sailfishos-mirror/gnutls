@@ -50,7 +50,6 @@ int main(void)
 #include "cert-common.h"
 
 #include "utils.h"
-#include "gl/string.h"
 
 static void terminate(void);
 static unsigned url_used = 0;

@@ -48,7 +48,6 @@ int main(void)
 #include <gnutls/dtls.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 static void server_log_func(int level, const char *str)
 {

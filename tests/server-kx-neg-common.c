@@ -23,7 +23,6 @@
 #endif
 
 #include <assert.h>
-#include "gl/string.h"
 
 typedef struct test_case_st {
 	const char *name;

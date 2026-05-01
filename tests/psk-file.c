@@ -52,7 +52,6 @@ int main(int argc, char **argv)
 #include <gnutls/gnutls.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 static char hexchar(unsigned int val)
 {

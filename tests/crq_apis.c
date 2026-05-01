@@ -31,7 +31,6 @@
 #include <assert.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 static void tls_log_func(int level, const char *str)
 {

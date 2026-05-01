@@ -29,7 +29,6 @@
 #include <string.h>
 #include <gnutls/gnutls.h>
 #include <cmocka.h>
-#include "gl/string.h"
 
 #define MATCH_FUNC(fname, password, normalized)                          \
 	static void fname(void **glob_state)                             \

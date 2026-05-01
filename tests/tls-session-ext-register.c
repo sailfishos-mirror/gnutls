@@ -52,7 +52,6 @@ int main(int argc, char **argv)
 
 #include "utils.h"
 #include "cert-common.h"
-#include "gl/string.h"
 
 const char *side = "";
 

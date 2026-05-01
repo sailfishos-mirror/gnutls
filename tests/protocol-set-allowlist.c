@@ -35,7 +35,6 @@
 #include <gnutls/x509.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 /*
  * This is not a test by itself.

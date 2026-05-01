@@ -29,7 +29,6 @@
 #include <limits.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 #define should_succeed(f)                                       \
 	do {                                                    \

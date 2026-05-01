@@ -32,7 +32,6 @@
 #include <assert.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 const char pkcs7_data[] =
 	"-----BEGIN PKCS7-----\n"

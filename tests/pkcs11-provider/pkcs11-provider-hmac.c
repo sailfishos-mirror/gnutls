@@ -31,8 +31,6 @@
 #include <gnutls/gnutls.h>
 #include <gnutls/crypto.h>
 
-#include "gl/string.h"
-
 static int test_mac(gnutls_mac_algorithm_t alg, const char *key,
 		    size_t key_size, const char *ptext, size_t ptext_size,
 		    const char *exp_digest)

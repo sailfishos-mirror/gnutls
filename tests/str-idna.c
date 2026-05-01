@@ -30,7 +30,6 @@
 #include <string.h>
 #include <gnutls/gnutls.h>
 #include <cmocka.h>
-#include "gl/string.h"
 
 #define GLOBAL_FLAGS 0
 

@@ -31,7 +31,6 @@
 #include <gnutls/abstract.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 static char pem1_cert[] =
 	"-----BEGIN CERTIFICATE-----\n"

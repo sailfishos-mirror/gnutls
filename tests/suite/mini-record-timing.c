@@ -46,7 +46,6 @@ int main(void)
 #include <signal.h>
 #include <assert.h>
 #include <errno.h>
-#include "gl/string.h"
 
 //#define USE_RDTSC
 //#define TEST_ETM

@@ -30,7 +30,6 @@
 #include <stdint.h>
 
 #include "utils.h"
-#include "gl/string.h"
 
 #define MAX_BUF 1024
 
