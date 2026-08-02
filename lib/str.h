@@ -311,51 +311,51 @@ int _gnutls_hostname_compare(const char *certname, size_t certnamesize,
 		}                                                   \
 	}
 
-#define BUFFER_POP_NUM(b, o)                                 \
-	{                                                    \
-		size_t s;                                    \
-		ret = _gnutls_buffer_pop_prefix32(b, &s, 0); \
-		if (ret < 0) {                               \
-			gnutls_assert();                     \
-			goto error;                          \
-		}                                            \
-		o = s;                                       \
+#define BUFFER_POP_NUM(b, o)                            \
+	{                                               \
+		uint32_t s;                             \
+		ret = _gnutls_buffer_pop_uint32(b, &s); \
+		if (ret < 0) {                          \
+			gnutls_assert();                \
+			goto error;                     \
+		}                                       \
+		o = s;                                  \
 	}
 
-#define BUFFER_POP_CAST_NUM(b, o)                            \
-	{                                                    \
-		size_t s;                                    \
-		ret = _gnutls_buffer_pop_prefix32(b, &s, 0); \
-		if (ret < 0) {                               \
-			gnutls_assert();                     \
-			goto error;                          \
-		}                                            \
-		o = (void *)(intptr_t)(s);                   \
+#define BUFFER_POP_CAST_NUM(b, o)                       \
+	{                                               \
+		uint32_t s;                             \
+		ret = _gnutls_buffer_pop_uint32(b, &s); \
+		if (ret < 0) {                          \
+			gnutls_assert();                \
+			goto error;                     \
+		}                                       \
+		o = (void *)(intptr_t)(s);              \
 	}
 
-#define BUFFER_POP_TS(b, o)                                  \
-	{                                                    \
-		size_t s;                                    \
-		uint64_t v;                                  \
-		ret = _gnutls_buffer_pop_prefix32(b, &s, 0); \
-		if (ret < 0) {                               \
-			gnutls_assert();                     \
-			goto error;                          \
-		}                                            \
-		v = s;                                       \
-		ret = _gnutls_buffer_pop_prefix32(b, &s, 0); \
-		if (ret < 0) {                               \
-			gnutls_assert();                     \
-			goto error;                          \
-		}                                            \
-		v = (v << 32) | s;                           \
-		ret = _gnutls_buffer_pop_prefix32(b, &s, 0); \
-		if (ret < 0) {                               \
-			gnutls_assert();                     \
-			goto error;                          \
-		}                                            \
-		o.tv_sec = v;                                \
-		o.tv_nsec = s;                               \
+#define BUFFER_POP_TS(b, o)                             \
+	{                                               \
+		uint32_t s;                             \
+		uint64_t v;                             \
+		ret = _gnutls_buffer_pop_uint32(b, &s); \
+		if (ret < 0) {                          \
+			gnutls_assert();                \
+			goto error;                     \
+		}                                       \
+		v = s;                                  \
+		ret = _gnutls_buffer_pop_uint32(b, &s); \
+		if (ret < 0) {                          \
+			gnutls_assert();                \
+			goto error;                     \
+		}                                       \
+		v = (v << 32) | s;                      \
+		ret = _gnutls_buffer_pop_uint32(b, &s); \
+		if (ret < 0) {                          \
+			gnutls_assert();                \
+			goto error;                     \
+		}                                       \
+		o.tv_sec = v;                           \
+		o.tv_nsec = s;                          \
 	}
 
 #endif /* GNUTLS_LIB_STR_H */

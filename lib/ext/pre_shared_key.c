@@ -421,7 +421,6 @@ static int parse_imported_identity(const gnutls_datum_t *imported_identity,
 	uint16_t target_protocol;
 	uint16_t target_kdf;
 	gnutls_buffer_st buf;
-	size_t size;
 	int ret;
 
 	_gnutls_ro_buffer_from_datum(&buf, (gnutls_datum_t *)imported_identity);
@@ -439,20 +438,18 @@ static int parse_imported_identity(const gnutls_datum_t *imported_identity,
 	}
 
 	/* target_protocol */
-	ret = _gnutls_buffer_pop_prefix16(&buf, &size, 0);
+	ret = _gnutls_buffer_pop_uint16(&buf, &target_protocol);
 	if (ret < 0) {
 		return ret;
 	}
-	target_protocol = size;
 	*version = _gnutls_version_get((target_protocol >> 8) & 0xFF,
 				       target_protocol & 0xFF);
 
 	/* target_kdf */
-	ret = _gnutls_buffer_pop_prefix16(&buf, &size, 0);
+	ret = _gnutls_buffer_pop_uint16(&buf, &target_kdf);
 	if (ret < 0) {
 		return ret;
 	}
-	target_kdf = size;
 	switch (target_kdf) {
 	case 0x0001:
 		*hash = GNUTLS_DIG_SHA256;

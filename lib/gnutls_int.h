@@ -1126,7 +1126,7 @@ typedef struct {
 	uint32_t lifetime;
 	uint32_t age_add;
 	uint8_t nonce[255];
-	size_t nonce_size;
+	uint8_t nonce_size;
 	const mac_entry_st *prf;
 	uint8_t resumption_master_secret[MAX_HASH_SIZE];
 	gnutls_datum_t ticket;

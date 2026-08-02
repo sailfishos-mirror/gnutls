@@ -862,22 +862,20 @@ int _gnutls_buffer_pop_prefix32(gnutls_buffer_st *buf, size_t *data_size,
 int _gnutls_buffer_pop_datum_prefix32(gnutls_buffer_st *buf,
 				      gnutls_datum_t *data)
 {
-	size_t size;
+	uint32_t size;
 	int ret;
 
-	ret = _gnutls_buffer_pop_prefix32(buf, &size, 1);
-	if (ret < 0) {
-		gnutls_assert();
-		return ret;
-	}
+	ret = _gnutls_buffer_pop_uint32(buf, &size);
+	if (ret < 0)
+		return gnutls_assert_val(ret);
+
+	if (size > buf->length)
+		return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
 
 	if (size > 0) {
-		size_t osize = size;
 		_gnutls_buffer_pop_datum(buf, data, size);
-		if (osize != data->size) {
-			gnutls_assert();
-			return GNUTLS_E_PARSING_ERROR;
-		}
+		if (osize != data->size)
+			return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
 	} else {
 		data->size = 0;
 		data->data = NULL;
@@ -889,22 +887,20 @@ int _gnutls_buffer_pop_datum_prefix32(gnutls_buffer_st *buf,
 int _gnutls_buffer_pop_datum_prefix24(gnutls_buffer_st *buf,
 				      gnutls_datum_t *data)
 {
-	size_t size;
+	uint32_t size;
 	int ret;
 
-	ret = _gnutls_buffer_pop_prefix24(buf, &size, 1);
-	if (ret < 0) {
-		gnutls_assert();
-		return ret;
-	}
+	ret = _gnutls_buffer_pop_uint24(buf, &size);
+	if (ret < 0)
+		return gnutls_assert_val(ret);
+
+	if (size > buf->length)
+		return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
 
 	if (size > 0) {
-		size_t osize = size;
 		_gnutls_buffer_pop_datum(buf, data, size);
-		if (osize != data->size) {
-			gnutls_assert();
-			return GNUTLS_E_PARSING_ERROR;
-		}
+		if (size != data->size)
+			return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
 	} else {
 		data->size = 0;
 		data->data = NULL;
@@ -916,25 +912,20 @@ int _gnutls_buffer_pop_datum_prefix24(gnutls_buffer_st *buf,
 int _gnutls_buffer_pop_datum_prefix16(gnutls_buffer_st *buf,
 				      gnutls_datum_t *data)
 {
-	size_t size;
+	uint16_t size;
+	int ret;
 
-	if (buf->length < 2) {
-		gnutls_assert();
-		return GNUTLS_E_PARSING_ERROR;
-	}
+	ret = _gnutls_buffer_pop_uint16(buf, &size);
+	if (ret < 0)
+		return gnutls_assert_val(ret);
 
-	size = _gnutls_read_uint16(buf->data);
-
-	buf->data += 2;
-	buf->length -= 2;
+	if (size > buf->length)
+		return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
 
 	if (size > 0) {
-		size_t osize = size;
 		_gnutls_buffer_pop_datum(buf, data, size);
-		if (osize != data->size) {
-			gnutls_assert();
-			return GNUTLS_E_PARSING_ERROR;
-		}
+		if (size != data->size)
+			return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
 	} else {
 		data->size = 0;
 		data->data = NULL;
@@ -946,25 +937,20 @@ int _gnutls_buffer_pop_datum_prefix16(gnutls_buffer_st *buf,
 int _gnutls_buffer_pop_datum_prefix8(gnutls_buffer_st *buf,
 				     gnutls_datum_t *data)
 {
-	size_t size;
+	uint8_t size;
+	int ret;
 
-	if (buf->length < 1) {
-		gnutls_assert();
-		return GNUTLS_E_PARSING_ERROR;
-	}
+	ret = _gnutls_buffer_pop_uint8(buf, &size);
+	if (ret < 0)
+		return gnutls_assert_val(ret);
 
-	size = buf->data[0];
-
-	buf->data++;
-	buf->length--;
+	if (size > buf->length)
+		return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
 
 	if (size > 0) {
-		size_t osize = size;
 		_gnutls_buffer_pop_datum(buf, data, size);
-		if (osize != data->size) {
-			gnutls_assert();
-			return GNUTLS_E_PARSING_ERROR;
-		}
+		if (size != data->size)
+			return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
 	} else {
 		data->size = 0;
 		data->data = NULL;

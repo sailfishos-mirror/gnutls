@@ -658,11 +658,12 @@ static int decompress_certificate(gnutls_session_t session,
 				  gnutls_buffer_st *buf)
 {
 	int ret;
-	size_t method_num, plain_exp_len;
+	uint16_t method_num;
+	uint32_t plain_exp_len;
 	gnutls_datum_t comp, plain = { NULL, 0 };
 	gnutls_compression_method_t comp_method;
 
-	ret = _gnutls_buffer_pop_prefix16(buf, &method_num, 0);
+	ret = _gnutls_buffer_pop_uint16(buf, &method_num);
 	if (ret < 0)
 		return gnutls_assert_val(GNUTLS_E_UNEXPECTED_PACKET_LENGTH);
 	comp_method = _gnutls_compress_certificate_num2method(method_num);
@@ -671,7 +672,7 @@ static int decompress_certificate(gnutls_session_t session,
 							    comp_method))
 		return gnutls_assert_val(GNUTLS_E_ILLEGAL_PARAMETER);
 
-	ret = _gnutls_buffer_pop_prefix24(buf, &plain_exp_len, 0);
+	ret = _gnutls_buffer_pop_uint24(buf, &plain_exp_len);
 	if (ret < 0)
 		return gnutls_assert_val(GNUTLS_E_UNEXPECTED_PACKET_LENGTH);
 
