@@ -335,6 +335,29 @@ DEFINE_POP_UINT(24, uint32_t, 3);
 DEFINE_POP_UINT(16, uint16_t, 2);
 DEFINE_POP_UINT(8, uint8_t, 1);
 
+#define DEFINE_APPEND_UINT(bits, bytes, max)                                \
+	int _gnutls_buffer_append_uint##bits(gnutls_buffer_st *buf,         \
+					     size_t data)                   \
+	{                                                                   \
+		uint8_t tmp[bytes];                                         \
+		int ret;                                                    \
+                                                                            \
+		if (data > max)                                             \
+			return gnutls_assert_val(GNUTLS_E_INVALID_REQUEST); \
+                                                                            \
+		_gnutls_write_uint##bits(data, tmp);                        \
+		ret = _gnutls_buffer_append_data(buf, &tmp, sizeof(tmp));   \
+		if (ret < 0)                                                \
+			return gnutls_assert_val(ret);                      \
+                                                                            \
+		return 0;                                                   \
+	}
+
+DEFINE_APPEND_UINT(32, 4, UINT32_MAX);
+DEFINE_APPEND_UINT(24, 3, (1UL << 24) - 1);
+DEFINE_APPEND_UINT(16, 2, UINT16_MAX);
+DEFINE_APPEND_UINT(8, 1, UINT8_MAX);
+
 int _gnutls_buffer_append_printf(gnutls_buffer_st *dest, const char *fmt, ...)
 {
 	va_list args;
