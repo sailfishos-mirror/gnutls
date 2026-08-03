@@ -349,7 +349,7 @@ int gnutls_psk_format_imported_identity(const gnutls_datum_t *identity,
 
 	/* target_protocol */
 	target_protocol = ver->major << 8 | ver->minor;
-	ret = _gnutls_buffer_append_prefix(&buf, 16, target_protocol);
+	ret = _gnutls_buffer_append_uint16(&buf, target_protocol);
 	if (ret < 0) {
 		goto error;
 	}
@@ -366,7 +366,7 @@ int gnutls_psk_format_imported_identity(const gnutls_datum_t *identity,
 		ret = gnutls_assert_val(GNUTLS_E_UNKNOWN_HASH_ALGORITHM);
 		goto error;
 	}
-	ret = _gnutls_buffer_append_prefix(&buf, 16, target_kdf);
+	ret = _gnutls_buffer_append_uint16(&buf, target_kdf);
 	if (ret < 0) {
 		goto error;
 	}
@@ -494,7 +494,7 @@ static int client_send_params(gnutls_session_t session, gnutls_buffer_t extdata,
 
 	/* placeholder to be filled later */
 	spos = extdata->length;
-	ret = _gnutls_buffer_append_prefix(extdata, 16, 0);
+	ret = _gnutls_buffer_append_uint16(extdata, 0);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
@@ -542,7 +542,7 @@ static int client_send_params(gnutls_session_t session, gnutls_buffer_t extdata,
 		}
 
 		/* Now append the obfuscated ticket age */
-		if ((ret = _gnutls_buffer_append_prefix(extdata, 32,
+		if ((ret = _gnutls_buffer_append_uint32(extdata,
 							ob_ticket_age)) < 0) {
 			gnutls_assert();
 			goto cleanup;
@@ -658,7 +658,7 @@ ignore_ticket:
 		}
 
 		/* Now append the obfuscated ticket age */
-		if ((ret = _gnutls_buffer_append_prefix(extdata, 32, 0)) < 0) {
+		if ((ret = _gnutls_buffer_append_uint32(extdata, 0)) < 0) {
 			gnutls_assert();
 			goto cleanup;
 		}
@@ -688,7 +688,7 @@ ignore_ticket:
 
 	next_idx = 0;
 
-	ret = _gnutls_buffer_append_prefix(extdata, 16, binders_len);
+	ret = _gnutls_buffer_append_uint16(extdata, binders_len);
 	if (ret < 0) {
 		gnutls_assert_val(ret);
 		goto cleanup;
@@ -795,7 +795,7 @@ static int server_send_params(gnutls_session_t session, gnutls_buffer_t extdata)
 	if (!(session->internals.hsk_flags & HSK_PSK_SELECTED))
 		return 0;
 
-	ret = _gnutls_buffer_append_prefix(extdata, 16,
+	ret = _gnutls_buffer_append_uint16(extdata,
 					   session->key.binders[0].idx);
 	if (ret < 0)
 		return gnutls_assert_val(ret);

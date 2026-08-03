@@ -426,7 +426,7 @@ int _gnutls_ecdh_common_print_server_kx(gnutls_session_t session,
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
-	ret = _gnutls_buffer_append_prefix(data, 16, group->tls_id);
+	ret = _gnutls_buffer_append_uint16(data, group->tls_id);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 

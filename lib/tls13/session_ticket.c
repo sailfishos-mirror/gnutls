@@ -263,8 +263,8 @@ static int append_nst_extension(void *ctx, gnutls_buffer_st *buf)
 	if (!(session->internals.flags & GNUTLS_ENABLE_EARLY_DATA))
 		return 0;
 
-	ret = _gnutls_buffer_append_prefix(
-		buf, 32, session->security_parameters.max_early_data_size);
+	ret = _gnutls_buffer_append_uint32(
+		buf, session->security_parameters.max_early_data_size);
 	if (ret < 0)
 		gnutls_assert();
 
@@ -315,14 +315,14 @@ int _gnutls13_send_session_ticket(gnutls_session_t session, unsigned nr,
 				goto cleanup;
 			}
 
-			ret = _gnutls_buffer_append_prefix(&buf, 32,
+			ret = _gnutls_buffer_append_uint32(&buf,
 							   ticket.lifetime);
 			if (ret < 0) {
 				gnutls_assert();
 				goto cleanup;
 			}
 
-			ret = _gnutls_buffer_append_prefix(&buf, 32,
+			ret = _gnutls_buffer_append_uint32(&buf,
 							   ticket.age_add);
 			if (ret < 0) {
 				gnutls_assert();

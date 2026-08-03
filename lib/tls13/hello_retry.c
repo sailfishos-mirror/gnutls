@@ -74,7 +74,7 @@ int _gnutls13_send_hello_retry_request(gnutls_session_t session, unsigned again)
 		}
 
 		/* compression */
-		ret = _gnutls_buffer_append_prefix(&buf, 8, 0);
+		ret = _gnutls_buffer_append_uint8(&buf, 0);
 		if (ret < 0) {
 			gnutls_assert();
 			goto cleanup;

@@ -308,7 +308,7 @@ int _gnutls13_send_certificate(gnutls_session_t session, unsigned again)
 			}
 
 		} else {
-			ret = _gnutls_buffer_append_prefix(&buf, 8, 0);
+			ret = _gnutls_buffer_append_uint8(&buf, 0);
 			if (ret < 0) {
 				gnutls_assert();
 				goto cleanup;
@@ -317,7 +317,7 @@ int _gnutls13_send_certificate(gnutls_session_t session, unsigned again)
 
 		/* mark total size */
 		pos_mark = buf.length;
-		ret = _gnutls_buffer_append_prefix(&buf, 24, 0);
+		ret = _gnutls_buffer_append_uint24(&buf, 0);
 		if (ret < 0) {
 			gnutls_assert();
 			goto cleanup;
@@ -369,7 +369,7 @@ int _gnutls13_send_certificate(gnutls_session_t session, unsigned again)
 			} else
 #endif
 			{
-				ret = _gnutls_buffer_append_prefix(&buf, 16, 0);
+				ret = _gnutls_buffer_append_uint16(&buf, 0);
 				if (ret < 0) {
 					gnutls_assert();
 					goto cleanup;
@@ -633,12 +633,12 @@ static int compress_certificate(gnutls_buffer_st *buf, unsigned cert_pos_mark,
 	comp.size = ret;
 
 	buf->length = cert_pos_mark;
-	ret = _gnutls_buffer_append_prefix(buf, 16, method_num);
+	ret = _gnutls_buffer_append_uint16(buf, method_num);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
 	}
-	ret = _gnutls_buffer_append_prefix(buf, 24, plain.size);
+	ret = _gnutls_buffer_append_uint24(buf, plain.size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;

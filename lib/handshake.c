@@ -2495,7 +2495,7 @@ int _gnutls_send_server_hello(gnutls_session_t session, int again)
 		}
 
 		/* compression */
-		ret = _gnutls_buffer_append_prefix(&buf, 8, 0);
+		ret = _gnutls_buffer_append_uint8(&buf, 0);
 		if (ret < 0) {
 			gnutls_assert();
 			goto fail;

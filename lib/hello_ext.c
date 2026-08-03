@@ -632,10 +632,10 @@ int _gnutls_ext_set_full_client_hello(gnutls_session_t session,
 
 	_gnutls_buffer_clear(buf);
 
-	if ((ret = _gnutls_buffer_append_prefix(buf, 8, recv_buf->htype)) < 0)
+	if ((ret = _gnutls_buffer_append_uint8(buf, recv_buf->htype)) < 0)
 		return gnutls_assert_val(ret);
-	if ((ret = _gnutls_buffer_append_prefix(buf, 24,
-						recv_buf->data.length)) < 0)
+	if ((ret = _gnutls_buffer_append_uint24(buf, recv_buf->data.length)) <
+	    0)
 		return gnutls_assert_val(ret);
 	if ((ret = _gnutls_buffer_append_data(buf, recv_buf->data.data,
 					      recv_buf->data.length)) < 0)

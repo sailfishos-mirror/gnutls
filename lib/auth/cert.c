@@ -635,7 +635,7 @@ static int gen_x509_crt(gnutls_session_t session, gnutls_buffer_st *data)
 	 * the one produced here )
 	 */
 
-	ret = _gnutls_buffer_append_prefix(data, 24, ret - 3);
+	ret = _gnutls_buffer_append_uint24(data, ret - 3);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
@@ -682,7 +682,7 @@ int _gnutls_gen_rawpk_crt(gnutls_session_t session, gnutls_buffer_st *data)
 	 * certificate = length bytes.
 	 */
 	if (apr_cert_list_length == 0) {
-		ret = _gnutls_buffer_append_prefix(data, 24, 0);
+		ret = _gnutls_buffer_append_uint24(data, 0);
 	} else {
 		ret = _gnutls_buffer_append_data_prefix(
 			data, 24, apr_cert_list[0].cert.data,
@@ -1383,7 +1383,7 @@ int _gnutls_gen_cert_server_cert_req(gnutls_session_t session,
 		if (ret < 0)
 			return gnutls_assert_val(ret);
 	} else {
-		ret = _gnutls_buffer_append_prefix(data, 16, 0);
+		ret = _gnutls_buffer_append_uint16(data, 0);
 		if (ret < 0)
 			return gnutls_assert_val(ret);
 	}

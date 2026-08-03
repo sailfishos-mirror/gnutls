@@ -256,30 +256,29 @@ int _gnutls_hostname_compare(const char *certname, size_t certnamesize,
 		}                                                    \
 	}
 
-#define BUFFER_APPEND_NUM(b, s)                               \
-	{                                                     \
-		ret = _gnutls_buffer_append_prefix(b, 32, s); \
-		if (ret < 0) {                                \
-			gnutls_assert();                      \
-			return ret;                           \
-		}                                             \
+#define BUFFER_APPEND_NUM(b, s)                           \
+	{                                                 \
+		ret = _gnutls_buffer_append_uint32(b, s); \
+		if (ret < 0) {                            \
+			gnutls_assert();                  \
+			return ret;                       \
+		}                                         \
 	}
 
 #define BUFFER_APPEND_TS(b, s)                                                \
 	{                                                                     \
-		ret = _gnutls_buffer_append_prefix(b, 32,                     \
+		ret = _gnutls_buffer_append_uint32(b,                         \
 						   (uint64_t)s.tv_sec >> 32); \
 		if (ret < 0) {                                                \
 			gnutls_assert();                                      \
 			return ret;                                           \
 		}                                                             \
-		ret = _gnutls_buffer_append_prefix(b, 32,                     \
-						   s.tv_sec & 0xFFFFFFFF);    \
+		ret = _gnutls_buffer_append_uint32(b, s.tv_sec & 0xFFFFFFFF); \
 		if (ret < 0) {                                                \
 			gnutls_assert();                                      \
 			return ret;                                           \
 		}                                                             \
-		ret = _gnutls_buffer_append_prefix(b, 32, s.tv_nsec);         \
+		ret = _gnutls_buffer_append_uint32(b, s.tv_nsec);             \
 		if (ret < 0) {                                                \
 			gnutls_assert();                                      \
 			return ret;                                           \

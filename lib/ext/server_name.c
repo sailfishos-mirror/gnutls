@@ -157,7 +157,7 @@ static int _gnutls_server_name_send_params(gnutls_session_t session,
 
 		/* UINT16: write total size of all names
 		 */
-		ret = _gnutls_buffer_append_prefix(extdata, 16, total_size - 2);
+		ret = _gnutls_buffer_append_uint16(extdata, total_size - 2);
 		if (ret < 0)
 			return gnutls_assert_val(ret);
 
@@ -165,7 +165,7 @@ static int _gnutls_server_name_send_params(gnutls_session_t session,
 		 * UINT16: size of the first name
 		 * LEN: the actual server name.
 		 */
-		ret = _gnutls_buffer_append_prefix(extdata, 8, 0);
+		ret = _gnutls_buffer_append_uint8(extdata, 0);
 		if (ret < 0)
 			return gnutls_assert_val(ret);
 

@@ -281,7 +281,7 @@ static int client_send_params(gnutls_session_t session,
 
 	size_t spos = extdata->length;
 
-	int ret = _gnutls_buffer_append_prefix(extdata, 16, groups->size * 2);
+	int ret = _gnutls_buffer_append_uint16(extdata, groups->size * 2);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
@@ -291,7 +291,7 @@ static int client_send_params(gnutls_session_t session,
 		_gnutls_handshake_log("EXT[%p]: Sent group %s (0x%x)\n",
 				      session, group->name, group->tls_id);
 
-		ret = _gnutls_buffer_append_prefix(extdata, 16, group->tls_id);
+		ret = _gnutls_buffer_append_uint16(extdata, group->tls_id);
 		if (ret < 0)
 			return gnutls_assert_val(ret);
 	}
