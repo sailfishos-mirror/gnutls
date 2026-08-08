@@ -801,8 +801,8 @@ int _gnutls_hostname_compare(const char *certname, size_t certnamesize,
 	}
 }
 
-int _gnutls_buffer_append_prefix(gnutls_buffer_st *buf, int pfx_size,
-				 size_t data_size)
+static int buffer_append_prefix(gnutls_buffer_st *buf, int pfx_size,
+				size_t data_size)
 {
 	switch (pfx_size) {
 	case 32:
@@ -857,7 +857,7 @@ int _gnutls_buffer_append_data_prefix(gnutls_buffer_st *buf, int pfx_size,
 {
 	int ret;
 
-	ret = _gnutls_buffer_append_prefix(buf, pfx_size, data_size);
+	ret = buffer_append_prefix(buf, pfx_size, data_size);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 

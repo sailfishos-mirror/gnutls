@@ -121,9 +121,6 @@ int _gnutls_buffer_append_str(gnutls_buffer_st *, const char *str);
 
 #include "num.h"
 
-int _gnutls_buffer_append_prefix(gnutls_buffer_st *buf, int pfx_size,
-				 size_t data_size);
-
 int _gnutls_buffer_append_mpi(gnutls_buffer_st *buf, int pfx_size, bigint_t,
 			      int lz);
 
