@@ -188,8 +188,8 @@ int _gnutls_gen_srp_server_kx(gnutls_session_t session, gnutls_buffer_st *data)
 
 	/* copy N (mod n) 
 	 */
-	ret = _gnutls_buffer_append_data_prefix(data, 16, pwd_entry->n.data,
-						pwd_entry->n.size);
+	ret = _gnutls_buffer_append_data_prefix16(data, pwd_entry->n.data,
+						  pwd_entry->n.size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
@@ -197,8 +197,8 @@ int _gnutls_gen_srp_server_kx(gnutls_session_t session, gnutls_buffer_st *data)
 
 	/* copy G (generator) to data 
 	 */
-	ret = _gnutls_buffer_append_data_prefix(data, 16, pwd_entry->g.data,
-						pwd_entry->g.size);
+	ret = _gnutls_buffer_append_data_prefix16(data, pwd_entry->g.data,
+						  pwd_entry->g.size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
@@ -206,8 +206,8 @@ int _gnutls_gen_srp_server_kx(gnutls_session_t session, gnutls_buffer_st *data)
 
 	/* copy the salt 
 	 */
-	ret = _gnutls_buffer_append_data_prefix(data, 8, pwd_entry->salt.data,
-						pwd_entry->salt.size);
+	ret = _gnutls_buffer_append_data_prefix8(data, pwd_entry->salt.data,
+						 pwd_entry->salt.size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;

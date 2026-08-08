@@ -261,8 +261,8 @@ static int _gnutls_srtp_send_params(gnutls_session_t session,
 	}
 
 	/* use_mki */
-	ret = _gnutls_buffer_append_data_prefix(extdata, 8, priv->mki,
-						priv->mki_size);
+	ret = _gnutls_buffer_append_data_prefix8(extdata, priv->mki,
+						 priv->mki_size);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 	total_size += 1 + priv->mki_size;

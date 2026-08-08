@@ -227,40 +227,40 @@ int _gnutls_hostname_compare(const char *certname, size_t certnamesize,
 	}
 
 /* append data prefixed with 4-bytes length field*/
-#define BUFFER_APPEND_PFX4(b, x, s)                                   \
-	{                                                             \
-		ret = _gnutls_buffer_append_data_prefix(b, 32, x, s); \
-		if (ret < 0) {                                        \
-			gnutls_assert();                              \
-			return ret;                                   \
-		}                                                     \
+#define BUFFER_APPEND_PFX4(b, x, s)                                 \
+	{                                                           \
+		ret = _gnutls_buffer_append_data_prefix32(b, x, s); \
+		if (ret < 0) {                                      \
+			gnutls_assert();                            \
+			return ret;                                 \
+		}                                                   \
 	}
 
-#define BUFFER_APPEND_PFX3(b, x, s)                                   \
-	{                                                             \
-		ret = _gnutls_buffer_append_data_prefix(b, 24, x, s); \
-		if (ret < 0) {                                        \
-			gnutls_assert();                              \
-			return ret;                                   \
-		}                                                     \
+#define BUFFER_APPEND_PFX3(b, x, s)                                 \
+	{                                                           \
+		ret = _gnutls_buffer_append_data_prefix24(b, x, s); \
+		if (ret < 0) {                                      \
+			gnutls_assert();                            \
+			return ret;                                 \
+		}                                                   \
 	}
 
-#define BUFFER_APPEND_PFX2(b, x, s)                                   \
-	{                                                             \
-		ret = _gnutls_buffer_append_data_prefix(b, 16, x, s); \
-		if (ret < 0) {                                        \
-			gnutls_assert();                              \
-			return ret;                                   \
-		}                                                     \
+#define BUFFER_APPEND_PFX2(b, x, s)                                 \
+	{                                                           \
+		ret = _gnutls_buffer_append_data_prefix16(b, x, s); \
+		if (ret < 0) {                                      \
+			gnutls_assert();                            \
+			return ret;                                 \
+		}                                                   \
 	}
 
-#define BUFFER_APPEND_PFX1(b, x, s)                                  \
-	{                                                            \
-		ret = _gnutls_buffer_append_data_prefix(b, 8, x, s); \
-		if (ret < 0) {                                       \
-			gnutls_assert();                             \
-			return ret;                                  \
-		}                                                    \
+#define BUFFER_APPEND_PFX1(b, x, s)                                \
+	{                                                          \
+		ret = _gnutls_buffer_append_data_prefix8(b, x, s); \
+		if (ret < 0) {                                     \
+			gnutls_assert();                           \
+			return ret;                                \
+		}                                                  \
 	}
 
 #define BUFFER_APPEND_NUM(b, s)                           \

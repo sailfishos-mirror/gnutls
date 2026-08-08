@@ -172,8 +172,8 @@ static int _gnutls_server_name_send_params(gnutls_session_t session,
 		_gnutls_debug_log("HSK[%p]: sent server name: '%.*s'\n",
 				  session, name.size, name.data);
 
-		ret = _gnutls_buffer_append_data_prefix(extdata, 16, name.data,
-							name.size);
+		ret = _gnutls_buffer_append_data_prefix16(extdata, name.data,
+							  name.size);
 		if (ret < 0)
 			return gnutls_assert_val(ret);
 	} else {

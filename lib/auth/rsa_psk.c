@@ -216,15 +216,14 @@ static int _gnutls_gen_rsa_psk_client_kx(gnutls_session_t session,
 
 	/* Write psk_identity and EncryptedPreMasterSecret into data stream
 	 */
-	ret = _gnutls_buffer_append_data_prefix(data, 16, username.data,
-						username.size);
+	ret = _gnutls_buffer_append_data_prefix16(data, username.data,
+						  username.size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
 	}
 
-	ret = _gnutls_buffer_append_data_prefix(data, 16, sdata.data,
-						sdata.size);
+	ret = _gnutls_buffer_append_data_prefix16(data, sdata.data, sdata.size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;

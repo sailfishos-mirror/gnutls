@@ -2306,8 +2306,8 @@ static int send_client_hello(gnutls_session_t session, int again)
 
 		/* Copy the Session ID - if any
 		 */
-		ret = _gnutls_buffer_append_data_prefix(&extdata, 8, session_id,
-							session_id_len);
+		ret = _gnutls_buffer_append_data_prefix8(&extdata, session_id,
+							 session_id_len);
 		if (ret < 0) {
 			gnutls_assert();
 			goto cleanup;
@@ -2316,9 +2316,8 @@ static int send_client_hello(gnutls_session_t session, int again)
 		/* Copy the DTLS cookie
 		 */
 		if (IS_DTLS(session)) {
-			ret = _gnutls_buffer_append_data_prefix(
-				&extdata, 8,
-				session->internals.dtls.dcookie.data,
+			ret = _gnutls_buffer_append_data_prefix8(
+				&extdata, session->internals.dtls.dcookie.data,
 				session->internals.dtls.dcookie.size);
 			if (ret < 0) {
 				gnutls_assert();
@@ -2473,8 +2472,8 @@ int _gnutls_send_server_hello(gnutls_session_t session, int again)
 			goto fail;
 		}
 
-		ret = _gnutls_buffer_append_data_prefix(
-			&buf, 8, session->security_parameters.session_id,
+		ret = _gnutls_buffer_append_data_prefix8(
+			&buf, session->security_parameters.session_id,
 			session_id_len);
 		if (ret < 0) {
 			gnutls_assert();

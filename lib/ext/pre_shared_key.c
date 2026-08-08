@@ -334,15 +334,15 @@ int gnutls_psk_format_imported_identity(const gnutls_datum_t *identity,
 	_gnutls_buffer_init(&buf);
 
 	/* external_identity */
-	ret = _gnutls_buffer_append_data_prefix(&buf, 16, identity->data,
-						identity->size);
+	ret = _gnutls_buffer_append_data_prefix16(&buf, identity->data,
+						  identity->size);
 	if (ret < 0) {
 		goto error;
 	}
 
 	/* context */
-	ret = _gnutls_buffer_append_data_prefix(&buf, 16, context->data,
-						context->size);
+	ret = _gnutls_buffer_append_data_prefix16(&buf, context->data,
+						  context->size);
 	if (ret < 0) {
 		goto error;
 	}
@@ -534,8 +534,8 @@ static int client_send_params(gnutls_session_t session, gnutls_buffer_t extdata,
 		/* Calculate obfuscated ticket age, in milliseconds, mod 2^32 */
 		ob_ticket_age = ticket_age + ticket->age_add;
 
-		if ((ret = _gnutls_buffer_append_data_prefix(
-			     extdata, 16, ticket->ticket.data,
+		if ((ret = _gnutls_buffer_append_data_prefix16(
+			     extdata, ticket->ticket.data,
 			     ticket->ticket.size)) < 0) {
 			gnutls_assert();
 			goto cleanup;
@@ -651,8 +651,8 @@ ignore_ticket:
 			goto cleanup;
 		}
 
-		if ((ret = _gnutls_buffer_append_data_prefix(
-			     extdata, 16, username.data, username.size)) < 0) {
+		if ((ret = _gnutls_buffer_append_data_prefix16(
+			     extdata, username.data, username.size)) < 0) {
 			gnutls_assert();
 			goto cleanup;
 		}
@@ -726,8 +726,8 @@ ignore_ticket:
 		next_idx++;
 
 		/* Add the binder */
-		ret = _gnutls_buffer_append_data_prefix(
-			extdata, 8, binder_value, prf_res->output_size);
+		ret = _gnutls_buffer_append_data_prefix8(extdata, binder_value,
+							 prf_res->output_size);
 		if (ret < 0) {
 			gnutls_assert();
 			goto cleanup;
@@ -768,8 +768,8 @@ ignore_ticket:
 		next_idx++;
 
 		/* Add the binder */
-		ret = _gnutls_buffer_append_data_prefix(
-			extdata, 8, binder_value, prf_psk->output_size);
+		ret = _gnutls_buffer_append_data_prefix8(extdata, binder_value,
+							 prf_psk->output_size);
 		if (ret < 0) {
 			gnutls_assert();
 			goto cleanup;

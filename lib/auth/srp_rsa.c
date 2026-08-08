@@ -146,8 +146,8 @@ static int gen_srp_cert_server_kx(gnutls_session_t session,
 		}
 	}
 
-	ret = _gnutls_buffer_append_data_prefix(data, 16, signature.data,
-						signature.size);
+	ret = _gnutls_buffer_append_data_prefix16(data, signature.data,
+						  signature.size);
 
 	if (ret < 0) {
 		gnutls_assert();

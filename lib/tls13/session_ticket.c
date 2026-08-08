@@ -330,17 +330,16 @@ int _gnutls13_send_session_ticket(gnutls_session_t session, unsigned nr,
 			}
 
 			/* append ticket_nonce */
-			ret = _gnutls_buffer_append_data_prefix(
-				&buf, 8, ticket.nonce, ticket.nonce_size);
+			ret = _gnutls_buffer_append_data_prefix8(
+				&buf, ticket.nonce, ticket.nonce_size);
 			if (ret < 0) {
 				gnutls_assert();
 				goto cleanup;
 			}
 
 			/* append ticket */
-			ret = _gnutls_buffer_append_data_prefix(
-				&buf, 16, ticket.ticket.data,
-				ticket.ticket.size);
+			ret = _gnutls_buffer_append_data_prefix16(
+				&buf, ticket.ticket.data, ticket.ticket.size);
 			if (ret < 0) {
 				gnutls_assert();
 				goto cleanup;

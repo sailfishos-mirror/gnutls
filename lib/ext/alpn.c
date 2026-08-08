@@ -171,8 +171,8 @@ static int _gnutls_alpn_send_params(gnutls_session_t session,
 
 		total_size += 2;
 
-		ret = _gnutls_buffer_append_data_prefix(
-			extdata, 8, priv->selected_protocol,
+		ret = _gnutls_buffer_append_data_prefix8(
+			extdata, priv->selected_protocol,
 			priv->selected_protocol_size);
 		if (ret < 0)
 			return gnutls_assert_val(ret);
@@ -190,8 +190,8 @@ static int _gnutls_alpn_send_params(gnutls_session_t session,
 		total_size += 2;
 
 		for (i = 0; i < priv->size; i++) {
-			ret = _gnutls_buffer_append_data_prefix(
-				extdata, 8, priv->protocols[i],
+			ret = _gnutls_buffer_append_data_prefix8(
+				extdata, priv->protocols[i],
 				priv->protocol_size[i]);
 			if (ret < 0)
 				return gnutls_assert_val(ret);

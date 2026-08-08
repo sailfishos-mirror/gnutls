@@ -229,7 +229,7 @@ static int append_status_request(void *_ctx, gnutls_buffer_st *buf)
 		goto cleanup;
 	}
 
-	ret = _gnutls_buffer_append_data_prefix(buf, 24, resp.data, resp.size);
+	ret = _gnutls_buffer_append_data_prefix24(buf, resp.data, resp.size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
@@ -296,8 +296,8 @@ int _gnutls13_send_certificate(gnutls_session_t session, unsigned again)
 		cert_pos_mark = buf.length;
 
 		if (session->security_parameters.entity == GNUTLS_CLIENT) {
-			ret = _gnutls_buffer_append_data_prefix(
-				&buf, 8,
+			ret = _gnutls_buffer_append_data_prefix8(
+				&buf,
 				session->internals.post_handshake_cr_context
 					.data,
 				session->internals.post_handshake_cr_context
@@ -324,8 +324,8 @@ int _gnutls13_send_certificate(gnutls_session_t session, unsigned again)
 		}
 
 		for (i = 0; i < (unsigned)apr_cert_list_length; i++) {
-			ret = _gnutls_buffer_append_data_prefix(
-				&buf, 24, apr_cert_list[i].cert.data,
+			ret = _gnutls_buffer_append_data_prefix24(
+				&buf, apr_cert_list[i].cert.data,
 				apr_cert_list[i].cert.size);
 			if (ret < 0) {
 				gnutls_assert();
@@ -643,7 +643,7 @@ static int compress_certificate(gnutls_buffer_st *buf, unsigned cert_pos_mark,
 		gnutls_assert();
 		goto cleanup;
 	}
-	ret = _gnutls_buffer_append_data_prefix(buf, 24, comp.data, comp.size);
+	ret = _gnutls_buffer_append_data_prefix24(buf, comp.data, comp.size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;

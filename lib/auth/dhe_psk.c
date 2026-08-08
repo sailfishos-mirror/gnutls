@@ -107,8 +107,8 @@ static int gen_ecdhe_psk_client_kx(gnutls_session_t session,
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
-	ret = _gnutls_buffer_append_data_prefix(data, 16, username.data,
-						username.size);
+	ret = _gnutls_buffer_append_data_prefix16(data, username.data,
+						  username.size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
@@ -150,8 +150,8 @@ static int gen_dhe_psk_client_kx(gnutls_session_t session,
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
-	ret = _gnutls_buffer_append_data_prefix(data, 16, username.data,
-						username.size);
+	ret = _gnutls_buffer_append_data_prefix16(data, username.data,
+						  username.size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
@@ -207,7 +207,7 @@ static int gen_dhe_psk_server_kx(gnutls_session_t session,
 		hint.size = strlen(cred->hint);
 	}
 
-	ret = _gnutls_buffer_append_data_prefix(data, 16, hint.data, hint.size);
+	ret = _gnutls_buffer_append_data_prefix16(data, hint.data, hint.size);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
@@ -244,7 +244,7 @@ static int gen_ecdhe_psk_server_kx(gnutls_session_t session,
 		hint.size = strlen(cred->hint);
 	}
 
-	ret = _gnutls_buffer_append_data_prefix(data, 16, hint.data, hint.size);
+	ret = _gnutls_buffer_append_data_prefix16(data, hint.data, hint.size);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 

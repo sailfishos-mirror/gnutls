@@ -58,8 +58,8 @@ int _gnutls13_send_hello_retry_request(gnutls_session_t session, unsigned again)
 			goto cleanup;
 		}
 
-		ret = _gnutls_buffer_append_data_prefix(
-			&buf, 8, session->security_parameters.session_id,
+		ret = _gnutls_buffer_append_data_prefix8(
+			&buf, session->security_parameters.session_id,
 			session->security_parameters.session_id_size);
 		if (ret < 0) {
 			gnutls_assert();
