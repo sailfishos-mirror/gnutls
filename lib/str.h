@@ -126,9 +126,6 @@ int _gnutls_buffer_append_mpi_prefix16(gnutls_buffer_st *buf, bigint_t mpi);
 int _gnutls_buffer_append_fixed_mpi(gnutls_buffer_st *buf, bigint_t mpi,
 				    unsigned size);
 
-int _gnutls_buffer_append_data_prefix(gnutls_buffer_st *buf, int pfx_size,
-				      const void *data, size_t data_size);
-
 int _gnutls_buffer_append_data_prefix32(gnutls_buffer_st *buf, const void *data,
 					size_t data_size);
 int _gnutls_buffer_append_data_prefix24(gnutls_buffer_st *buf, const void *data,

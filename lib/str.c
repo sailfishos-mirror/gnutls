@@ -801,23 +801,6 @@ int _gnutls_hostname_compare(const char *certname, size_t certnamesize,
 	}
 }
 
-static int buffer_append_prefix(gnutls_buffer_st *buf, int pfx_size,
-				size_t data_size)
-{
-	switch (pfx_size) {
-	case 32:
-		return _gnutls_buffer_append_uint32(buf, data_size);
-	case 24:
-		return _gnutls_buffer_append_uint24(buf, data_size);
-	case 16:
-		return _gnutls_buffer_append_uint16(buf, data_size);
-	case 8:
-		return _gnutls_buffer_append_uint8(buf, data_size);
-	default:
-		return gnutls_assert_val(GNUTLS_E_INVALID_REQUEST);
-	}
-}
-
 #define DEFINE_POP_DATUM_PREFIX(bits, type)                               \
 	int _gnutls_buffer_pop_datum_prefix##bits(gnutls_buffer_st *buf,  \
 						  gnutls_datum_t *data)   \
@@ -851,24 +834,6 @@ DEFINE_POP_DATUM_PREFIX(32, uint32_t);
 DEFINE_POP_DATUM_PREFIX(24, uint32_t);
 DEFINE_POP_DATUM_PREFIX(16, uint16_t);
 DEFINE_POP_DATUM_PREFIX(8, uint8_t);
-
-int _gnutls_buffer_append_data_prefix(gnutls_buffer_st *buf, int pfx_size,
-				      const void *data, size_t data_size)
-{
-	int ret;
-
-	ret = buffer_append_prefix(buf, pfx_size, data_size);
-	if (ret < 0)
-		return gnutls_assert_val(ret);
-
-	if (data_size > 0) {
-		ret = _gnutls_buffer_append_data(buf, data, data_size);
-		if (ret < 0)
-			return gnutls_assert_val(ret);
-	}
-
-	return 0;
-}
 
 #define DEFINE_APPEND_DATA_PREFIX(bits)                                    \
 	int _gnutls_buffer_append_data_prefix##bits(                       \
