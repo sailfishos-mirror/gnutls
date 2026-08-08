@@ -204,7 +204,6 @@ int _gnutls_hostname_compare(const char *certname, size_t certnamesize,
 			     const char *hostname, unsigned vflags);
 
 #define MAX_CN 256
-#define MAX_DN 1024
 
 #define BUFFER_APPEND(b, x, s)                             \
 	{                                                  \
