@@ -140,8 +140,8 @@ int _gnutls_gen_dh_common_client_kx_int(gnutls_session_t session,
 		_gnutls_mpi_get_nbits(
 			session->key.proto.tls12.dh.params.params[DH_X]));
 
-	ret = _gnutls_buffer_append_mpi(
-		data, 16, session->key.proto.tls12.dh.params.params[DH_Y], 0);
+	ret = _gnutls_buffer_append_mpi_prefix16(
+		data, session->key.proto.tls12.dh.params.params[DH_Y]);
 	if (ret < 0) {
 		gnutls_assert();
 		goto error;
@@ -384,22 +384,22 @@ int _gnutls_dh_common_print_server_kx(gnutls_session_t session,
 		_gnutls_mpi_get_nbits(
 			session->key.proto.tls12.dh.params.params[DH_X]));
 
-	ret = _gnutls_buffer_append_mpi(
-		data, 16, session->key.proto.tls12.dh.params.params[DH_P], 0);
+	ret = _gnutls_buffer_append_mpi_prefix16(
+		data, session->key.proto.tls12.dh.params.params[DH_P]);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
 	}
 
-	ret = _gnutls_buffer_append_mpi(
-		data, 16, session->key.proto.tls12.dh.params.params[DH_G], 0);
+	ret = _gnutls_buffer_append_mpi_prefix16(
+		data, session->key.proto.tls12.dh.params.params[DH_G]);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
 	}
 
-	ret = _gnutls_buffer_append_mpi(
-		data, 16, session->key.proto.tls12.dh.params.params[DH_Y], 0);
+	ret = _gnutls_buffer_append_mpi_prefix16(
+		data, session->key.proto.tls12.dh.params.params[DH_Y]);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;

@@ -895,23 +895,16 @@ DEFINE_APPEND_DATA_PREFIX(24);
 DEFINE_APPEND_DATA_PREFIX(16);
 DEFINE_APPEND_DATA_PREFIX(8);
 
-int _gnutls_buffer_append_mpi(gnutls_buffer_st *buf, int pfx_size, bigint_t mpi,
-			      int lz)
+int _gnutls_buffer_append_mpi_prefix16(gnutls_buffer_st *buf, bigint_t mpi)
 {
 	gnutls_datum_t dd;
 	int ret;
 
-	if (lz)
-		ret = _gnutls_mpi_dprint_lz(mpi, &dd);
-	else
-		ret = _gnutls_mpi_dprint(mpi, &dd);
-
+	ret = _gnutls_mpi_dprint(mpi, &dd);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
-	ret = _gnutls_buffer_append_data_prefix(buf, pfx_size, dd.data,
-						dd.size);
-
+	ret = _gnutls_buffer_append_data_prefix16(buf, dd.data, dd.size);
 	_gnutls_free_datum(&dd);
 
 	return ret;

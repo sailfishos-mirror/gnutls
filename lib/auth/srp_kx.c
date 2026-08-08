@@ -216,7 +216,7 @@ int _gnutls_gen_srp_server_kx(gnutls_session_t session, gnutls_buffer_st *data)
 	/* Copy the B value
 	 */
 
-	ret = _gnutls_buffer_append_mpi(data, 16, B, 0);
+	ret = _gnutls_buffer_append_mpi_prefix16(data, B);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
@@ -317,7 +317,7 @@ int _gnutls_gen_srp_client_kx(gnutls_session_t session, gnutls_buffer_st *data)
 		return ret;
 	}
 
-	ret = _gnutls_buffer_append_mpi(data, 16, A, 0);
+	ret = _gnutls_buffer_append_mpi_prefix16(data, A);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
