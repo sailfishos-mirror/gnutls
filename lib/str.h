@@ -129,6 +129,16 @@ int _gnutls_buffer_append_fixed_mpi(gnutls_buffer_st *buf, bigint_t mpi,
 
 int _gnutls_buffer_append_data_prefix(gnutls_buffer_st *buf, int pfx_size,
 				      const void *data, size_t data_size);
+
+int _gnutls_buffer_append_data_prefix32(gnutls_buffer_st *buf, const void *data,
+					size_t data_size);
+int _gnutls_buffer_append_data_prefix24(gnutls_buffer_st *buf, const void *data,
+					size_t data_size);
+int _gnutls_buffer_append_data_prefix16(gnutls_buffer_st *buf, const void *data,
+					size_t data_size);
+int _gnutls_buffer_append_data_prefix8(gnutls_buffer_st *buf, const void *data,
+				       size_t data_size);
+
 int _gnutls_buffer_pop_data(gnutls_buffer_st *, void *, size_t size);
 void _gnutls_buffer_pop_datum(gnutls_buffer_st *, gnutls_datum_t *,
 			      size_t max_size);

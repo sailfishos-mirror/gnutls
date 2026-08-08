@@ -870,6 +870,31 @@ int _gnutls_buffer_append_data_prefix(gnutls_buffer_st *buf, int pfx_size,
 	return 0;
 }
 
+#define DEFINE_APPEND_DATA_PREFIX(bits)                                    \
+	int _gnutls_buffer_append_data_prefix##bits(                       \
+		gnutls_buffer_st *buf, const void *data, size_t data_size) \
+	{                                                                  \
+		int ret;                                                   \
+                                                                           \
+		ret = _gnutls_buffer_append_uint##bits(buf, data_size);    \
+		if (ret < 0)                                               \
+			return gnutls_assert_val(ret);                     \
+                                                                           \
+		if (data_size > 0) {                                       \
+			ret = _gnutls_buffer_append_data(buf, data,        \
+							 data_size);       \
+			if (ret < 0)                                       \
+				return gnutls_assert_val(ret);             \
+		}                                                          \
+                                                                           \
+		return 0;                                                  \
+	}
+
+DEFINE_APPEND_DATA_PREFIX(32);
+DEFINE_APPEND_DATA_PREFIX(24);
+DEFINE_APPEND_DATA_PREFIX(16);
+DEFINE_APPEND_DATA_PREFIX(8);
+
 int _gnutls_buffer_append_mpi(gnutls_buffer_st *buf, int pfx_size, bigint_t mpi,
 			      int lz)
 {
