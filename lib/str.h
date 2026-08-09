@@ -41,10 +41,6 @@
 #define N_(String) String
 #endif
 
-int gnutls_utf8_password_normalize(const uint8_t *password,
-				   unsigned password_len, gnutls_datum_t *out,
-				   unsigned flags);
-
 #define _gnutls_utf8_password_normalize(p, plen, out, ignore_errs) \
 	gnutls_utf8_password_normalize(                            \
 		(unsigned char *)p, plen, out,                     \
