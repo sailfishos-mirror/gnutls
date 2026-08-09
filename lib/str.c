@@ -804,24 +804,18 @@ int _gnutls_hostname_compare(const char *certname, size_t certnamesize,
 int _gnutls_buffer_append_prefix(gnutls_buffer_st *buf, int pfx_size,
 				 size_t data_size)
 {
-	uint8_t ss[4];
-
-	if (pfx_size == 32) {
-		_gnutls_write_uint32(data_size, ss);
-		pfx_size = 4;
-	} else if (pfx_size == 24) {
-		_gnutls_write_uint24(data_size, ss);
-		pfx_size = 3;
-	} else if (pfx_size == 16) {
-		_gnutls_write_uint16(data_size, ss);
-		pfx_size = 2;
-	} else if (pfx_size == 8) {
-		ss[0] = data_size;
-		pfx_size = 1;
-	} else
+	switch (pfx_size) {
+	case 32:
+		return _gnutls_buffer_append_uint32(buf, data_size);
+	case 24:
+		return _gnutls_buffer_append_uint24(buf, data_size);
+	case 16:
+		return _gnutls_buffer_append_uint16(buf, data_size);
+	case 8:
+		return _gnutls_buffer_append_uint8(buf, data_size);
+	default:
 		return gnutls_assert_val(GNUTLS_E_INVALID_REQUEST);
-
-	return _gnutls_buffer_append_data(buf, ss, pfx_size);
+	}
 }
 
 #define DEFINE_POP_DATUM_PREFIX(bits, type)                               \
