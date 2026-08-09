@@ -316,6 +316,25 @@ int _gnutls_buffer_pop_data(gnutls_buffer_st *str, void *data, size_t req_size)
 	return 0;
 }
 
+#define DEFINE_POP_UINT(bits, type, bytes)                                   \
+	int _gnutls_buffer_pop_uint##bits(gnutls_buffer_st *buf, type *data) \
+	{                                                                    \
+		if (buf->length < bytes)                                     \
+			return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);    \
+                                                                             \
+		*data = _gnutls_read_uint##bits(buf->data);                  \
+                                                                             \
+		buf->data += bytes;                                          \
+		buf->length -= bytes;                                        \
+                                                                             \
+		return 0;                                                    \
+	}
+
+DEFINE_POP_UINT(32, uint32_t, 4);
+DEFINE_POP_UINT(24, uint32_t, 3);
+DEFINE_POP_UINT(16, uint16_t, 2);
+DEFINE_POP_UINT(8, uint8_t, 1);
+
 int _gnutls_buffer_append_printf(gnutls_buffer_st *dest, const char *fmt, ...)
 {
 	va_list args;
