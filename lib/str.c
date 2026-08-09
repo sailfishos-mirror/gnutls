@@ -801,64 +801,6 @@ int _gnutls_buffer_append_prefix(gnutls_buffer_st *buf, int pfx_size,
 	return _gnutls_buffer_append_data(buf, ss, pfx_size);
 }
 
-int _gnutls_buffer_pop_prefix8(gnutls_buffer_st *buf, uint8_t *data, int check)
-{
-	if (_gnutls_buffer_pop_uint8(buf, data)) {
-		return GNUTLS_E_PARSING_ERROR;
-	}
-
-	if (check && *data > buf->length) {
-		return GNUTLS_E_PARSING_ERROR;
-	}
-
-	return 0;
-}
-
-int _gnutls_buffer_pop_prefix16(gnutls_buffer_st *buf, size_t *data_size,
-				int check)
-{
-	if (_gnutls_buffer_pop_uint16(buf, (uint16_t *)data_size)) {
-		return GNUTLS_E_PARSING_ERROR;
-	}
-
-	if (check && *data_size > buf->length) {
-		return GNUTLS_E_PARSING_ERROR;
-	}
-
-	return 0;
-}
-
-int _gnutls_buffer_pop_prefix24(gnutls_buffer_st *buf, size_t *data_size,
-				int check)
-{
-	if (_gnutls_buffer_pop_uint24(buf, (uint32_t *)data_size)) {
-		return GNUTLS_E_PARSING_ERROR;
-	}
-
-	if (check && *data_size > buf->length) {
-		return GNUTLS_E_PARSING_ERROR;
-	}
-
-	return 0;
-}
-
-/* Reads an uint32 number from the buffer. If check is non zero it will also check whether
- * the number read, is less than the data in the buffer
- */
-int _gnutls_buffer_pop_prefix32(gnutls_buffer_st *buf, size_t *data_size,
-				int check)
-{
-	if (_gnutls_buffer_pop_uint32(buf, (uint32_t *)data_size)) {
-		return GNUTLS_E_PARSING_ERROR;
-	}
-
-	if (check && *data_size > buf->length) {
-		return GNUTLS_E_PARSING_ERROR;
-	}
-
-	return 0;
-}
-
 int _gnutls_buffer_pop_datum_prefix32(gnutls_buffer_st *buf,
 				      gnutls_datum_t *data)
 {
