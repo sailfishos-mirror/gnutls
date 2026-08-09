@@ -149,19 +149,12 @@ int _gnutls_buffer_append_uint24(gnutls_buffer_st *buf, size_t data);
 int _gnutls_buffer_append_uint16(gnutls_buffer_st *buf, size_t data);
 int _gnutls_buffer_append_uint8(gnutls_buffer_st *buf, size_t data);
 
-/* 32-bit prefix */
 int _gnutls_buffer_pop_datum_prefix32(gnutls_buffer_st *buf,
 				      gnutls_datum_t *data);
-
-/* 24-bit prefix */
 int _gnutls_buffer_pop_datum_prefix24(gnutls_buffer_st *buf,
 				      gnutls_datum_t *data);
-
-/* 16-bit prefix */
 int _gnutls_buffer_pop_datum_prefix16(gnutls_buffer_st *buf,
 				      gnutls_datum_t *data);
-
-/* 8-bit prefix */
 int _gnutls_buffer_pop_datum_prefix8(gnutls_buffer_st *buf,
 				     gnutls_datum_t *data);
 
@@ -222,7 +215,6 @@ int _gnutls_hostname_compare(const char *certname, size_t certnamesize,
 		}                                          \
 	}
 
-/* append data prefixed with 4-bytes length field*/
 #define BUFFER_APPEND_PFX4(b, x, s)                                 \
 	{                                                           \
 		ret = _gnutls_buffer_append_data_prefix32(b, x, s); \
