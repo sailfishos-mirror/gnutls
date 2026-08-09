@@ -801,105 +801,39 @@ int _gnutls_buffer_append_prefix(gnutls_buffer_st *buf, int pfx_size,
 	return _gnutls_buffer_append_data(buf, ss, pfx_size);
 }
 
-int _gnutls_buffer_pop_datum_prefix32(gnutls_buffer_st *buf,
-				      gnutls_datum_t *data)
-{
-	uint32_t size;
-	int ret;
-
-	ret = _gnutls_buffer_pop_uint32(buf, &size);
-	if (ret < 0)
-		return gnutls_assert_val(ret);
-
-	if (size > buf->length)
-		return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
-
-	if (size > 0) {
-		_gnutls_buffer_pop_datum(buf, data, size);
-		if (osize != data->size)
-			return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
-	} else {
-		data->size = 0;
-		data->data = NULL;
+#define DEFINE_POP_DATUM_PREFIX(bits, type)                               \
+	int _gnutls_buffer_pop_datum_prefix##bits(gnutls_buffer_st *buf,  \
+						  gnutls_datum_t *data)   \
+	{                                                                 \
+		type size;                                                \
+		int ret;                                                  \
+                                                                          \
+		ret = _gnutls_buffer_pop_uint##bits(buf, &size);          \
+		if (ret < 0) {                                            \
+			gnutls_assert();                                  \
+			return ret;                                       \
+		}                                                         \
+                                                                          \
+		if (size > buf->length)                                   \
+			return gnutls_assert_val(GNUTLS_E_PARSING_ERROR); \
+                                                                          \
+		if (size > 0) {                                           \
+			_gnutls_buffer_pop_datum(buf, data, size);        \
+			if (size != data->size)                           \
+				return gnutls_assert_val(                 \
+					GNUTLS_E_PARSING_ERROR);          \
+		} else {                                                  \
+			data->size = 0;                                   \
+			data->data = NULL;                                \
+		}                                                         \
+                                                                          \
+		return 0;                                                 \
 	}
 
-	return 0;
-}
-
-int _gnutls_buffer_pop_datum_prefix24(gnutls_buffer_st *buf,
-				      gnutls_datum_t *data)
-{
-	uint32_t size;
-	int ret;
-
-	ret = _gnutls_buffer_pop_uint24(buf, &size);
-	if (ret < 0)
-		return gnutls_assert_val(ret);
-
-	if (size > buf->length)
-		return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
-
-	if (size > 0) {
-		_gnutls_buffer_pop_datum(buf, data, size);
-		if (size != data->size)
-			return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
-	} else {
-		data->size = 0;
-		data->data = NULL;
-	}
-
-	return 0;
-}
-
-int _gnutls_buffer_pop_datum_prefix16(gnutls_buffer_st *buf,
-				      gnutls_datum_t *data)
-{
-	uint16_t size;
-	int ret;
-
-	ret = _gnutls_buffer_pop_uint16(buf, &size);
-	if (ret < 0)
-		return gnutls_assert_val(ret);
-
-	if (size > buf->length)
-		return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
-
-	if (size > 0) {
-		_gnutls_buffer_pop_datum(buf, data, size);
-		if (size != data->size)
-			return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
-	} else {
-		data->size = 0;
-		data->data = NULL;
-	}
-
-	return 0;
-}
-
-int _gnutls_buffer_pop_datum_prefix8(gnutls_buffer_st *buf,
-				     gnutls_datum_t *data)
-{
-	uint8_t size;
-	int ret;
-
-	ret = _gnutls_buffer_pop_uint8(buf, &size);
-	if (ret < 0)
-		return gnutls_assert_val(ret);
-
-	if (size > buf->length)
-		return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
-
-	if (size > 0) {
-		_gnutls_buffer_pop_datum(buf, data, size);
-		if (size != data->size)
-			return gnutls_assert_val(GNUTLS_E_PARSING_ERROR);
-	} else {
-		data->size = 0;
-		data->data = NULL;
-	}
-
-	return 0;
-}
+DEFINE_POP_DATUM_PREFIX(32, uint32_t);
+DEFINE_POP_DATUM_PREFIX(24, uint32_t);
+DEFINE_POP_DATUM_PREFIX(16, uint16_t);
+DEFINE_POP_DATUM_PREFIX(8, uint8_t);
 
 int _gnutls_buffer_append_data_prefix(gnutls_buffer_st *buf, int pfx_size,
 				      const void *data, size_t data_size)
