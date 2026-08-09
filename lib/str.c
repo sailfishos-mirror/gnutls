@@ -803,20 +803,13 @@ int _gnutls_buffer_append_prefix(gnutls_buffer_st *buf, int pfx_size,
 
 int _gnutls_buffer_pop_prefix8(gnutls_buffer_st *buf, uint8_t *data, int check)
 {
-	if (buf->length < 1) {
-		gnutls_assert();
+	if (_gnutls_buffer_pop_uint8(buf, data)) {
 		return GNUTLS_E_PARSING_ERROR;
 	}
 
-	*data = buf->data[0];
-
-	if (check && *data > buf->length - 1) {
-		gnutls_assert();
+	if (check && *data > buf->length) {
 		return GNUTLS_E_PARSING_ERROR;
 	}
-
-	buf->data++;
-	buf->length--;
 
 	return 0;
 }
@@ -824,23 +817,13 @@ int _gnutls_buffer_pop_prefix8(gnutls_buffer_st *buf, uint8_t *data, int check)
 int _gnutls_buffer_pop_prefix16(gnutls_buffer_st *buf, size_t *data_size,
 				int check)
 {
-	size_t size;
-
-	if (buf->length < 2) {
-		gnutls_assert();
+	if (_gnutls_buffer_pop_uint16(buf, (uint16_t *)data_size)) {
 		return GNUTLS_E_PARSING_ERROR;
 	}
 
-	size = _gnutls_read_uint16(buf->data);
-	if (check && size > buf->length - 2) {
-		gnutls_assert();
+	if (check && *data_size > buf->length) {
 		return GNUTLS_E_PARSING_ERROR;
 	}
-
-	buf->data += 2;
-	buf->length -= 2;
-
-	*data_size = size;
 
 	return 0;
 }
@@ -848,23 +831,13 @@ int _gnutls_buffer_pop_prefix16(gnutls_buffer_st *buf, size_t *data_size,
 int _gnutls_buffer_pop_prefix24(gnutls_buffer_st *buf, size_t *data_size,
 				int check)
 {
-	size_t size;
-
-	if (buf->length < 3) {
-		gnutls_assert();
+	if (_gnutls_buffer_pop_uint24(buf, (uint32_t *)data_size)) {
 		return GNUTLS_E_PARSING_ERROR;
 	}
 
-	size = _gnutls_read_uint24(buf->data);
-	if (check && size > buf->length - 3) {
-		gnutls_assert();
+	if (check && *data_size > buf->length) {
 		return GNUTLS_E_PARSING_ERROR;
 	}
-
-	buf->data += 3;
-	buf->length -= 3;
-
-	*data_size = size;
 
 	return 0;
 }
@@ -875,23 +848,13 @@ int _gnutls_buffer_pop_prefix24(gnutls_buffer_st *buf, size_t *data_size,
 int _gnutls_buffer_pop_prefix32(gnutls_buffer_st *buf, size_t *data_size,
 				int check)
 {
-	size_t size;
-
-	if (buf->length < 4) {
-		gnutls_assert();
+	if (_gnutls_buffer_pop_uint32(buf, (uint32_t *)data_size)) {
 		return GNUTLS_E_PARSING_ERROR;
 	}
 
-	size = _gnutls_read_uint32(buf->data);
-	if (check && size > buf->length - 4) {
-		gnutls_assert();
+	if (check && *data_size > buf->length) {
 		return GNUTLS_E_PARSING_ERROR;
 	}
-
-	buf->data += 4;
-	buf->length -= 4;
-
-	*data_size = size;
 
 	return 0;
 }
