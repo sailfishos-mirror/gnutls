@@ -1419,13 +1419,15 @@ const char *host_from_url(const char *url, unsigned int *port,
 			  const char **path)
 {
 	static char hostname[512];
-	char *p;
+	const char *scheme;
 
 	*port = 0;
 	*path = "";
 
-	if ((p = strstr(url, "http://")) != NULL) {
-		snprintf(hostname, sizeof(hostname), "%s", p + 7);
+	if ((scheme = strstr(url, "http://")) != NULL) {
+		char *p;
+
+		snprintf(hostname, sizeof(hostname), "%s", scheme + 7);
 		p = strchr(hostname, '/');
 		if (p != NULL) {
 			*p = 0;
