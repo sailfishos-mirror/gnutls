@@ -3738,7 +3738,7 @@ void smime_to_pkcs7(void)
 				"cannot find RFC 2822 header/body separator");
 			app_exit(1);
 		}
-	} while (!streq(lineptr, "\r\n") != 0 && !streq(lineptr, "\n"));
+	} while (!streq(lineptr, "\r\n") && !streq(lineptr, "\n"));
 
 	/* skip newlines */
 	do {
