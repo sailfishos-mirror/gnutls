@@ -77,7 +77,7 @@ int _gnutls_alt_name_assign_virt_type(struct name_st *name, unsigned type,
 	gnutls_datum_t xmpp = { NULL, 0 };
 	int ret;
 
-	if (type < 1000) {
+	if (type <= GNUTLS_SAN_MAX) {
 		name->type = type;
 		ret = _gnutls_alt_name_process(&name->san, type, san, raw);
 		if (ret < 0)

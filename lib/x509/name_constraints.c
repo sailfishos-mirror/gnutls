@@ -50,23 +50,20 @@
 
 #define MAX_NC_CHECKS (1 << 20)
 
-#define SAN_MIN GNUTLS_SAN_DNSNAME
-
-/* For historical reasons, these are not in the range
- * SAN_MIN..GNUTLS_SAN_MAX. They should probably deserve a separate
- * enum type.
- */
-#define SAN_OTHERNAME_MIN GNUTLS_SAN_OTHERNAME_XMPP
-#define SAN_OTHERNAME_MAX GNUTLS_SAN_OTHERNAME_MSUSERPRINCIPAL
-
 typedef unsigned long san_flags_t;
 
-#define SAN_BIT(san)                                 \
-	((san) <= GNUTLS_SAN_MAX ? (san) - SAN_MIN : \
-				   GNUTLS_SAN_MAX + (san) - SAN_OTHERNAME_MIN)
+/* Compress sparse SAN type range GNUTLS_SAN_MIN..GNUTLS_SAN_OTHERNAME_MAX
+ * (with a hole in between GNUTLS_SAN_MAX and GNUTLS_SAN_OTHERNAME_MIN)
+ * into a contiguous bit indices range.
+ */
+#define SAN_BIT(san)                      \
+	((san) <= GNUTLS_SAN_MAX ?        \
+		 (san) - GNUTLS_SAN_MIN : \
+		 GNUTLS_SAN_MAX + (san) - GNUTLS_SAN_OTHERNAME_MIN)
 
-static_assert(SAN_BIT(SAN_OTHERNAME_MIN) > SAN_BIT(GNUTLS_SAN_MAX));
-static_assert(SAN_BIT(SAN_OTHERNAME_MAX) < CHAR_BIT * sizeof(san_flags_t));
+static_assert(SAN_BIT(GNUTLS_SAN_OTHERNAME_MIN) > SAN_BIT(GNUTLS_SAN_MAX));
+static_assert(SAN_BIT(GNUTLS_SAN_OTHERNAME_MAX) <
+	      CHAR_BIT * sizeof(san_flags_t));
 
 #define SAN_FLAG(san) (1UL << SAN_BIT(san))
 
@@ -949,7 +946,7 @@ out:
 
 	/* finishing touch: add universal excluded constraints for types where
 	 * both lists had constraints, but all intersections ended up empty */
-	for (gnutls_x509_subject_alt_name_t type = SAN_MIN;
+	for (gnutls_x509_subject_alt_name_t type = GNUTLS_SAN_MIN;
 	     type <= GNUTLS_SAN_MAX; type++) {
 		if (!(universal_exclude_needed & SAN_FLAG(type)))
 			continue;
