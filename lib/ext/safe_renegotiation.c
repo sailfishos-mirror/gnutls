@@ -366,7 +366,7 @@ static int _gnutls_sr_send_params(gnutls_session_t session,
 		if (session->security_parameters.entity == GNUTLS_SERVER)
 			len += priv->server_verify_data_len;
 
-		ret = _gnutls_buffer_append_prefix(extdata, 8, len);
+		ret = _gnutls_buffer_append_uint8(extdata, len);
 		if (ret < 0)
 			return gnutls_assert_val(ret);
 

@@ -302,8 +302,8 @@ int _gnutls_gen_rsa_client_kx(gnutls_session_t session, gnutls_buffer_st *data)
 	} else
 #endif
 	{ /* TLS 1.x */
-		ret = _gnutls_buffer_append_data_prefix(data, 16, sdata.data,
-							sdata.size);
+		ret = _gnutls_buffer_append_data_prefix16(data, sdata.data,
+							  sdata.size);
 
 		_gnutls_free_datum(&sdata);
 		return ret;

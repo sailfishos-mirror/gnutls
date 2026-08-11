@@ -635,13 +635,13 @@ static int gen_x509_crt(gnutls_session_t session, gnutls_buffer_st *data)
 	 * the one produced here )
 	 */
 
-	ret = _gnutls_buffer_append_prefix(data, 24, ret - 3);
+	ret = _gnutls_buffer_append_uint24(data, ret - 3);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
 	for (i = 0; i < apr_cert_list_length; i++) {
-		ret = _gnutls_buffer_append_data_prefix(
-			data, 24, apr_cert_list[i].cert.data,
+		ret = _gnutls_buffer_append_data_prefix24(
+			data, apr_cert_list[i].cert.data,
 			apr_cert_list[i].cert.size);
 		if (ret < 0)
 			return gnutls_assert_val(ret);
@@ -682,10 +682,10 @@ int _gnutls_gen_rawpk_crt(gnutls_session_t session, gnutls_buffer_st *data)
 	 * certificate = length bytes.
 	 */
 	if (apr_cert_list_length == 0) {
-		ret = _gnutls_buffer_append_prefix(data, 24, 0);
+		ret = _gnutls_buffer_append_uint24(data, 0);
 	} else {
-		ret = _gnutls_buffer_append_data_prefix(
-			data, 24, apr_cert_list[0].cert.data,
+		ret = _gnutls_buffer_append_data_prefix24(
+			data, apr_cert_list[0].cert.data,
 			apr_cert_list[0].cert.size);
 	}
 
@@ -1181,8 +1181,8 @@ int _gnutls_gen_cert_client_crt_vrfy(gnutls_session_t session,
 		}
 	}
 
-	ret = _gnutls_buffer_append_data_prefix(data, 16, signature.data,
-						signature.size);
+	ret = _gnutls_buffer_append_data_prefix16(data, signature.data,
+						  signature.size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
@@ -1377,13 +1377,13 @@ int _gnutls_gen_cert_server_cert_req(gnutls_session_t session,
 
 	if (session->security_parameters.client_ctype == GNUTLS_CRT_X509 &&
 	    session->internals.ignore_rdn_sequence == 0) {
-		ret = _gnutls_buffer_append_data_prefix(
-			data, 16, cred->tlist->x509_rdn_sequence.data,
+		ret = _gnutls_buffer_append_data_prefix16(
+			data, cred->tlist->x509_rdn_sequence.data,
 			cred->tlist->x509_rdn_sequence.size);
 		if (ret < 0)
 			return gnutls_assert_val(ret);
 	} else {
-		ret = _gnutls_buffer_append_prefix(data, 16, 0);
+		ret = _gnutls_buffer_append_uint16(data, 0);
 		if (ret < 0)
 			return gnutls_assert_val(ret);
 	}
@@ -1805,8 +1805,8 @@ int _gnutls_gen_dhe_signature(gnutls_session_t session, gnutls_buffer_st *data,
 		}
 	}
 
-	ret = _gnutls_buffer_append_data_prefix(data, 16, signature.data,
-						signature.size);
+	ret = _gnutls_buffer_append_data_prefix16(data, signature.data,
+						  signature.size);
 	if (ret < 0) {
 		gnutls_assert();
 	}

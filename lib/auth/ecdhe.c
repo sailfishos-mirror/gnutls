@@ -269,8 +269,8 @@ int _gnutls_gen_ecdh_common_client_kx_int(gnutls_session_t session,
 			goto cleanup;
 		}
 
-		ret = _gnutls_buffer_append_data_prefix(data, 8, out.data,
-							out.size);
+		ret = _gnutls_buffer_append_data_prefix8(data, out.data,
+							 out.size);
 
 		_gnutls_free_datum(&out);
 
@@ -279,9 +279,8 @@ int _gnutls_gen_ecdh_common_client_kx_int(gnutls_session_t session,
 			goto cleanup;
 		}
 	} else if (pk == GNUTLS_PK_ECDH_X25519 || pk == GNUTLS_PK_ECDH_X448) {
-		ret = _gnutls_buffer_append_data_prefix(
-			data, 8,
-			session->key.proto.tls12.ecdh.params.raw_pub.data,
+		ret = _gnutls_buffer_append_data_prefix8(
+			data, session->key.proto.tls12.ecdh.params.raw_pub.data,
 			session->key.proto.tls12.ecdh.params.raw_pub.size);
 		if (ret < 0) {
 			gnutls_assert();
@@ -426,7 +425,7 @@ int _gnutls_ecdh_common_print_server_kx(gnutls_session_t session,
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
-	ret = _gnutls_buffer_append_prefix(data, 16, group->tls_id);
+	ret = _gnutls_buffer_append_uint16(data, group->tls_id);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
@@ -448,8 +447,8 @@ int _gnutls_ecdh_common_print_server_kx(gnutls_session_t session,
 		if (ret < 0)
 			return gnutls_assert_val(ret);
 
-		ret = _gnutls_buffer_append_data_prefix(data, 8, out.data,
-							out.size);
+		ret = _gnutls_buffer_append_data_prefix8(data, out.data,
+							 out.size);
 
 		_gnutls_free_datum(&out);
 
@@ -458,9 +457,8 @@ int _gnutls_ecdh_common_print_server_kx(gnutls_session_t session,
 
 	} else if (group->pk == GNUTLS_PK_ECDH_X25519 ||
 		   group->pk == GNUTLS_PK_ECDH_X448) {
-		ret = _gnutls_buffer_append_data_prefix(
-			data, 8,
-			session->key.proto.tls12.ecdh.params.raw_pub.data,
+		ret = _gnutls_buffer_append_data_prefix8(
+			data, session->key.proto.tls12.ecdh.params.raw_pub.data,
 			session->key.proto.tls12.ecdh.params.raw_pub.size);
 		if (ret < 0)
 			return gnutls_assert_val(ret);

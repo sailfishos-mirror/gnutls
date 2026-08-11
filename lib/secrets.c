@@ -140,20 +140,20 @@ int _tls13_expand_secret2(const mac_entry_st *prf, const char *label,
 
 	_gnutls_buffer_init(&str);
 
-	ret = _gnutls_buffer_append_prefix(&str, 16, out_size);
+	ret = _gnutls_buffer_append_uint16(&str, out_size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
 	}
 
 	memcpy(&tmp[6], label, label_size);
-	ret = _gnutls_buffer_append_data_prefix(&str, 8, tmp, label_size + 6);
+	ret = _gnutls_buffer_append_data_prefix8(&str, tmp, label_size + 6);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;
 	}
 
-	ret = _gnutls_buffer_append_data_prefix(&str, 8, msg, msg_size);
+	ret = _gnutls_buffer_append_data_prefix8(&str, msg, msg_size);
 	if (ret < 0) {
 		gnutls_assert();
 		goto cleanup;

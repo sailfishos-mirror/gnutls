@@ -39,7 +39,7 @@ inline static int _gnutls_extv_append_init(gnutls_buffer_st *buf)
 
 	pos = buf->length;
 
-	ret = _gnutls_buffer_append_prefix(buf, 16, 0);
+	ret = _gnutls_buffer_append_uint16(buf, 0);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 

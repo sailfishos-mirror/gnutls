@@ -3682,7 +3682,7 @@ static int _gnutls_export_ct_v1_sct(gnutls_buffer_st *buf,
 
 	/* Length field; filled later */
 	length_offset = buf->length;
-	if ((ret = _gnutls_buffer_append_prefix(buf, 16, 0)) < 0)
+	if ((ret = _gnutls_buffer_append_uint16(buf, 0)) < 0)
 		return gnutls_assert_val(ret);
 
 	/* Version */
@@ -3714,8 +3714,8 @@ static int _gnutls_export_ct_v1_sct(gnutls_buffer_st *buf,
 		return gnutls_assert_val(ret);
 
 	/* Signature */
-	if ((ret = _gnutls_buffer_append_data_prefix(
-		     buf, 16, sct->signature.data, sct->signature.size)) < 0)
+	if ((ret = _gnutls_buffer_append_data_prefix16(
+		     buf, sct->signature.data, sct->signature.size)) < 0)
 		return gnutls_assert_val(ret);
 
 	/* Fill the length */
@@ -3826,7 +3826,7 @@ int gnutls_x509_ext_ct_export_scts(const gnutls_x509_ct_scts_t scts,
 
 	/* Start with the length of the whole string; the actual
 	 * length is filled later */
-	_gnutls_buffer_append_prefix(&buf, 16, 0);
+	_gnutls_buffer_append_uint16(&buf, 0);
 
 	for (size_t i = 0; i < scts->size; i++) {
 		if ((ret = _gnutls_export_ct_v1_sct(&buf, &scts->scts[i])) <

@@ -108,8 +108,8 @@ static int cookie_send_params(gnutls_session_t session,
 		if (ret < 0)
 			return 0;
 
-		ret = _gnutls_buffer_append_data_prefix(extdata, 16, tmp.data,
-							tmp.size);
+		ret = _gnutls_buffer_append_data_prefix16(extdata, tmp.data,
+							  tmp.size);
 		if (ret < 0)
 			return gnutls_assert_val(ret);
 
