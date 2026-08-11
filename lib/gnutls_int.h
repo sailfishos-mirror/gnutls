@@ -233,14 +233,14 @@ typedef enum record_send_state_t {
 
 #define MAX_PK_PARAM_SIZE 2048
 
-/* Defaults for verification functions.
- *
- * update many_icas in tests/test-chains.h when increasing
- * DEFAULT_MAX_VERIFY_DEPTH.
- */
-#define DEFAULT_MAX_VERIFY_DEPTH 16
+/* Defaults for verification functions. */
 #define DEFAULT_MAX_VERIFY_BITS (MAX_PK_PARAM_SIZE * 8)
 #define MAX_VERIFY_DEPTH 4096
+/* Match OpenSSL's maximum verification depth of 100.
+ * Add 1 because OpenSSL doesn't count the peer certificate
+ * in the limit, while GnuTLS does.
+ */
+#define DEFAULT_MAX_VERIFY_DEPTH 101
 
 #include "mem.h"
 
