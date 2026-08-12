@@ -277,7 +277,7 @@ static int pkcs11_provider_init(struct gnutls_pkcs11_provider_st *provider,
 	struct ck_c_initialize_args args;
 	const void *reserved = NULL;
 	ck_rv_t rv;
-	char *p;
+	const char *p;
 
 	_gnutls_debug_log("p11: Initializing module: %s\n", module_name);
 

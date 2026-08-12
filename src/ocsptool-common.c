@@ -47,36 +47,6 @@
 	"Connection: close\r\n\r\n"
 static char buffer[MAX_BUF + 1];
 
-/* returns the host part of a URL */
-static const char *host_from_url(const char *url, unsigned int *port,
-				 const char **path)
-{
-	static char hostname[512];
-	char *p;
-
-	*port = 0;
-	*path = "";
-
-	if ((p = strstr(url, "http://")) != NULL) {
-		snprintf(hostname, sizeof(hostname), "%s", p + 7);
-		p = strchr(hostname, '/');
-		if (p != NULL) {
-			*p = 0;
-			*path = p + 1;
-		}
-
-		p = strchr(hostname, ':');
-		if (p != NULL) {
-			*p = 0;
-			*port = atoi(p + 1);
-		}
-
-		return hostname;
-	} else {
-		return url;
-	}
-}
-
 void _generate_request(gnutls_x509_crt_t cert, gnutls_x509_crt_t issuer,
 		       gnutls_datum_t *rdata, gnutls_datum_t *nonce)
 {

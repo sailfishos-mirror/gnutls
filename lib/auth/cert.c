@@ -405,10 +405,9 @@ static int get_issuers(gnutls_session_t session, gnutls_datum_t *issuers_dn,
 			 * are not needed since the buffer has been
 			 * parsed above.
 			 */
-			data_size -= 2;
-
+			DECR_LEN(data_size, 2);
 			size = _gnutls_read_uint16(data);
-
+			DECR_LEN(data_size, size);
 			data += 2;
 
 			issuers_dn[i].data = (void *)data;

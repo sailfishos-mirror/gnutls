@@ -260,13 +260,12 @@ static int _gnutls_supported_groups_recv_params(gnutls_session_t session,
 						const uint8_t *data,
 						size_t data_size)
 {
-	switch (session->security_parameters.entity) {
-	case GNUTLS_CLIENT:
+	if (session->security_parameters.entity == GNUTLS_CLIENT) {
 		/* A client shouldn't receive this extension in TLS
 		 * 1.2. It is possible to read that message under
 		 * TLS 1.3 as an encrypted extension. */
 		return 0;
-	case GNUTLS_SERVER:
+	} else {
 		return server_recv_params(session, data, data_size);
 	}
 }
@@ -304,11 +303,10 @@ static int client_send_params(gnutls_session_t session,
 static int _gnutls_supported_groups_send_params(gnutls_session_t session,
 						gnutls_buffer_st *extdata)
 {
-	switch (session->security_parameters.entity) {
-	case GNUTLS_CLIENT:
+	if (session->security_parameters.entity == GNUTLS_CLIENT) {
 		/* this extension is only being sent on client side */
 		return client_send_params(session, extdata);
-	case GNUTLS_SERVER:
+	} else {
 		return gnutls_assert_val(0);
 	}
 }

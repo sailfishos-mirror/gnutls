@@ -282,7 +282,7 @@ static int get_hmac_path(char *mac_file, size_t mac_file_size,
 			 const char *gnutls_path)
 {
 	int ret;
-	char *p;
+	const char *p;
 
 	p = strrchr(gnutls_path, '/');
 
