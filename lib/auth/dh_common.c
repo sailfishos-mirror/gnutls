@@ -52,12 +52,11 @@ void _gnutls_free_dh_info(dh_info_st *dh)
 }
 
 int _gnutls_proc_dh_common_client_kx(gnutls_session_t session, uint8_t *data,
-				     size_t _data_size, gnutls_datum_t *psk_key)
+				     size_t data_size, gnutls_datum_t *psk_key)
 {
 	uint16_t n_Y;
 	size_t _n_Y;
 	int ret;
-	ssize_t data_size = _data_size;
 	gnutls_datum_t tmp_dh_key = { NULL, 0 };
 	gnutls_pk_params_st peer_pub;
 
@@ -180,7 +179,7 @@ error:
 
 /* Returns the bytes parsed */
 int _gnutls_proc_dh_common_server_kx(gnutls_session_t session, uint8_t *data,
-				     size_t _data_size)
+				     size_t data_size)
 {
 	uint16_t n_Y, n_g, n_p;
 	size_t _n_Y, _n_g, _n_p, _n_q;
@@ -190,7 +189,6 @@ int _gnutls_proc_dh_common_server_kx(gnutls_session_t session, uint8_t *data,
 	uint8_t *data_q = NULL;
 	int i, bits, ret, p_bits;
 	unsigned j;
-	ssize_t data_size = _data_size;
 
 	/* just in case we are resuming a session */
 	gnutls_pk_params_release(&session->key.proto.tls12.dh.params);

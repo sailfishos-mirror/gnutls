@@ -35,7 +35,7 @@
 
 static int _gnutls_proc_psk_client_kx(gnutls_session_t, uint8_t *, size_t);
 static int _gnutls_proc_psk_server_kx(gnutls_session_t session, uint8_t *data,
-				      size_t _data_size);
+				      size_t data_size);
 
 const mod_auth_st psk_auth_struct = { "PSK",
 				      NULL,
@@ -177,9 +177,8 @@ cleanup:
 /* just read the username from the client key exchange.
  */
 static int _gnutls_proc_psk_client_kx(gnutls_session_t session, uint8_t *data,
-				      size_t _data_size)
+				      size_t data_size)
 {
-	ssize_t data_size = _data_size;
 	int ret;
 	gnutls_datum_t username, psk_key;
 	gnutls_psk_server_credentials_t cred;
@@ -280,10 +279,9 @@ int _gnutls_gen_psk_server_kx(gnutls_session_t session, gnutls_buffer_st *data)
 
 /* Read the hint from the server key exchange */
 static int _gnutls_proc_psk_server_kx(gnutls_session_t session, uint8_t *data,
-				      size_t _data_size)
+				      size_t data_size)
 {
 	int ret;
-	ssize_t data_size = _data_size;
 	gnutls_psk_client_credentials_t cred;
 	psk_auth_info_t info;
 	gnutls_datum_t hint;
