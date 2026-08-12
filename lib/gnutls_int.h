@@ -38,11 +38,6 @@
 #include <stdbool.h>
 #include <assert.h>
 
-#ifdef NO_SSIZE_T
-#define HAVE_SSIZE_T
-typedef int ssize_t;
-#endif
-
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/stat.h>
