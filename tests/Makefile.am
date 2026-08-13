@@ -83,19 +83,26 @@ EXTRA_DIST = suppressions.valgrind eagain-common.h cert-common.h test-chains.h \
 	client-secrets.h server-secrets.h dh-compute.h ktls_utils.h
 
 AM_CFLAGS = $(WARN_CFLAGS) $(WERROR_CFLAGS)
-AM_CPPFLAGS = \
-	$(LIBIDN2_CFLAGS) \
-	$(P11_KIT_CFLAGS) \
-	-I$(top_srcdir)/lib/includes		\
+AM_CPPFLAGS =					\
+	$(LIBIDN2_CFLAGS)			\
+	$(P11_KIT_CFLAGS)			\
+	$(LIBTASN1_CFLAGS)			\
 	-I$(top_builddir)/lib/includes		\
-	-I$(top_srcdir)/libdane/includes	\
+	-I$(top_srcdir)/lib/includes		\
 	-I$(top_builddir)/libdane/includes	\
-	-I$(top_srcdir)/extra/includes		\
+	-I$(top_srcdir)/libdane/includes	\
 	-I$(top_builddir)/extra/includes	\
-	-I$(top_srcdir)/lib					\
+	-I$(top_srcdir)/extra/includes		\
+	-I$(top_builddir)/lib			\
+	-I$(top_srcdir)/lib			\
+	-I$(top_builddir)/doc/examples		\
 	-I$(top_srcdir)/doc/examples		\
-	-I$(top_builddir)/gl				\
+	-I$(top_builddir)/gl			\
 	-I$(top_srcdir)/gl
+
+if ENABLE_MINITASN1
+AM_CPPFLAGS += -I$(srcdir)/../lib/minitasn1
+endif
 
 AM_LDFLAGS = -no-install
 COMMON_GNUTLS_LDADD = ../lib/libgnutls.la
@@ -108,12 +115,6 @@ LDADD = $(COMMON_GNUTLS_LDADD) \
 
 dane_LDADD = $(LDADD) ../libdane/libgnutls-dane.la
 dane_strcodes_LDADD = $(LDADD) ../libdane/libgnutls-dane.la
-
-if ENABLE_MINITASN1
-AM_CPPFLAGS += -I$(srcdir)/../lib/minitasn1
-else
-AM_CPPFLAGS += $(LIBTASN1_CFLAGS)
-endif
 
 noinst_LTLIBRARIES = libutils.la
 libutils_la_SOURCES = utils.h utils.c seccomp.c utils-adv.c
@@ -284,15 +285,6 @@ tls12_prf_LDADD = $(CMOCKA_LDADD)
 eagain_LDADD = $(CMOCKA_LDADD)
 eagain_auto_auth_LDADD = $(CMOCKA_LDADD)
 tls12_rehandshake_cert_LDADD = $(CMOCKA_LDADD)
-
-gnutls_record_overhead_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-ip_utils_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
 endif
 
 # FIXME: pthread tests hangs under qemu-user-static on Fedora 40
@@ -483,54 +475,6 @@ endif
 
 ctests += record-sendfile
 
-gc_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-mpi_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-atfork_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-pkcs12_s2k_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-name_constraints_merge_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-murmur3_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-tls13_anti_replay_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-iov_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-verify_limits_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-verify_limits_LDADD = $(LDADD) ../gl/libgnu.la
-
-buffer_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-pathbuf_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-mini_dtls_fragments_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
 mini_dtls_fragments_LDADD = $(LDADD) ../gl/libgnu.la
 
 if ENABLE_PKCS11
