@@ -105,13 +105,17 @@ AM_CPPFLAGS += -I$(srcdir)/../lib/minitasn1
 endif
 
 AM_LDFLAGS = -no-install
-COMMON_GNUTLS_LDADD = ../lib/libgnutls.la
-COMMON_DEPS_LDADD = $(LIBSOCKET) $(INET_NTOP_LIB) $(INET_PTON_LIB) $(LIBSECCOMP) $(LIBRT)
-COMMON_LDADD = $(COMMON_GNUTLS_LDADD) $(COMMON_DEPS_LDADD)
 
-LDADD = $(COMMON_GNUTLS_LDADD) \
-	libutils.la \
-	$(COMMON_DEPS_LDADD)
+DEPS_LDADD = ../gl/libgnu.la			\
+	$(LIBSOCKET)				\
+	$(INET_NTOP_LIB)			\
+	$(INET_PTON_LIB)			\
+	$(LIBSECCOMP)				\
+	$(LIBRT)
+
+LDADD = ../lib/libgnutls.la			\
+	libutils.la				\
+	$(DEPS_LDADD)
 
 dane_LDADD = $(LDADD) ../libdane/libgnutls-dane.la
 dane_strcodes_LDADD = $(LDADD) ../libdane/libgnutls-dane.la
@@ -268,7 +272,7 @@ ctests += system-prio-file
 endif
 
 if HAVE_CMOCKA
-CMOCKA_LDADD = $(COMMON_LDADD) $(CMOCKA_LIBS)
+CMOCKA_LDADD = ../lib/libgnutls.la $(DEPS_LDADD) $(CMOCKA_LIBS)
 ctests += dtls-sliding-window ip-utils name-constraints-ip conv-utf8 str-unicode str-idna \
 	tls10-prf tls12-prf gnutls_record_overhead eagain tls12-rehandshake-cert \
 	eagain-auto-auth
@@ -298,40 +302,31 @@ endif
 
 tls12_rollback_detection_CFLAGS = -DTLS12
 tls12_rollback_detection_SOURCES = tls13/rnd-rollback-detection.c
-tls12_rollback_detection_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls11_rollback_detection_CFLAGS = -DTLS11
 tls11_rollback_detection_SOURCES = tls13/rnd-rollback-detection.c
-tls11_rollback_detection_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls12_check_rollback_val_CFLAGS = -DTLS12
 tls12_check_rollback_val_SOURCES = tls13/rnd-check-rollback-val.c
-tls12_check_rollback_val_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls11_check_rollback_val_CFLAGS = -DTLS11
 tls11_check_rollback_val_SOURCES = tls13/rnd-check-rollback-val.c
-tls11_check_rollback_val_LDADD = $(LDADD) ../gl/libgnu.la
 
 # These tests need gnulib for memmem()
 tls12_resume_psk_CFLAGS = -DUSE_PSK -DTLS12
 tls12_resume_psk_SOURCES = resume.c
-tls12_resume_psk_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls12_resume_anon_CFLAGS = -DUSE_ANON -DTLS12
 tls12_resume_anon_SOURCES = resume.c
-tls12_resume_anon_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls12_resume_x509_CFLAGS = -DUSE_X509 -DTLS12
 tls12_resume_x509_SOURCES = resume.c
-tls12_resume_x509_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls13_resume_psk_CFLAGS = -DUSE_PSK -DTLS13
 tls13_resume_psk_SOURCES = resume.c
-tls13_resume_psk_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls13_resume_x509_CFLAGS = -DUSE_X509 -DTLS13
 tls13_resume_x509_SOURCES = resume.c
-tls13_resume_x509_LDADD = $(LDADD) ../gl/libgnu.la
 
 dtls_repro_20170915_SOURCES = dtls-repro-20170915.c common-cert-key-exchange.c cert-repro-20170915.h
 dtls12_cert_key_exchange_SOURCES = common-cert-key-exchange.c dtls12-cert-key-exchange.c common-cert-key-exchange.h
@@ -475,8 +470,6 @@ endif
 
 ctests += record-sendfile
 
-mini_dtls_fragments_LDADD = $(LDADD) ../gl/libgnu.la
-
 if ENABLE_PKCS11
 if !WINDOWS
 ctests += tls13/post-handshake-with-cert-pkcs11 pkcs11/tls-neg-pkcs11-no-key \
@@ -525,8 +518,6 @@ dist_check_SCRIPTS += dtls/dtls.sh dtls/dtls-resume.sh #dtls/dtls-nb
 indirect_tests += dtls-stress
 
 dtls_stress_SOURCES = dtls/dtls-stress.c
-dtls_stress_LDADD = $(COMMON_GNUTLS_LDADD) \
-	$(COMMON_DEPS_LDADD) ../gl/libgnu.la
 
 dist_check_SCRIPTS += fastopen.sh pkgconfig.sh starttls.sh starttls-ftp.sh starttls-smtp.sh \
 	starttls-lmtp.sh starttls-pop3.sh starttls-xmpp.sh starttls-nntp.sh starttls-sieve.sh \
@@ -565,12 +556,10 @@ indirect_tests += protocol-set-allowlist
 dist_check_SCRIPTS += system-override-compress-cert.sh
 indirect_tests += compress-cert-conf
 compress_cert_conf_SOURCES = tls13/compress-cert-conf.c
-compress_cert_conf_LDADD = $(LDADD)
 
 dist_check_SCRIPTS += system-override-allow-rsa-pkcs1-encrypt.sh
 indirect_tests += rsaes-pkcs1-v1_5
 rsaes_pkcs1_v1_5_SOURCES = rsaes-pkcs1-v1_5.c
-rsaes_pkcs1_v1_5_LDADD = $(COMMON_GNUTLS_LDADD)
 
 dist_check_SCRIPTS += pkcs11-provider/test-pkcs11-provider.sh
 indirect_tests += pkcs11-provider/pkcs11-provider-pk \
@@ -581,10 +570,6 @@ pkcs11_provider_pkcs11_provider_pk_SOURCES = pkcs11-provider/pkcs11-provider-pk.
 pkcs11_provider_pkcs11_provider_sig_SOURCES = pkcs11-provider/pkcs11-provider-sig.c
 pkcs11_provider_pkcs11_provider_cipher_SOURCES = pkcs11-provider/pkcs11-provider-cipher.c
 pkcs11_provider_pkcs11_provider_hmac_SOURCES = pkcs11-provider/pkcs11-provider-hmac.c
-pkcs11_provider_pkcs11_provider_pk_LDADD = $(LDADD)
-pkcs11_provider_pkcs11_provider_sig_LDADD = $(LDADD)
-pkcs11_provider_pkcs11_provider_cipher_LDADD = $(LDADD)
-pkcs11_provider_pkcs11_provider_hmac_LDADD = $(LDADD)
 endif
 
 dist_check_SCRIPTS += gnutls-cli-self-signed.sh gnutls-cli-invalid-crl.sh gnutls-cli-rawpk.sh
