@@ -416,7 +416,7 @@ static int cache_alt_names(gnutls_x509_crt_t cert)
 
 static bool hcomparator(const void *v1, const void *v2)
 {
-	return strcmp(v1, v2) == 0;
+	return streq(v1, v2);
 }
 
 static size_t hhasher(const void *entry)
@@ -487,69 +487,69 @@ static bool is_valid_extension(const char *oid, gnutls_datum_t *der)
 	char *s1 = NULL, *s2 = NULL;
 	gnutls_datum_t datum = { NULL, 0 };
 
-	if (!strcmp(oid, GNUTLS_X509EXT_OID_BASIC_CONSTRAINTS)) {
+	if (streq(oid, GNUTLS_X509EXT_OID_BASIC_CONSTRAINTS)) {
 		err = gnutls_x509_ext_import_basic_constraints(der, &u, &i);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_SUBJECT_KEY_ID)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_SUBJECT_KEY_ID)) {
 		err = gnutls_x509_ext_import_subject_key_id(der, &datum);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_CRT_POLICY)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_CRT_POLICY)) {
 		gnutls_x509_policies_t policies;
 		if (gnutls_x509_policies_init(&policies) < 0)
 			return false;
 		err = gnutls_x509_ext_import_policies(der, policies, 0);
 		gnutls_x509_policies_deinit(policies);
-	} else if (!strcmp(oid, GNUTLS_X509_OID_POLICY_ANY)) {
+	} else if (streq(oid, GNUTLS_X509_OID_POLICY_ANY)) {
 		err = gnutls_x509_ext_import_inhibit_anypolicy(der, &u);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_AUTHORITY_KEY_ID)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_AUTHORITY_KEY_ID)) {
 		gnutls_x509_aki_t aki;
 		if (gnutls_x509_aki_init(&aki) < 0)
 			return false;
 		err = gnutls_x509_ext_import_authority_key_id(der, aki, 0);
 		gnutls_x509_aki_deinit(aki);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_KEY_USAGE)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_KEY_USAGE)) {
 		err = gnutls_x509_ext_import_key_usage(der, &u);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_PRIVATE_KEY_USAGE_PERIOD)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_PRIVATE_KEY_USAGE_PERIOD)) {
 		err = gnutls_x509_ext_import_private_key_usage_period(der, &t1,
 								      &t2);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_EXTENDED_KEY_USAGE)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_EXTENDED_KEY_USAGE)) {
 		gnutls_x509_key_purposes_t purposes;
 		if (gnutls_x509_key_purpose_init(&purposes) < 0)
 			return false;
 		err = gnutls_x509_ext_import_key_purposes(der, purposes, 0);
 		gnutls_x509_key_purpose_deinit(purposes);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_SAN) ||
-		   !strcmp(oid, GNUTLS_X509EXT_OID_IAN)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_SAN) ||
+		   streq(oid, GNUTLS_X509EXT_OID_IAN)) {
 		gnutls_subject_alt_names_t names;
 		if (gnutls_subject_alt_names_init(&names) < 0)
 			return false;
 		err = gnutls_x509_ext_import_subject_alt_names(der, names, 0);
 		gnutls_subject_alt_names_deinit(names);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_CRL_DIST_POINTS)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_CRL_DIST_POINTS)) {
 		gnutls_x509_crl_dist_points_t dp;
 		if (gnutls_x509_crl_dist_points_init(&dp) < 0)
 			return false;
 		err = gnutls_x509_ext_import_crl_dist_points(der, dp, 0);
 		gnutls_x509_crl_dist_points_deinit(dp);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_PROXY_CRT_INFO)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_PROXY_CRT_INFO)) {
 		err = gnutls_x509_ext_import_proxy(der, &i, &s1, &s2, &sz);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_AUTHORITY_INFO_ACCESS)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_AUTHORITY_INFO_ACCESS)) {
 		gnutls_x509_aia_t aia;
 		if (gnutls_x509_aia_init(&aia) < 0)
 			return false;
 		err = gnutls_x509_ext_import_aia(der, aia, 0);
 		gnutls_x509_aia_deinit(aia);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_CT_SCT_V1)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_CT_SCT_V1)) {
 		gnutls_x509_ct_scts_t scts;
 		if (gnutls_x509_ext_ct_scts_init(&scts) < 0)
 			return false;
 		err = gnutls_x509_ext_ct_import_scts(der, scts, 0);
 		gnutls_x509_ext_ct_scts_deinit(scts);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_NAME_CONSTRAINTS)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_NAME_CONSTRAINTS)) {
 		gnutls_x509_name_constraints_t nc;
 		if (gnutls_x509_name_constraints_init(&nc) < 0)
 			return false;
 		err = gnutls_x509_ext_import_name_constraints(der, nc, 0);
 		gnutls_x509_name_constraints_deinit(nc);
-	} else if (!strcmp(oid, GNUTLS_X509EXT_OID_TLSFEATURES)) {
+	} else if (streq(oid, GNUTLS_X509EXT_OID_TLSFEATURES)) {
 		gnutls_x509_tlsfeatures_t features;
 		if (gnutls_x509_tlsfeatures_init(&features) < 0)
 			return false;

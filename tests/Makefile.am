@@ -92,8 +92,10 @@ AM_CPPFLAGS = \
 	-I$(top_builddir)/libdane/includes	\
 	-I$(top_srcdir)/extra/includes		\
 	-I$(top_builddir)/extra/includes	\
-	-I$(top_srcdir)/lib			\
-	-I$(top_srcdir)/doc/examples
+	-I$(top_srcdir)/lib					\
+	-I$(top_srcdir)/doc/examples		\
+	-I$(top_builddir)/gl				\
+	-I$(top_srcdir)/gl
 
 AM_LDFLAGS = -no-install
 COMMON_GNUTLS_LDADD = ../lib/libgnutls.la
@@ -115,7 +117,7 @@ endif
 
 noinst_LTLIBRARIES = libutils.la
 libutils_la_SOURCES = utils.h utils.c seccomp.c utils-adv.c
-libutils_la_LIBADD = ../lib/libgnutls.la
+libutils_la_LIBADD = ../lib/libgnutls.la ../gl/libgnu.la
 
 indirect_tests = system-override-hash system-override-sig system-override-sig-tls
 
@@ -580,7 +582,7 @@ indirect_tests += dtls-stress
 
 dtls_stress_SOURCES = dtls/dtls-stress.c
 dtls_stress_LDADD = $(COMMON_GNUTLS_LDADD) \
-	$(COMMON_DEPS_LDADD)
+	$(COMMON_DEPS_LDADD) ../gl/libgnu.la
 
 dist_check_SCRIPTS += fastopen.sh pkgconfig.sh starttls.sh starttls-ftp.sh starttls-smtp.sh \
 	starttls-lmtp.sh starttls-pop3.sh starttls-xmpp.sh starttls-nntp.sh starttls-sieve.sh \

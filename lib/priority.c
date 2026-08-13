@@ -3316,7 +3316,7 @@ int gnutls_priority_init(gnutls_priority_t *priority_cache,
 		goto error;
 	}
 
-	if (strcmp(darg, priorities) != 0)
+	if (!streq(darg, priorities))
 		resolved_match = 0;
 
 	break_list(darg, broken_list, &broken_list_size);

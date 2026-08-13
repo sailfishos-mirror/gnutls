@@ -1130,7 +1130,7 @@ unsigned _gnutls_check_key_purpose(gnutls_x509_crt_t cert, const char *purpose,
 	 * around which instead of having the GNUTLS_KP_TLS_WWW_SERVER have some old
 	 * OIDs for that purpose. Assume these OIDs equal GNUTLS_KP_TLS_WWW_SERVER in
 	 * CA certs */
-	if (strcmp(purpose, GNUTLS_KP_TLS_WWW_SERVER) == 0) {
+	if (streq(purpose, GNUTLS_KP_TLS_WWW_SERVER)) {
 		unsigned ca_status;
 		ret = gnutls_x509_crt_get_basic_constraints(cert, NULL,
 							    &ca_status, NULL);
@@ -1159,15 +1159,15 @@ unsigned _gnutls_check_key_purpose(gnutls_x509_crt_t cert, const char *purpose,
 		}
 
 		if (check_obsolete_oids) {
-			if (strcmp(oid, PURPOSE_NSSGC) == 0) {
+			if (streq(oid, PURPOSE_NSSGC)) {
 				return 1;
-			} else if (strcmp(oid, PURPOSE_VSGC) == 0) {
+			} else if (streq(oid, PURPOSE_VSGC)) {
 				return 1;
 			}
 		}
 
-		if (strcmp(oid, purpose) == 0 ||
-		    (no_any == 0 && strcmp(oid, GNUTLS_KP_ANY) == 0)) {
+		if (streq(oid, purpose) ||
+		    (no_any == 0 && streq(oid, GNUTLS_KP_ANY))) {
 			return 1;
 		}
 		_gnutls_debug_log(

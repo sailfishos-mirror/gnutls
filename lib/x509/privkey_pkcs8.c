@@ -1632,7 +1632,7 @@ static int decode_ml_dsa_inner_private_key(const gnutls_datum_t *raw_key,
 		}
 
 		choice_name[choice_name_size] = '\0';
-		if (strcmp(choice_name, "expandedKey") == 0) {
+		if (streq(choice_name, "expandedKey")) {
 			_gnutls_free_key_datum(&pkey->params.raw_priv);
 			ret = _gnutls_x509_read_value(inner_asn, choice_name,
 						      &pkey->params.raw_priv);
@@ -1658,7 +1658,7 @@ static int decode_ml_dsa_inner_private_key(const gnutls_datum_t *raw_key,
 				}
 				pkey->params.raw_priv.size = raw_priv_size;
 			}
-		} else if (strcmp(choice_name, "both") == 0) {
+		} else if (streq(choice_name, "both")) {
 			_gnutls_free_key_datum(&pkey->params.raw_seed);
 			ret = _gnutls_x509_read_value(inner_asn, "both.seed",
 						      &pkey->params.raw_seed);

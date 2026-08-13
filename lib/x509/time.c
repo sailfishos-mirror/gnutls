@@ -338,7 +338,7 @@ time_t _gnutls_x509_get_time(asn1_node c2, const char *where, int force_general)
 		_gnutls_str_cpy(name, sizeof(name), where);
 
 		/* choice */
-		if (strcmp(ttime, "generalTime") == 0) {
+		if (streq(ttime, "generalTime")) {
 			if (name[0] == 0)
 				_gnutls_str_cpy(name, sizeof(name),
 						"generalTime");

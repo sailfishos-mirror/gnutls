@@ -154,7 +154,7 @@ static int append_elements(asn1_node asn1_struct, const char *asn1_rdn_name,
 		 * Explicitly reject DirectoryString in such case.
 		 */
 		const char *asn_desc = _gnutls_oid_get_asn_desc(oid);
-		if (asn_desc && !strcmp(asn_desc, "PKIX1.DirectoryString") &&
+		if (asn_desc && streq(asn_desc, "PKIX1.DirectoryString") &&
 		    tvd.data[1] == 0) {
 			gnutls_assert();
 			result = GNUTLS_E_ASN1_VALUE_NOT_VALID;
@@ -399,7 +399,7 @@ int _gnutls_x509_parse_dn_oid(asn1_node asn1_struct, const char *asn1_rdn_name,
 				goto cleanup;
 			}
 
-			if (strcmp(oid, given_oid) == 0 &&
+			if (streq(oid, given_oid) &&
 			    indx == i++) { /* Found the OID */
 
 				/* Read the Value 

@@ -421,7 +421,7 @@ static void verify_server_params(gnutls_session_t session, unsigned counter,
 		if (username == NULL)
 			fail("no username was returned on server side resumption\n");
 
-		if (strcmp(username, "test") != 0)
+		if (!streq(username, "test"))
 			fail("wrong username was returned on server side resumption\n");
 	}
 #endif

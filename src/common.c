@@ -1213,7 +1213,7 @@ int pin_callback(void *user, int attempt, const char *token_url,
 	}
 
 	if (cache > 0 && cached_url != NULL) {
-		if (token_url != NULL && strcmp(cached_url, token_url) == 0) {
+		if (token_url != NULL && streq(cached_url, token_url)) {
 			if (strlen(cached_pin) >= pin_max) {
 				fprintf(stderr, "Too long PIN given\n");
 				exit(1);

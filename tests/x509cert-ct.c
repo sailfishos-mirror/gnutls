@@ -271,7 +271,7 @@ void doit(void)
 		if (ret < 0)
 			fail("gnutls_x509_crt_get_extension_oid");
 
-		if (strcmp(oid, GNUTLS_X509EXT_OID_CT_SCT_V1) == 0) {
+		if (streq(oid, GNUTLS_X509EXT_OID_CT_SCT_V1)) {
 			ret = gnutls_x509_crt_get_extension_data2(cert, i,
 								  &ext);
 			if (ret < 0)
