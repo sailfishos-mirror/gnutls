@@ -152,13 +152,13 @@ cleanup2:
 }
 
 static int proc_rsa_client_kx(gnutls_session_t session, uint8_t *data,
-			      size_t _data_size)
+			      size_t data_size)
 {
 	gnutls_datum_t ciphertext;
-	int ret, dsize;
-	ssize_t data_size = _data_size;
+	int ret;
 	volatile uint8_t ver_maj, ver_min;
 	unsigned int key_bits;
+	size_t dsize;
 
 #ifdef ENABLE_SSL3
 	if (get_num_version(session) == GNUTLS_SSL3) {

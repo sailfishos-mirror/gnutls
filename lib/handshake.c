@@ -62,12 +62,12 @@
 #include "audit.h"
 
 static int check_if_null_comp_present(gnutls_session_t session, uint8_t *data,
-				      int datalen);
+				      size_t len);
 static int handshake_client(gnutls_session_t session);
 static int handshake_server(gnutls_session_t session);
 
 static int read_server_hello(gnutls_session_t session, uint8_t *data,
-			     int datalen);
+			     size_t len);
 
 static int recv_handshake_final(gnutls_session_t session, int init);
 static int send_handshake_final(gnutls_session_t session, int init);
@@ -98,7 +98,7 @@ static int handshake_hash_add_sent(gnutls_session_t session,
 				   uint8_t *dataptr, uint32_t datalen);
 
 static int recv_hello_verify_request(gnutls_session_t session, uint8_t *data,
-				     int datalen);
+				     size_t len);
 
 /* Clears the handshake hash buffers and handles.
  */
@@ -638,14 +638,13 @@ static int set_auth_types(gnutls_session_t session)
  * since SSL version 2.0 is not supported).
  */
 static int read_client_hello(gnutls_session_t session, uint8_t *data,
-			     int datalen)
+			     size_t len)
 {
 	uint8_t session_id_len;
 	int pos = 0, ret;
 	uint16_t suite_size, comp_size;
-	int ext_size;
+	size_t ext_size;
 	int neg_version, sret = 0;
-	int len = datalen;
 	uint8_t major, minor;
 	uint8_t *suite_ptr, *comp_ptr, *session_id, *ext_ptr;
 	const version_entry_st *vers;
@@ -698,7 +697,7 @@ static int read_client_hello(gnutls_session_t session, uint8_t *data,
 	pos += session_id_len;
 
 	if (IS_DTLS(session)) {
-		int cookie_size;
+		uint8_t cookie_size;
 
 		DECR_LEN(len, 1);
 		cookie_size = data[pos++];
@@ -1220,11 +1219,11 @@ int _gnutls_server_select_suite(gnutls_session_t session, uint8_t *data,
 /* This checks whether the null compression method is present.
  */
 static int check_if_null_comp_present(gnutls_session_t session, uint8_t *data,
-				      int datalen)
+				      size_t len)
 {
-	int j;
+	size_t j;
 
-	for (j = 0; j < datalen; j++) {
+	for (j = 0; j < len; j++) {
 		if (data[j] == 0)
 			return 0;
 	}
@@ -1917,7 +1916,7 @@ static int client_check_if_resuming(gnutls_session_t session,
  * session.
  */
 static int read_server_hello(gnutls_session_t session, uint8_t *data,
-			     int datalen)
+			     size_t len)
 {
 	uint8_t session_id_len = 0;
 	uint8_t *session_id;
@@ -1925,11 +1924,10 @@ static int read_server_hello(gnutls_session_t session, uint8_t *data,
 	uint8_t major, minor;
 	int pos = 0;
 	int ret;
-	int len = datalen;
 	unsigned ext_parse_flag = 0;
 	const version_entry_st *vers, *saved_vers;
 
-	if (datalen < GNUTLS_RANDOM_SIZE + 2) {
+	if (len < GNUTLS_RANDOM_SIZE + 2) {
 		gnutls_assert();
 		return GNUTLS_E_UNEXPECTED_PACKET_LENGTH;
 	}
@@ -2536,9 +2534,8 @@ fail:
 }
 
 static int recv_hello_verify_request(gnutls_session_t session, uint8_t *data,
-				     int datalen)
+				     size_t len)
 {
-	ssize_t len = datalen;
 	size_t pos = 0;
 	uint8_t cookie_len;
 	unsigned int nb_verifs;

@@ -30,7 +30,7 @@
  * calls the callback function for each of them. The ctx, flags
  * and parse_type are passed verbatim to callback. */
 int _gnutls_extv_parse(void *ctx, gnutls_ext_raw_process_func cb,
-		       const uint8_t *data, int data_size);
+		       const uint8_t *data, size_t data_size);
 
 inline static int _gnutls_extv_append_init(gnutls_buffer_st *buf)
 {

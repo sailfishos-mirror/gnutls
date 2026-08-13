@@ -45,9 +45,9 @@
 
 static int gen_ecdhe_server_kx(gnutls_session_t, gnutls_buffer_st *);
 static int proc_ecdhe_server_kx(gnutls_session_t session, uint8_t *data,
-				size_t _data_size);
+				size_t data_size);
 static int proc_ecdhe_client_kx(gnutls_session_t session, uint8_t *data,
-				size_t _data_size);
+				size_t data_size);
 
 #if defined(ENABLE_ECDHE)
 const mod_auth_st ecdhe_ecdsa_auth_struct = {
@@ -131,10 +131,9 @@ cleanup:
 }
 
 int _gnutls_proc_ecdh_common_client_kx(
-	gnutls_session_t session, uint8_t *data, size_t _data_size,
+	gnutls_session_t session, uint8_t *data, size_t data_size,
 	const struct gnutls_group_entry_st *group, gnutls_datum_t *psk_key)
 {
-	ssize_t data_size = _data_size;
 	int ret, i = 0;
 	unsigned point_size;
 	const gnutls_ecc_curve_entry_st *ecurve;
@@ -208,7 +207,7 @@ cleanup:
 }
 
 static int proc_ecdhe_client_kx(gnutls_session_t session, uint8_t *data,
-				size_t _data_size)
+				size_t data_size)
 {
 	gnutls_certificate_credentials_t cred;
 
@@ -219,7 +218,7 @@ static int proc_ecdhe_client_kx(gnutls_session_t session, uint8_t *data,
 		return GNUTLS_E_INSUFFICIENT_CREDENTIALS;
 	}
 
-	return _gnutls_proc_ecdh_common_client_kx(session, data, _data_size,
+	return _gnutls_proc_ecdh_common_client_kx(session, data, data_size,
 						  get_group(session), NULL);
 }
 
@@ -302,29 +301,28 @@ cleanup:
 }
 
 static int proc_ecdhe_server_kx(gnutls_session_t session, uint8_t *data,
-				size_t _data_size)
+				size_t data_size)
 {
 	int ret;
 	gnutls_datum_t vparams;
 
-	ret = _gnutls_proc_ecdh_common_server_kx(session, data, _data_size);
+	ret = _gnutls_proc_ecdh_common_server_kx(session, data, data_size);
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
 	vparams.data = data;
 	vparams.size = ret;
 
-	return _gnutls_proc_dhe_signature(session, data + ret, _data_size - ret,
+	return _gnutls_proc_dhe_signature(session, data + ret, data_size - ret,
 					  &vparams);
 }
 
 int _gnutls_proc_ecdh_common_server_kx(gnutls_session_t session, uint8_t *data,
-				       size_t _data_size)
+				       size_t data_size)
 {
 	int i, ret;
 	unsigned point_size;
 	const gnutls_group_entry_st *group;
-	ssize_t data_size = _data_size;
 	const gnutls_ecc_curve_entry_st *ecurve;
 
 	/* just in case we are resuming a session */

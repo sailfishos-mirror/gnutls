@@ -413,7 +413,7 @@ void gnutls_heartbeat_set_timeouts(gnutls_session_t session,
 }
 
 static int _gnutls_heartbeat_recv_params(gnutls_session_t session,
-					 const uint8_t *data, size_t _data_size)
+					 const uint8_t *data, size_t data_size)
 {
 	unsigned policy;
 	gnutls_ext_priv_data_t epriv;
@@ -426,7 +426,7 @@ static int _gnutls_heartbeat_recv_params(gnutls_session_t session,
 		return 0; /* Not enabled */
 	}
 
-	if (_data_size == 0)
+	if (data_size == 0)
 		return GNUTLS_E_UNEXPECTED_PACKET_LENGTH;
 
 	policy = (intptr_t)epriv;

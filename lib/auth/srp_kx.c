@@ -330,10 +330,9 @@ int _gnutls_gen_srp_client_kx(gnutls_session_t session, gnutls_buffer_st *data)
 
 /* just read A and put it to session */
 int _gnutls_proc_srp_client_kx(gnutls_session_t session, uint8_t *data,
-			       size_t _data_size)
+			       size_t data_size)
 {
 	ssize_t _n_A;
-	ssize_t data_size = _data_size;
 	int ret;
 
 	DECR_LEN(data_size, 2);
@@ -729,7 +728,7 @@ static int check_g_n(const uint8_t *g, size_t n_g, const uint8_t *n, size_t n_n)
 /* receive the key exchange message ( n, g, s, B)
  */
 int _gnutls_proc_srp_server_kx(gnutls_session_t session, uint8_t *data,
-			       size_t _data_size)
+			       size_t data_size)
 {
 	uint8_t n_s;
 	uint16_t n_g, n_n, n_b;
@@ -741,7 +740,6 @@ int _gnutls_proc_srp_server_kx(gnutls_session_t session, uint8_t *data,
 	int i, ret;
 	uint8_t hd[SRP_MAX_HASH_SIZE];
 	char *username, *password;
-	ssize_t data_size = _data_size;
 	gnutls_srp_client_credentials_t cred;
 	gnutls_ext_priv_data_t epriv;
 	srp_ext_st *priv;

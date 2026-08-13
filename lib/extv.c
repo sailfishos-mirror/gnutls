@@ -28,7 +28,7 @@
 /* Iterates through all extensions found, and calls the cb()
  * function with their data */
 int _gnutls_extv_parse(void *ctx, gnutls_ext_raw_process_func cb,
-		       const uint8_t *data, int data_size)
+		       const uint8_t *data, size_t data_size)
 {
 	int next, ret;
 	int pos = 0;

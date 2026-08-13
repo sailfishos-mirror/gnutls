@@ -51,7 +51,7 @@ static int _gnutls_gen_rsa_psk_client_kx(gnutls_session_t session,
 					 gnutls_buffer_st *data);
 static int _gnutls_proc_rsa_psk_client_kx(gnutls_session_t, uint8_t *, size_t);
 static int _gnutls_proc_rsa_psk_server_kx(gnutls_session_t session,
-					  uint8_t *data, size_t _data_size);
+					  uint8_t *data, size_t data_size);
 
 const mod_auth_st rsa_psk_auth_struct = {
 	"RSA PSK",
@@ -246,17 +246,17 @@ cleanup:
   Process the client key exchange message
 */
 static int _gnutls_proc_rsa_psk_client_kx(gnutls_session_t session,
-					  uint8_t *data, size_t _data_size)
+					  uint8_t *data, size_t data_size)
 {
 	gnutls_datum_t username;
 	psk_auth_info_t info;
 	gnutls_datum_t ciphertext;
 	gnutls_datum_t pwd_psk = { NULL, 0 };
-	int ret, dsize;
-	ssize_t data_size = _data_size;
+	int ret;
 	gnutls_psk_server_credentials_t cred;
 	volatile uint8_t ver_maj, ver_min;
 	unsigned int rsa_key_bits;
+	size_t dsize;
 
 	cred = (gnutls_psk_server_credentials_t)_gnutls_get_cred(
 		session, GNUTLS_CRD_PSK);
@@ -388,7 +388,7 @@ static int _gnutls_proc_rsa_psk_client_kx(gnutls_session_t session,
 }
 
 static int _gnutls_proc_rsa_psk_server_kx(gnutls_session_t session,
-					  uint8_t *data, size_t _data_size)
+					  uint8_t *data, size_t data_size)
 {
 	/* In RSA-PSK the key is calculated elsewhere.
 	 * Moreover, since we only keep a single auth info structure, we cannot

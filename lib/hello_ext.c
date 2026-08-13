@@ -312,7 +312,7 @@ ignore:
 int _gnutls_parse_hello_extensions(gnutls_session_t session,
 				   gnutls_ext_flags_t msg,
 				   gnutls_ext_parse_type_t parse_point,
-				   const uint8_t *data, int data_size)
+				   const uint8_t *data, size_t data_size)
 {
 	int ret;
 	hello_ext_ctx_st ctx;

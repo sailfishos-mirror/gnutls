@@ -187,14 +187,13 @@ static int cert_get_issuer_dn(gnutls_pcert_st *cert, gnutls_datum_t *odn)
  */
 static int find_x509_client_cert(gnutls_session_t session,
 				 const gnutls_certificate_credentials_t cred,
-				 const uint8_t *_data, size_t _data_size,
+				 const uint8_t *_data, size_t data_size,
 				 const gnutls_pk_algorithm_t *pk_algos,
 				 int pk_algos_length, int *indx)
 {
 	unsigned size;
 	gnutls_datum_t odn = { NULL, 0 }, asked_dn;
 	const uint8_t *data = _data;
-	ssize_t data_size = _data_size;
 	unsigned i, j;
 	int result, cert_pk;
 	unsigned key_usage;
@@ -349,7 +348,7 @@ static int find_rawpk_client_cert(gnutls_session_t session,
  * certificate request packet.
  */
 static int get_issuers_num(gnutls_session_t session, const uint8_t *data,
-			   ssize_t data_size)
+			   size_t data_size)
 {
 	int issuers_dn_len = 0;
 	unsigned size;
@@ -497,7 +496,7 @@ static int call_get_cert_callback(gnutls_session_t session,
  * algorithm (only in automatic mode).
  */
 int _gnutls_select_client_cert(gnutls_session_t session, const uint8_t *_data,
-			       size_t _data_size,
+			       size_t data_size,
 			       gnutls_pk_algorithm_t *pk_algos,
 			       int pk_algos_length)
 {
@@ -505,7 +504,6 @@ int _gnutls_select_client_cert(gnutls_session_t session, const uint8_t *_data,
 	int indx = -1;
 	gnutls_certificate_credentials_t cred;
 	const uint8_t *data = _data;
-	ssize_t data_size = _data_size;
 	int issuers_dn_length;
 	gnutls_datum_t *issuers_dn = NULL;
 	gnutls_certificate_type_t cert_type;
@@ -562,7 +560,7 @@ int _gnutls_select_client_cert(gnutls_session_t session, const uint8_t *_data,
 		switch (cert_type) {
 		case GNUTLS_CRT_X509:
 			result = find_x509_client_cert(session, cred, _data,
-						       _data_size, pk_algos,
+						       data_size, pk_algos,
 						       pk_algos_length, &indx);
 			break;
 		case GNUTLS_CRT_RAWPK:
@@ -763,12 +761,11 @@ static int check_pk_compat(gnutls_session_t session, gnutls_pubkey_t pubkey)
 static int _gnutls_proc_x509_crt(gnutls_session_t session, uint8_t *data,
 				 size_t data_size)
 {
-	int size, len, ret;
+	int ret;
 	uint8_t *p = data;
+	size_t size;
 	cert_auth_info_t info;
 	gnutls_certificate_credentials_t cred;
-	ssize_t dsize = data_size;
-	int i;
 	gnutls_pcert_st *peer_certificate_list;
 	size_t peer_certificate_list_size = 0, j, x;
 	gnutls_datum_t tmp;
@@ -798,12 +795,12 @@ static int _gnutls_proc_x509_crt(gnutls_session_t session, uint8_t *data,
 		return GNUTLS_E_NO_CERTIFICATE_FOUND;
 	}
 
-	DECR_LEN(dsize, 3);
+	DECR_LEN(data_size, 3);
 	size = _gnutls_read_uint24(p);
 	p += 3;
 
 	/* ensure no discrepancy in data */
-	if (size != dsize)
+	if (size != data_size)
 		return gnutls_assert_val(GNUTLS_E_UNEXPECTED_PACKET_LENGTH);
 
 	/* some implementations send 0B 00 00 06 00 00 03 00 00 00
@@ -815,19 +812,15 @@ static int _gnutls_proc_x509_crt(gnutls_session_t session, uint8_t *data,
 		return GNUTLS_E_NO_CERTIFICATE_FOUND;
 	}
 
-	i = dsize;
-	while (i > 0) {
-		DECR_LEN(dsize, 3);
+	while (size > 0) {
+		size_t len;
+		DECR_LEN(size, 3);
 		len = _gnutls_read_uint24(p);
 		p += 3;
-		DECR_LEN(dsize, len);
+		DECR_LEN(size, len);
 		peer_certificate_list_size++;
 		p += len;
-		i -= len + 3;
 	}
-
-	if (dsize != 0)
-		return gnutls_assert_val(GNUTLS_E_UNEXPECTED_PACKET_LENGTH);
 
 	if (peer_certificate_list_size == 0) {
 		gnutls_assert();
@@ -853,7 +846,7 @@ static int _gnutls_proc_x509_crt(gnutls_session_t session, uint8_t *data,
 	 */
 
 	for (j = 0; j < peer_certificate_list_size; j++) {
-		len = _gnutls_read_uint24(p);
+		size_t len = _gnutls_read_uint24(p);
 		p += 3;
 
 		tmp.size = len;
@@ -896,13 +889,13 @@ cleanup:
 int _gnutls_proc_rawpk_crt(gnutls_session_t session, uint8_t *data,
 			   size_t data_size)
 {
-	int cert_size, ret;
+	int ret;
 	cert_auth_info_t info;
 	gnutls_pcert_st *peer_certificate;
 	gnutls_datum_t tmp_cert;
+	size_t cert_size;
 
 	uint8_t *p = data;
-	ssize_t dsize = data_size;
 
 	/* We assume data != null and data_size > 0 because
 	 * the caller checks this for us. */
@@ -914,12 +907,12 @@ int _gnutls_proc_rawpk_crt(gnutls_session_t session, uint8_t *data,
 	 * length = 3 bytes and
 	 * certificate = length bytes.
 	 */
-	DECR_LEN(dsize, 3);
+	DECR_LEN(data_size, 3);
 	cert_size = _gnutls_read_uint24(p);
 	p += 3;
 
 	/* Ensure no discrepancy in data */
-	if (cert_size != dsize)
+	if (cert_size != data_size)
 		return gnutls_assert_val(GNUTLS_E_UNEXPECTED_PACKET_LENGTH);
 
 	if (cert_size == 0) {
@@ -927,7 +920,7 @@ int _gnutls_proc_rawpk_crt(gnutls_session_t session, uint8_t *data,
 		return gnutls_assert_val(GNUTLS_E_NO_CERTIFICATE_FOUND);
 	}
 
-	DECR_LEN_FINAL(dsize, cert_size);
+	DECR_LEN_FINAL(data_size, cert_size);
 
 	/* We are now going to read our certificate and store it into
 	 * the authentication info structure.
@@ -1197,8 +1190,7 @@ cleanup:
 int _gnutls_proc_cert_client_crt_vrfy(gnutls_session_t session, uint8_t *data,
 				      size_t data_size)
 {
-	int size, ret;
-	ssize_t dsize = data_size;
+	int ret;
 	uint8_t *pdata = data;
 	gnutls_datum_t sig;
 	cert_auth_info_t info =
@@ -1208,6 +1200,7 @@ int _gnutls_proc_cert_client_crt_vrfy(gnutls_session_t session, uint8_t *data,
 	const version_entry_st *ver = get_version(session);
 	gnutls_certificate_credentials_t cred;
 	unsigned vflags;
+	size_t size;
 
 	if (unlikely(info == NULL || info->ncerts == 0 || ver == NULL)) {
 		gnutls_assert();
@@ -1226,7 +1219,7 @@ int _gnutls_proc_cert_client_crt_vrfy(gnutls_session_t session, uint8_t *data,
 		 session->internals.additional_verify_flags;
 
 	if (_gnutls_version_has_selectable_sighash(ver)) {
-		DECR_LEN(dsize, 2);
+		DECR_LEN(data_size, 2);
 
 		sign_algo = _gnutls_tls_aid_to_sign(pdata[0], pdata[1], ver);
 		if (sign_algo == GNUTLS_SIGN_UNKNOWN) {
@@ -1241,11 +1234,11 @@ int _gnutls_proc_cert_client_crt_vrfy(gnutls_session_t session, uint8_t *data,
 		return gnutls_assert_val(
 			GNUTLS_E_UNSUPPORTED_SIGNATURE_ALGORITHM);
 
-	DECR_LEN(dsize, 2);
+	DECR_LEN(data_size, 2);
 	size = _gnutls_read_uint16(pdata);
 	pdata += 2;
 
-	DECR_LEN_FINAL(dsize, size);
+	DECR_LEN_FINAL(data_size, size);
 
 	sig.data = pdata;
 	sig.size = size;
@@ -1818,14 +1811,13 @@ cleanup:
 }
 
 int _gnutls_proc_dhe_signature(gnutls_session_t session, uint8_t *data,
-			       size_t _data_size, gnutls_datum_t *vparams)
+			       size_t data_size, gnutls_datum_t *vparams)
 {
-	int sigsize;
+	uint16_t sigsize;
 	gnutls_datum_t signature;
 	int ret;
 	cert_auth_info_t info =
 		_gnutls_get_auth_info(session, GNUTLS_CRD_CERTIFICATE);
-	ssize_t data_size = _data_size;
 	gnutls_pcert_st peer_cert;
 	gnutls_sign_algorithm_t sign_algo = GNUTLS_SIGN_UNKNOWN;
 	const version_entry_st *ver = get_version(session);
