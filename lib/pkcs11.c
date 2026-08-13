@@ -356,7 +356,7 @@ static int pkcs11_provider_add(const struct gnutls_pkcs11_provider_st *provider)
 	for (i = 0; i < active_providers; i++) {
 		/* already loaded, skip the rest */
 		if (provider->module == providers[i].module ||
-		    memcmp(&info, &providers[i].info, sizeof(info)) == 0) {
+		    memeq(&info, &providers[i].info, sizeof(info))) {
 			_gnutls_debug_log("p11: module %s is already loaded.\n",
 					  provider->module_name);
 			return GNUTLS_E_INT_RET_0;
@@ -3549,8 +3549,8 @@ static int find_multi_objs_cb(struct ck_function_list *module,
 		if (find_data->flags & GNUTLS_PKCS11_OBJ_FLAG_WITH_PRIVKEY)
 			for (i = 0; i < plist.key_ids_size; ++i)
 				if (plist.key_ids[i].length != id.size ||
-				    memcmp(plist.key_ids[i].data, id.data,
-					   id.size) != 0)
+				    !memeq(plist.key_ids[i].data, id.data,
+					   id.size))
 					continue;
 
 		ret = gnutls_pkcs11_obj_init(
@@ -4342,7 +4342,7 @@ static int find_cert_cb(struct ck_function_list *module,
 
 	/* the DISTRUSTED flag is p11-kit module specific */
 	if (priv->flags & GNUTLS_PKCS11_OBJ_FLAG_RETRIEVE_DISTRUSTED) {
-		if (memcmp(lib_info->manufacturer_id, "PKCS#11 Kit", 11) != 0) {
+		if (!memeq(lib_info->manufacturer_id, "PKCS#11 Kit", 11)) {
 			gnutls_assert();
 			return GNUTLS_E_REQUESTED_DATA_NOT_AVAILABLE;
 		}

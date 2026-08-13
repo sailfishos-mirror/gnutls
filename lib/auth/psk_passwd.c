@@ -111,8 +111,8 @@ static bool username_matches(const gnutls_datum_t *username, const char *line,
 			return gnutls_assert_val(0);
 
 		retval = hex_username.size == username->size &&
-			 memcmp(username->data, hex_username.data,
-				username->size) == 0;
+			 memeq(username->data, hex_username.data,
+			       username->size);
 
 		_gnutls_free_datum(&hex_username);
 	} else {

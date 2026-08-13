@@ -372,7 +372,7 @@ unsigned _gnutls_server_name_matches_resumed(gnutls_session_t session)
 	if (name1.size != name2.size)
 		return 0;
 
-	if (memcmp(name1.data, name2.data, name1.size) != 0)
+	if (!memeq(name1.data, name2.data, name1.size))
 		return 0;
 
 	return 1;

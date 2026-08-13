@@ -120,7 +120,7 @@ unsigned gnutls_x509_crt_equals(gnutls_x509_crt_t cert1,
 		}
 
 		if ((tmp1.size == tmp2.size) &&
-		    (memcmp(tmp1.data, tmp2.data, tmp1.size) == 0))
+		    memeq(tmp1.data, tmp2.data, tmp1.size))
 			result = 1;
 		else
 			result = 0;
@@ -129,8 +129,7 @@ unsigned gnutls_x509_crt_equals(gnutls_x509_crt_t cert1,
 		gnutls_free(tmp2.data);
 	} else {
 		if ((cert1->der.size == cert2->der.size) &&
-		    (memcmp(cert1->der.data, cert2->der.data,
-			    cert1->der.size) == 0))
+		    memeq(cert1->der.data, cert2->der.data, cert1->der.size))
 			result = 1;
 		else
 			result = 0;
@@ -170,7 +169,7 @@ unsigned gnutls_x509_crt_equals2(gnutls_x509_crt_t cert1,
 			return gnutls_assert_val(0);
 
 		if ((tmp1.size == der->size) &&
-		    (memcmp(tmp1.data, der->data, tmp1.size) == 0))
+		    memeq(tmp1.data, der->data, tmp1.size))
 			result = 1;
 		else
 			result = 0;
@@ -178,7 +177,7 @@ unsigned gnutls_x509_crt_equals2(gnutls_x509_crt_t cert1,
 		gnutls_free(tmp1.data);
 	} else {
 		if ((cert1->der.size == der->size) &&
-		    (memcmp(cert1->der.data, der->data, cert1->der.size) == 0))
+		    memeq(cert1->der.data, der->data, cert1->der.size))
 			result = 1;
 		else
 			result = 0;
@@ -325,7 +324,7 @@ static int compare_sig_algorithm(gnutls_x509_crt_t cert)
 		return _gnutls_asn2err(result);
 	}
 
-	if (len1 != len2 || memcmp(oid1, oid2, len1) != 0) {
+	if (len1 != len2 || !memeq(oid1, oid2, len1)) {
 		_gnutls_debug_log(
 			"signatureAlgorithm.algorithm differs from tbsCertificate.signature.algorithm: %s, %s\n",
 			oid1, oid2);
@@ -353,18 +352,18 @@ static int compare_sig_algorithm(gnutls_x509_crt_t cert)
 	}
 
 	/* handle equally empty parameters with missing parameters */
-	if (sp1.size == 2 && memcmp(sp1.data, "\x05\x00", 2) == 0) {
+	if (sp1.size == 2 && memeq(sp1.data, "\x05\x00", 2)) {
 		empty1 = 1;
 		_gnutls_free_datum(&sp1);
 	}
 
-	if (sp2.size == 2 && memcmp(sp2.data, "\x05\x00", 2) == 0) {
+	if (sp2.size == 2 && memeq(sp2.data, "\x05\x00", 2)) {
 		empty2 = 1;
 		_gnutls_free_datum(&sp2);
 	}
 
 	if (empty1 != empty2 || sp1.size != sp2.size ||
-	    (sp1.size > 0 && memcmp(sp1.data, sp2.data, sp1.size) != 0)) {
+	    (sp1.size > 0 && !memeq(sp1.data, sp2.data, sp1.size))) {
 		gnutls_assert();
 		ret = GNUTLS_E_CERTIFICATE_ERROR;
 		goto cleanup;
@@ -3293,8 +3292,7 @@ int _gnutls_x509_crt_check_revocation(gnutls_x509_crt_t cert,
 			}
 
 			if (serial_size == cert_serial_size) {
-				if (memcmp(serial, cert_serial, serial_size) ==
-				    0) {
+				if (memeq(serial, cert_serial, serial_size)) {
 					/* serials match */
 					if (func)
 						func(cert, NULL, crl_list[j],
@@ -4131,7 +4129,7 @@ static int legacy_parse_aia(asn1_node src, unsigned int seq, int what,
 				return _gnutls_asn2err(result);
 			}
 			if ((unsigned)len != strlen(oid) + 1 ||
-			    memcmp(tmpoid, oid, len) != 0)
+			    !memeq(tmpoid, oid, len))
 				return gnutls_assert_val(
 					GNUTLS_E_UNKNOWN_ALGORITHM);
 		}

@@ -266,8 +266,8 @@ static int find_x509_client_cert(gnutls_session_t session,
 					cred->certs[i].cert_list[0].pubkey,
 					NULL);
 
-				if ((memcmp(odn.data, asked_dn.data,
-					    asked_dn.size) == 0) &&
+				if (memeq(odn.data, asked_dn.data,
+					  asked_dn.size) &&
 				    (check_pk_algo_in_list(pk_algos,
 							   pk_algos_length,
 							   cert_pk) == 0)) {
@@ -806,7 +806,7 @@ static int _gnutls_proc_x509_crt(gnutls_session_t session, uint8_t *data,
 	/* some implementations send 0B 00 00 06 00 00 03 00 00 00
 	 * instead of just 0B 00 00 03 00 00 00 as an empty certificate message.
 	 */
-	if (size == 0 || (size == 3 && memcmp(p, "\x00\x00\x00", 3) == 0)) {
+	if (size == 0 || (size == 3 && memeq(p, "\x00\x00\x00", 3))) {
 		gnutls_assert();
 		/* no certificate was sent */
 		return GNUTLS_E_NO_CERTIFICATE_FOUND;

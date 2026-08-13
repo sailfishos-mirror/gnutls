@@ -727,7 +727,7 @@ static int hostname_compare_raw(const char *certname, size_t certnamesize,
 				const char *hostname)
 {
 	if (certnamesize == strlen(hostname) &&
-	    memcmp(hostname, certname, certnamesize) == 0)
+	    memeq(hostname, certname, certnamesize))
 		return 1;
 	return 0;
 }

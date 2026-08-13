@@ -34,19 +34,19 @@ static int san_othername_to_virtual(const char *oid, size_t size)
 {
 	if (oid) {
 		if ((unsigned)size == (sizeof(XMPP_OID) - 1) &&
-		    memcmp(oid, XMPP_OID, sizeof(XMPP_OID) - 1) == 0)
+		    memeq(oid, XMPP_OID, sizeof(XMPP_OID) - 1))
 			return GNUTLS_SAN_OTHERNAME_XMPP;
 		else if ((unsigned)size == (sizeof(KRB5_PRINCIPAL_OID) - 1) &&
-			 memcmp(oid, KRB5_PRINCIPAL_OID,
-				sizeof(KRB5_PRINCIPAL_OID) - 1) == 0)
+			 memeq(oid, KRB5_PRINCIPAL_OID,
+			       sizeof(KRB5_PRINCIPAL_OID) - 1))
 			return GNUTLS_SAN_OTHERNAME_KRB5PRINCIPAL;
 		else if ((unsigned)size ==
 				 (sizeof(MSUSER_PRINCIPAL_NAME_OID) - 1) &&
-			 memcmp(oid, MSUSER_PRINCIPAL_NAME_OID,
-				sizeof(MSUSER_PRINCIPAL_NAME_OID) - 1) == 0)
+			 memeq(oid, MSUSER_PRINCIPAL_NAME_OID,
+			       sizeof(MSUSER_PRINCIPAL_NAME_OID) - 1))
 			return GNUTLS_SAN_OTHERNAME_MSUSERPRINCIPAL;
 		else if ((unsigned)size == (sizeof(SRV_OID) - 1) &&
-			 memcmp(oid, SRV_OID, sizeof(SRV_OID) - 1) == 0)
+			 memeq(oid, SRV_OID, sizeof(SRV_OID) - 1))
 			return GNUTLS_SAN_OTHERNAME_SRV;
 	}
 

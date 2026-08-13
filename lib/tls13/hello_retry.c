@@ -134,7 +134,7 @@ int _gnutls13_recv_hello_retry_request(gnutls_session_t session,
 	if (ret < 0)
 		return gnutls_assert_val(GNUTLS_E_UNEXPECTED_PACKET_LENGTH);
 
-	if (memcmp(random, HRR_RANDOM, GNUTLS_RANDOM_SIZE) != 0) {
+	if (!memeq(random, HRR_RANDOM, GNUTLS_RANDOM_SIZE)) {
 		return gnutls_assert_val(GNUTLS_E_RECEIVED_ILLEGAL_PARAMETER);
 	}
 

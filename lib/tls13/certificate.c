@@ -112,9 +112,9 @@ int _gnutls13_recv_certificate(gnutls_session_t session)
 
 		if (context.size !=
 			    session->internals.post_handshake_cr_context.size ||
-		    memcmp(context.data,
+		    !memeq(context.data,
 			   session->internals.post_handshake_cr_context.data,
-			   context.size) != 0) {
+			   context.size)) {
 			ret = GNUTLS_E_RECEIVED_ILLEGAL_PARAMETER;
 			gnutls_assert();
 			goto cleanup;

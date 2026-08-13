@@ -294,9 +294,9 @@ static enum name_constraint_relation compare_ip_ncs(const gnutls_datum_t *n1,
 	}
 
 	r = memcmp(mask1, mask2, len);
-	if (r < 0 && !memcmp(masked11, masked21, len)) /* prefix1 < prefix2 */
+	if (r < 0 && memeq(masked11, masked21, len)) /* prefix1 < prefix2 */
 		return NC_INCLUDES; /* ip1 & mask1 == ip2 & mask1 */
-	if (r > 0 && !memcmp(masked12, masked22, len)) /* prefix1 > prefix2 */
+	if (r > 0 && memeq(masked12, masked22, len)) /* prefix1 > prefix2 */
 		return NC_INCLUDED_BY; /* ip1 & mask2 == ip2 & mask2 */
 
 	r = memcmp(masked11, masked22, len);

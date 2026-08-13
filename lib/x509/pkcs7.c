@@ -813,7 +813,7 @@ static int verify_hash_attr(gnutls_pkcs7_t pkcs7, const char *root,
 			}
 
 			if (tmp2.size == hash_size &&
-			    memcmp(hash_output, tmp2.data, tmp2.size) == 0) {
+			    memeq(hash_output, tmp2.data, tmp2.size)) {
 				msg_digest_ok = 1;
 			} else {
 				gnutls_assert();
@@ -837,7 +837,7 @@ static int verify_hash_attr(gnutls_pkcs7_t pkcs7, const char *root,
 			}
 
 			if (tmp2.size != tmp.size ||
-			    memcmp(tmp.data, tmp2.data, tmp2.size) != 0) {
+			    !memeq(tmp.data, tmp2.data, tmp2.size)) {
 				gnutls_assert();
 				ret = GNUTLS_E_PARSING_ERROR;
 				goto cleanup;
@@ -1185,8 +1185,7 @@ find_child_of_with_serial(gnutls_pkcs7_t pkcs7, gnutls_x509_crt_t issuer,
 			}
 
 			if (tmp_size != info->signer_serial.size ||
-			    memcmp(info->signer_serial.data, tmp, tmp_size) !=
-				    0) {
+			    !memeq(info->signer_serial.data, tmp, tmp_size)) {
 				_gnutls_cert_log("doesn't match serial", crt);
 				gnutls_assert();
 				goto skip;
@@ -1201,8 +1200,7 @@ find_child_of_with_serial(gnutls_pkcs7_t pkcs7, gnutls_x509_crt_t issuer,
 			}
 
 			if (tmp_size != info->issuer_keyid.size ||
-			    memcmp(info->issuer_keyid.data, tmp, tmp_size) !=
-				    0) {
+			    !memeq(info->issuer_keyid.data, tmp, tmp_size)) {
 				_gnutls_cert_log("doesn't match key ID", crt);
 				gnutls_assert();
 			skip:

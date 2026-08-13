@@ -910,8 +910,8 @@ static int parse_handshake_header(gnutls_session_t session, mbuffer_st *bufel,
 			if (_mbuffer_get_udata_size(bufel) >
 				    handshake_header_size + 2 +
 					    GNUTLS_RANDOM_SIZE &&
-			    memcmp(dataptr + handshake_header_size + 2,
-				   HRR_RANDOM, GNUTLS_RANDOM_SIZE) == 0) {
+			    memeq(dataptr + handshake_header_size + 2,
+				  HRR_RANDOM, GNUTLS_RANDOM_SIZE)) {
 				hsk->htype =
 					GNUTLS_HANDSHAKE_HELLO_RETRY_REQUEST;
 			}

@@ -242,14 +242,14 @@ int _gnutls_proc_dh_common_server_kx(gnutls_session_t session, uint8_t *data,
 					    ->generator->size == n_g &&
 			    session->internals.priorities->groups.entry[j]
 					    ->prime->size == n_p &&
-			    memcmp(session->internals.priorities->groups
-					   .entry[j]
-					   ->generator->data,
-				   data_g, n_g) == 0 &&
-			    memcmp(session->internals.priorities->groups
-					   .entry[j]
-					   ->prime->data,
-				   data_p, n_p) == 0) {
+			    memeq(session->internals.priorities->groups
+					  .entry[j]
+					  ->generator->data,
+				  data_g, n_g) &&
+			    memeq(session->internals.priorities->groups
+					  .entry[j]
+					  ->prime->data,
+				  data_p, n_p)) {
 				session->internals.hsk_flags |= HSK_USED_FFDHE;
 				_gnutls_session_group_set(
 					session, session->internals.priorities

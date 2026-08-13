@@ -70,8 +70,7 @@ static int check_ip(gnutls_x509_crt_t cert, const void *ip, unsigned ip_size)
 							   &temp_size, NULL);
 
 		if (ret == GNUTLS_SAN_IPADDRESS) {
-			if (temp_size == ip_size &&
-			    memcmp(temp, ip, ip_size) == 0)
+			if (temp_size == ip_size && memeq(temp, ip, ip_size))
 				return 1;
 		} else if (ret == GNUTLS_E_SHORT_MEMORY_BUFFER) {
 			ret = 0;
