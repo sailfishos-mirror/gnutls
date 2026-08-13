@@ -70,7 +70,7 @@ int main(void)
 		goto cleanup;
 
 	assert(in_message.size == out_message.size);
-	assert(memcmp(out_message.data, in_message.data, in_message.size) == 0);
+	assert(memeq(out_message.data, in_message.data, in_message.size));
 	ret = EXIT_SUCCESS;
 cleanup:
 	gnutls_free(crypt.data);

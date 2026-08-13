@@ -156,8 +156,7 @@ void doit(void)
 								 &name);
 
 		if (ret >= 0 && i == 2) {
-			if (name.size != 3 ||
-			    memcmp(name.data, ".eu", 3) != 0) {
+			if (name.size != 3 || !memeq(name.data, ".eu", 3)) {
 				fail("error reading 2nd constraint\n");
 			}
 		}
@@ -242,7 +241,7 @@ void doit(void)
 
 		if (ret >= 0 && i == 1) {
 			if (name.size != name1.size ||
-			    memcmp(name.data, name1.data, name1.size) != 0) {
+			    !memeq(name.data, name1.data, name1.size)) {
 				fail("%d: error reading 1st constraint\n",
 				     __LINE__);
 			}
@@ -261,14 +260,14 @@ void doit(void)
 
 		if (ret >= 0 && i == 1) {
 			if (name.size != name2.size ||
-			    memcmp(name.data, name2.data, name2.size) != 0) {
+			    !memeq(name.data, name2.data, name2.size)) {
 				fail("%d: error reading 1st excluded constraint\n",
 				     __LINE__);
 			}
 		}
 		if (ret >= 0 && i == 2) {
 			if (name.size != name3.size ||
-			    memcmp(name.data, name3.data, name3.size) != 0) {
+			    !memeq(name.data, name3.data, name3.size)) {
 				fail("%d: error reading 1st excluded constraint\n",
 				     __LINE__);
 			}

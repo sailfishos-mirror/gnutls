@@ -126,7 +126,7 @@ extern const char *side;
 				client_transfer_failure(_ret);                 \
 			} else {                                               \
 				if (msglen != _ret ||                          \
-				    memcmp(buf, msg, msglen) != 0) {           \
+				    !memeq(buf, msg, msglen)) {                \
 					failure();                             \
 				}                                              \
 				/* echo back */                                \

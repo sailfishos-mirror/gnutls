@@ -57,8 +57,7 @@ void doit(void)
 
 		ret = _gnutls_pathbuf_append(&pathbuf, "cert.pem");
 		assert(ret == 0);
-		assert(memcmp(pathbuf.ptr, long_path, GNUTLS_PATH_MAX + i) ==
-		       0);
+		assert(memeq(pathbuf.ptr, long_path, GNUTLS_PATH_MAX + i));
 		assert(streq(&pathbuf.ptr[GNUTLS_PATH_MAX + i], "/cert.pem"));
 		assert(pathbuf.len ==
 		       GNUTLS_PATH_MAX + i + sizeof("/cert.pem") - 1);

@@ -124,7 +124,7 @@ static void start(gnutls_cipher_algorithm_t algo, size_t plaintext_size,
 		     plaintext_size);
 	}
 
-	if (memcmp(plaintext2, plaintext, size) != 0) {
+	if (!memeq(plaintext2, plaintext, size)) {
 		fail("plaintext does not match\n");
 	}
 

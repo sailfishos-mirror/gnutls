@@ -129,7 +129,7 @@ void doit(void)
 	}
 
 	assert(data.size == der_content_size);
-	assert(memcmp(data.data, der_content, data.size) == 0);
+	assert(memeq(data.data, der_content, data.size));
 
 	gnutls_pkcs7_deinit(pkcs7);
 	gnutls_free(data.data);

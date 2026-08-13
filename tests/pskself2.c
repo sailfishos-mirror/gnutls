@@ -199,8 +199,7 @@ static int pskfunc(gnutls_session_t session, const gnutls_datum_t *username,
 		printf("psk: Got username with length %d\n", username->size);
 
 	/* verify callback received full 5-byte username (#1850) */
-	if (username->size != 5 ||
-	    memcmp(username->data, expected_user, 5) != 0)
+	if (username->size != 5 || !memeq(username->data, expected_user, 5))
 		fail("pskfunc: username mismatch: got %u bytes, expected 5\n",
 		     username->size);
 
@@ -272,7 +271,7 @@ static void server(int sd, const char *prio, bool rsa)
 			fail("server: Could not get PSK username\n");
 
 		if (psk_username.size != 5 ||
-		    memcmp(psk_username.data, expected_psk_username, 5))
+		    !memeq(psk_username.data, expected_psk_username, 5))
 			fail("server: Unexpected PSK username\n");
 
 		success("server: PSK username length: %d\n", psk_username.size);
