@@ -85,7 +85,6 @@ typedef struct gnutls_certificate_credentials_st {
 					 * certificate verification.
 					 */
 	unsigned int verify_depth;
-	unsigned int verify_bits;
 
 	/* It's a mess here. However we need to keep the old 3 functions
 	 * for compatibility */
