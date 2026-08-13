@@ -90,7 +90,7 @@ static int _gnutls_alpn_recv_params(gnutls_session_t session,
 
 			for (i = 0; i < priv->size; i++) {
 				if (priv->protocol_size[i] == len1 &&
-				    memcmp(p, priv->protocols[i], len1) == 0) {
+				    memeq(p, priv->protocols[i], len1)) {
 					if (priv->flags &
 					    GNUTLS_ALPN_SERVER_PRECEDENCE) {
 						if (selected_protocol_index >
@@ -126,7 +126,7 @@ static int _gnutls_alpn_recv_params(gnutls_session_t session,
 
 		for (i = 0; i < priv->size; i++) {
 			if (priv->protocol_size[i] == len1 &&
-			    memcmp(p, priv->protocols[i], len1) == 0) {
+			    memeq(p, priv->protocols[i], len1)) {
 				priv->selected_protocol = priv->protocols[i];
 				priv->selected_protocol_size =
 					priv->protocol_size[i];

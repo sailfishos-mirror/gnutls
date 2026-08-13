@@ -263,19 +263,18 @@ static int _gnutls_set_server_random(gnutls_session_t session,
 			return 0;
 
 		if (vers->id == GNUTLS_TLS1_2 &&
-		    memcmp(&session->security_parameters
-				    .server_random[GNUTLS_RANDOM_SIZE - 8],
-			   "\x44\x4F\x57\x4E\x47\x52\x44\x01", 8) == 0) {
+		    memeq(&session->security_parameters
+				   .server_random[GNUTLS_RANDOM_SIZE - 8],
+			  "\x44\x4F\x57\x4E\x47\x52\x44\x01", 8)) {
 			_gnutls_audit_log(
 				session,
 				"Detected downgrade to TLS 1.2 from TLS 1.3\n");
 			return gnutls_assert_val(
 				GNUTLS_E_RECEIVED_ILLEGAL_PARAMETER);
 		} else if (vers->id <= GNUTLS_TLS1_1 &&
-			   memcmp(&session->security_parameters
-					   .server_random[GNUTLS_RANDOM_SIZE -
-							  8],
-				  "\x44\x4F\x57\x4E\x47\x52\x44\x00", 8) == 0) {
+			   memeq(&session->security_parameters
+					  .server_random[GNUTLS_RANDOM_SIZE - 8],
+				 "\x44\x4F\x57\x4E\x47\x52\x44\x00", 8)) {
 			_gnutls_audit_log(
 				session,
 				"Detected downgrade to TLS 1.1 or earlier from TLS 1.3\n");
@@ -1083,7 +1082,7 @@ int _gnutls_recv_finished(gnutls_session_t session)
 #warning This is unsafe for production builds
 
 #else
-	if (memcmp(vrfy, data, data_size) != 0) {
+	if (!memeq(vrfy, data, data_size)) {
 		gnutls_assert();
 		ret = GNUTLS_E_ERROR_IN_FINISHED_PACKET;
 		goto cleanup;
@@ -1879,9 +1878,9 @@ static int client_check_if_resuming(gnutls_session_t session,
 	    session_id_len > 0 &&
 	    session->internals.resumed_security_parameters.session_id_size ==
 		    session_id_len &&
-	    memcmp(session_id,
-		   session->internals.resumed_security_parameters.session_id,
-		   session_id_len) == 0) {
+	    memeq(session_id,
+		  session->internals.resumed_security_parameters.session_id,
+		  session_id_len)) {
 		/* resume session */
 		memcpy(session->internals.resumed_security_parameters
 			       .server_random,
@@ -2049,7 +2048,7 @@ static int read_server_hello(gnutls_session_t session, uint8_t *data,
 
 	if (session->internals.hsk_flags & HSK_HRR_RECEIVED) {
 		/* check if ciphersuite matches */
-		if (memcmp(cs_pos, session->internals.hrr_cs, 2) != 0)
+		if (!memeq(cs_pos, session->internals.hrr_cs, 2))
 			return gnutls_assert_val(
 				GNUTLS_E_RECEIVED_ILLEGAL_PARAMETER);
 

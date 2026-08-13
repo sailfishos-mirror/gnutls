@@ -680,21 +680,21 @@ const gnutls_datum_t gnutls_srp_8192_group_generator = {
 static int check_g_n(const uint8_t *g, size_t n_g, const uint8_t *n, size_t n_n)
 {
 	if (n_n == sizeof(srp_params_8192)) {
-		if (memcmp(srp_params_8192, n, n_n) == 0 && n_g == 1 &&
+		if (memeq(srp_params_8192, n, n_n) && n_g == 1 &&
 		    g[0] == srp8192_generator)
 			return 0;
 		return gnutls_assert_val(GNUTLS_E_RECEIVED_ILLEGAL_PARAMETER);
 	}
 
 	if (n_n == sizeof(srp_params_4096)) {
-		if (memcmp(srp_params_4096, n, n_n) == 0 && n_g == 1 &&
+		if (memeq(srp_params_4096, n, n_n) && n_g == 1 &&
 		    g[0] == srp3072_generator)
 			return 0;
 		return gnutls_assert_val(GNUTLS_E_RECEIVED_ILLEGAL_PARAMETER);
 	}
 
 	if (n_n == sizeof(srp_params_3072)) {
-		if (memcmp(srp_params_3072, n, n_n) == 0 && n_g == 1 &&
+		if (memeq(srp_params_3072, n, n_n) && n_g == 1 &&
 		    g[0] == srp3072_generator)
 			return 0;
 		return gnutls_assert_val(GNUTLS_E_RECEIVED_ILLEGAL_PARAMETER);
@@ -706,18 +706,15 @@ static int check_g_n(const uint8_t *g, size_t n_g, const uint8_t *n, size_t n_n)
 		return GNUTLS_E_RECEIVED_ILLEGAL_PARAMETER;
 	}
 
-	if (n_n == sizeof(srp_params_1024) &&
-	    memcmp(srp_params_1024, n, n_n) == 0) {
+	if (n_n == sizeof(srp_params_1024) && memeq(srp_params_1024, n, n_n)) {
 		return 0;
 	}
 
-	if (n_n == sizeof(srp_params_1536) &&
-	    memcmp(srp_params_1536, n, n_n) == 0) {
+	if (n_n == sizeof(srp_params_1536) && memeq(srp_params_1536, n, n_n)) {
 		return 0;
 	}
 
-	if (n_n == sizeof(srp_params_2048) &&
-	    memcmp(srp_params_2048, n, n_n) == 0) {
+	if (n_n == sizeof(srp_params_2048) && memeq(srp_params_2048, n, n_n)) {
 		return 0;
 	}
 

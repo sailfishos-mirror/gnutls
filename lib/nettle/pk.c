@@ -3634,16 +3634,15 @@ static int pct_test(gnutls_pk_algorithm_t algo,
 			ret = gnutls_assert_val(GNUTLS_E_PK_GENERATION_ERROR);
 		}
 		if (ret == 0 && ddata.size == sig.size &&
-		    memcmp(ddata.data, sig.data, sig.size) == 0) {
+		    memeq(ddata.data, sig.data, sig.size)) {
 			ret = gnutls_assert_val(GNUTLS_E_PK_GENERATION_ERROR);
 		}
 		if (ret == 0 &&
 		    _gnutls_pk_decrypt(algo, &tmp, &sig, params, &spki) < 0) {
 			ret = gnutls_assert_val(GNUTLS_E_PK_GENERATION_ERROR);
 		}
-		if (ret == 0 &&
-		    !(tmp.size == ddata.size &&
-		      memcmp(tmp.data, ddata.data, tmp.size) == 0)) {
+		if (ret == 0 && !(tmp.size == ddata.size &&
+				  memeq(tmp.data, ddata.data, tmp.size))) {
 			ret = gnutls_assert_val(GNUTLS_E_PK_GENERATION_ERROR);
 		}
 		if (ret == 0 &&
@@ -3651,9 +3650,8 @@ static int pct_test(gnutls_pk_algorithm_t algo,
 					&spki) < 0) {
 			ret = gnutls_assert_val(GNUTLS_E_PK_GENERATION_ERROR);
 		}
-		if (ret == 0 &&
-		    !(tmp.size == ddata.size &&
-		      memcmp(tmp.data, ddata.data, tmp.size) == 0)) {
+		if (ret == 0 && !(tmp.size == ddata.size &&
+				  memeq(tmp.data, ddata.data, tmp.size))) {
 			ret = gnutls_assert_val(GNUTLS_E_PK_GENERATION_ERROR);
 		}
 
@@ -4728,7 +4726,7 @@ static int wrap_nettle_pk_verify_priv_params(gnutls_pk_algorithm_t algo,
 		if (ret < 0)
 			return ret;
 
-		if (memcmp(params->raw_pub.data, pub, e->size) != 0)
+		if (!memeq(params->raw_pub.data, pub, e->size))
 			return gnutls_assert_val(GNUTLS_E_ILLEGAL_PARAMETER);
 
 		ret = 0;
@@ -4756,7 +4754,7 @@ static int wrap_nettle_pk_verify_priv_params(gnutls_pk_algorithm_t algo,
 		if (ret < 0)
 			return ret;
 
-		if (memcmp(params->raw_pub.data, pub, e->size) != 0)
+		if (!memeq(params->raw_pub.data, pub, e->size))
 			return gnutls_assert_val(GNUTLS_E_ILLEGAL_PARAMETER);
 
 		ret = 0;

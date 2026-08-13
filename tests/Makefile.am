@@ -83,37 +83,42 @@ EXTRA_DIST = suppressions.valgrind eagain-common.h cert-common.h test-chains.h \
 	client-secrets.h server-secrets.h dh-compute.h ktls_utils.h
 
 AM_CFLAGS = $(WARN_CFLAGS) $(WERROR_CFLAGS)
-AM_CPPFLAGS = \
-	$(LIBIDN2_CFLAGS) \
-	$(P11_KIT_CFLAGS) \
-	-I$(top_srcdir)/lib/includes		\
+AM_CPPFLAGS =					\
+	$(LIBIDN2_CFLAGS)			\
+	$(P11_KIT_CFLAGS)			\
+	$(LIBTASN1_CFLAGS)			\
 	-I$(top_builddir)/lib/includes		\
-	-I$(top_srcdir)/libdane/includes	\
+	-I$(top_srcdir)/lib/includes		\
 	-I$(top_builddir)/libdane/includes	\
-	-I$(top_srcdir)/extra/includes		\
+	-I$(top_srcdir)/libdane/includes	\
 	-I$(top_builddir)/extra/includes	\
-	-I$(top_srcdir)/lib					\
+	-I$(top_srcdir)/extra/includes		\
+	-I$(top_builddir)/lib			\
+	-I$(top_srcdir)/lib			\
+	-I$(top_builddir)/doc/examples		\
 	-I$(top_srcdir)/doc/examples		\
-	-I$(top_builddir)/gl				\
+	-I$(top_builddir)/gl			\
 	-I$(top_srcdir)/gl
-
-AM_LDFLAGS = -no-install
-COMMON_GNUTLS_LDADD = ../lib/libgnutls.la
-COMMON_DEPS_LDADD = $(LIBSOCKET) $(INET_NTOP_LIB) $(INET_PTON_LIB) $(LIBSECCOMP) $(LIBRT)
-COMMON_LDADD = $(COMMON_GNUTLS_LDADD) $(COMMON_DEPS_LDADD)
-
-LDADD = $(COMMON_GNUTLS_LDADD) \
-	libutils.la \
-	$(COMMON_DEPS_LDADD)
-
-dane_LDADD = $(LDADD) ../libdane/libgnutls-dane.la
-dane_strcodes_LDADD = $(LDADD) ../libdane/libgnutls-dane.la
 
 if ENABLE_MINITASN1
 AM_CPPFLAGS += -I$(srcdir)/../lib/minitasn1
-else
-AM_CPPFLAGS += $(LIBTASN1_CFLAGS)
 endif
+
+AM_LDFLAGS = -no-install
+
+DEPS_LDADD = ../gl/libgnu.la			\
+	$(LIBSOCKET)				\
+	$(INET_NTOP_LIB)			\
+	$(INET_PTON_LIB)			\
+	$(LIBSECCOMP)				\
+	$(LIBRT)
+
+LDADD = ../lib/libgnutls.la			\
+	libutils.la				\
+	$(DEPS_LDADD)
+
+dane_LDADD = $(LDADD) ../libdane/libgnutls-dane.la
+dane_strcodes_LDADD = $(LDADD) ../libdane/libgnutls-dane.la
 
 noinst_LTLIBRARIES = libutils.la
 libutils_la_SOURCES = utils.h utils.c seccomp.c utils-adv.c
@@ -267,7 +272,7 @@ ctests += system-prio-file
 endif
 
 if HAVE_CMOCKA
-CMOCKA_LDADD = $(COMMON_LDADD) $(CMOCKA_LIBS)
+CMOCKA_LDADD = ../lib/libgnutls.la $(DEPS_LDADD) $(CMOCKA_LIBS)
 ctests += dtls-sliding-window ip-utils name-constraints-ip conv-utf8 str-unicode str-idna \
 	tls10-prf tls12-prf gnutls_record_overhead eagain tls12-rehandshake-cert \
 	eagain-auto-auth
@@ -284,15 +289,6 @@ tls12_prf_LDADD = $(CMOCKA_LDADD)
 eagain_LDADD = $(CMOCKA_LDADD)
 eagain_auto_auth_LDADD = $(CMOCKA_LDADD)
 tls12_rehandshake_cert_LDADD = $(CMOCKA_LDADD)
-
-gnutls_record_overhead_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-ip_utils_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
 endif
 
 # FIXME: pthread tests hangs under qemu-user-static on Fedora 40
@@ -306,40 +302,31 @@ endif
 
 tls12_rollback_detection_CFLAGS = -DTLS12
 tls12_rollback_detection_SOURCES = tls13/rnd-rollback-detection.c
-tls12_rollback_detection_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls11_rollback_detection_CFLAGS = -DTLS11
 tls11_rollback_detection_SOURCES = tls13/rnd-rollback-detection.c
-tls11_rollback_detection_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls12_check_rollback_val_CFLAGS = -DTLS12
 tls12_check_rollback_val_SOURCES = tls13/rnd-check-rollback-val.c
-tls12_check_rollback_val_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls11_check_rollback_val_CFLAGS = -DTLS11
 tls11_check_rollback_val_SOURCES = tls13/rnd-check-rollback-val.c
-tls11_check_rollback_val_LDADD = $(LDADD) ../gl/libgnu.la
 
 # These tests need gnulib for memmem()
 tls12_resume_psk_CFLAGS = -DUSE_PSK -DTLS12
 tls12_resume_psk_SOURCES = resume.c
-tls12_resume_psk_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls12_resume_anon_CFLAGS = -DUSE_ANON -DTLS12
 tls12_resume_anon_SOURCES = resume.c
-tls12_resume_anon_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls12_resume_x509_CFLAGS = -DUSE_X509 -DTLS12
 tls12_resume_x509_SOURCES = resume.c
-tls12_resume_x509_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls13_resume_psk_CFLAGS = -DUSE_PSK -DTLS13
 tls13_resume_psk_SOURCES = resume.c
-tls13_resume_psk_LDADD = $(LDADD) ../gl/libgnu.la
 
 tls13_resume_x509_CFLAGS = -DUSE_X509 -DTLS13
 tls13_resume_x509_SOURCES = resume.c
-tls13_resume_x509_LDADD = $(LDADD) ../gl/libgnu.la
 
 dtls_repro_20170915_SOURCES = dtls-repro-20170915.c common-cert-key-exchange.c cert-repro-20170915.h
 dtls12_cert_key_exchange_SOURCES = common-cert-key-exchange.c dtls12-cert-key-exchange.c common-cert-key-exchange.h
@@ -483,56 +470,6 @@ endif
 
 ctests += record-sendfile
 
-gc_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-mpi_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-atfork_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-pkcs12_s2k_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-name_constraints_merge_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-murmur3_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-tls13_anti_replay_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-iov_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-verify_limits_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-verify_limits_LDADD = $(LDADD) ../gl/libgnu.la
-
-buffer_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-pathbuf_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-
-mini_dtls_fragments_CPPFLAGS = $(AM_CPPFLAGS) \
-	-I$(top_srcdir)/gl	\
-	-I$(top_builddir)/gl
-mini_dtls_fragments_LDADD = $(LDADD) ../gl/libgnu.la
-
 if ENABLE_PKCS11
 if !WINDOWS
 ctests += tls13/post-handshake-with-cert-pkcs11 pkcs11/tls-neg-pkcs11-no-key \
@@ -581,8 +518,6 @@ dist_check_SCRIPTS += dtls/dtls.sh dtls/dtls-resume.sh #dtls/dtls-nb
 indirect_tests += dtls-stress
 
 dtls_stress_SOURCES = dtls/dtls-stress.c
-dtls_stress_LDADD = $(COMMON_GNUTLS_LDADD) \
-	$(COMMON_DEPS_LDADD) ../gl/libgnu.la
 
 dist_check_SCRIPTS += fastopen.sh pkgconfig.sh starttls.sh starttls-ftp.sh starttls-smtp.sh \
 	starttls-lmtp.sh starttls-pop3.sh starttls-xmpp.sh starttls-nntp.sh starttls-sieve.sh \
@@ -621,12 +556,10 @@ indirect_tests += protocol-set-allowlist
 dist_check_SCRIPTS += system-override-compress-cert.sh
 indirect_tests += compress-cert-conf
 compress_cert_conf_SOURCES = tls13/compress-cert-conf.c
-compress_cert_conf_LDADD = $(LDADD)
 
 dist_check_SCRIPTS += system-override-allow-rsa-pkcs1-encrypt.sh
 indirect_tests += rsaes-pkcs1-v1_5
 rsaes_pkcs1_v1_5_SOURCES = rsaes-pkcs1-v1_5.c
-rsaes_pkcs1_v1_5_LDADD = $(COMMON_GNUTLS_LDADD)
 
 dist_check_SCRIPTS += pkcs11-provider/test-pkcs11-provider.sh
 indirect_tests += pkcs11-provider/pkcs11-provider-pk \
@@ -637,10 +570,6 @@ pkcs11_provider_pkcs11_provider_pk_SOURCES = pkcs11-provider/pkcs11-provider-pk.
 pkcs11_provider_pkcs11_provider_sig_SOURCES = pkcs11-provider/pkcs11-provider-sig.c
 pkcs11_provider_pkcs11_provider_cipher_SOURCES = pkcs11-provider/pkcs11-provider-cipher.c
 pkcs11_provider_pkcs11_provider_hmac_SOURCES = pkcs11-provider/pkcs11-provider-hmac.c
-pkcs11_provider_pkcs11_provider_pk_LDADD = $(LDADD)
-pkcs11_provider_pkcs11_provider_sig_LDADD = $(LDADD)
-pkcs11_provider_pkcs11_provider_cipher_LDADD = $(LDADD)
-pkcs11_provider_pkcs11_provider_hmac_LDADD = $(LDADD)
 endif
 
 dist_check_SCRIPTS += gnutls-cli-self-signed.sh gnutls-cli-invalid-crl.sh gnutls-cli-rawpk.sh

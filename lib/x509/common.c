@@ -1674,7 +1674,7 @@ unsigned _gnutls_check_valid_key_id(const gnutls_datum_t *key_id,
 	if (has_ski)
 		*has_ski = 1;
 
-	if (id_size == key_id->size && !memcmp(id, key_id->data, id_size))
+	if (id_size == key_id->size && memeq(id, key_id->data, id_size))
 		result = 1;
 
 out:

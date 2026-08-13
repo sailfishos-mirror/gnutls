@@ -67,7 +67,7 @@ static int test_mac(gnutls_mac_algorithm_t alg, const char *key,
 
 	gnutls_hmac_output(hd, digest);
 
-	if (memcmp(digest, exp_digest, digest_size) != 0) {
+	if (!memeq(digest, exp_digest, digest_size)) {
 		fprintf(stderr, "hmac: digest data don't match\n");
 		ret = -1;
 		goto cleanup;
@@ -79,7 +79,7 @@ static int test_mac(gnutls_mac_algorithm_t alg, const char *key,
 		goto cleanup;
 	}
 
-	if (memcmp(digest, exp_digest, digest_size) != 0) {
+	if (!memeq(digest, exp_digest, digest_size)) {
 		fprintf(stderr, "hmac_fast: digest data don't match\n");
 		ret = -1;
 		goto cleanup;
@@ -128,7 +128,7 @@ static int test_hash(gnutls_digest_algorithm_t alg, const char *alg_str,
 
 	gnutls_hash_output(hd, digest);
 
-	if (memcmp(digest, exp_digest, digest_size) != 0) {
+	if (!memeq(digest, exp_digest, digest_size)) {
 		fprintf(stderr, "hash: digest data don't match\n");
 		ret = -1;
 		goto cleanup;
@@ -140,7 +140,7 @@ static int test_hash(gnutls_digest_algorithm_t alg, const char *alg_str,
 		goto cleanup;
 	}
 
-	if (memcmp(digest, exp_digest, digest_size) != 0) {
+	if (!memeq(digest, exp_digest, digest_size)) {
 		fprintf(stderr, "hash_fast: digest data don't match\n");
 		ret = -1;
 		goto cleanup;

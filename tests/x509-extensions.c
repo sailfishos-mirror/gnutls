@@ -439,9 +439,9 @@ static int subject_key_id(const gnutls_datum_t *der)
 	}
 
 	if (id.size != 20 ||
-	    memcmp(id.data,
+	    !memeq(id.data,
 		   "\x5d\x40\xad\xf0\xce\x94\x40\x95\x8b\x7e\x99\x94\x1d\x92\x54\x22\xca\x72\x36\x5f",
-		   20) != 0) {
+		   20)) {
 		fprintf(stderr, "error in %d\n", __LINE__);
 		return -1;
 	}

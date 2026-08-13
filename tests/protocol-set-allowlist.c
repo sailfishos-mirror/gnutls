@@ -118,7 +118,7 @@ void test_echo_server(gnutls_session_t session)
 	_assert(rd == LEN, "error receiving all data (%u/%u)\n", rd, LEN);
 	_assert(!gnutls_record_check_pending(session), "data left unreceived");
 
-	_assert(!memcmp(buf_in, buf_out, LEN), "send/recv data mismatch\n");
+	_assert(memeq(buf_in, buf_out, LEN), "send/recv data mismatch\n");
 }
 
 void cmd_connect(const char *ca_file, unsigned port)

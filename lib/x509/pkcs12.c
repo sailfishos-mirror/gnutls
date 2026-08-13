@@ -1157,7 +1157,7 @@ static int pkcs12_verify_mac_pbmac1(gnutls_pkcs12_t pkcs12, const char *pass)
 	}
 
 	if ((unsigned)len != _gnutls_mac_get_algo_len(me) ||
-	    memcmp(mac_output_orig, mac_output, len) != 0) {
+	    !memeq(mac_output_orig, mac_output, len)) {
 		gnutls_assert();
 		result = GNUTLS_E_MAC_VERIFY_FAILED;
 		goto cleanup;
@@ -1257,7 +1257,7 @@ pkcs12_try_gost:
 	}
 
 	if ((unsigned)len != mac_len ||
-	    memcmp(mac_output_orig, mac_output, len) != 0) {
+	    !memeq(mac_output_orig, mac_output, len)) {
 #if ENABLE_GOST
 		/* It is possible that GOST files use proprietary
 		 * key generation scheme */
@@ -1868,8 +1868,8 @@ int gnutls_pkcs12_simple_parse(gnutls_pkcs12_t p12, const char *password,
 					goto done;
 				}
 
-				if (memcmp(cert_id, key_id, cert_id_size) !=
-				    0) { /* they don't match - skip the certificate */
+				if (!memeq(cert_id, key_id,
+					   cert_id_size)) { /* they don't match - skip the certificate */
 					if (unlikely(INT_ADD_OVERFLOW(
 						    _extra_certs_len, 1))) {
 						ret = gnutls_assert_val(

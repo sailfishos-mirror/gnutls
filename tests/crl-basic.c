@@ -233,8 +233,7 @@ void doit(void)
 				     crl_list[i].name, (unsigned)t);
 
 			if (ssize != crl_list[i].crt_serial_size ||
-			    memcmp(serial, crl_list[i].crt_serial, ssize) !=
-				    0) {
+			    !memeq(serial, crl_list[i].crt_serial, ssize)) {
 				for (i = 0; i < ssize; i++)
 					fprintf(stderr, "%.2x",
 						(unsigned)serial[i]);

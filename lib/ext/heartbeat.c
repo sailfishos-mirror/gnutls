@@ -343,8 +343,8 @@ int _gnutls_heartbeat_handle(gnutls_session_t session, mbuffer_st *bufel)
 			return gnutls_assert_val(GNUTLS_E_UNEXPECTED_PACKET);
 
 		if (hb_len > 0 &&
-		    memcmp(&msg[pos], session->internals.hb_local_data.data,
-			   hb_len) != 0) {
+		    !memeq(&msg[pos], session->internals.hb_local_data.data,
+			   hb_len)) {
 			if (IS_DTLS(session))
 				return gnutls_assert_val(
 					GNUTLS_E_AGAIN); /* ignore it */

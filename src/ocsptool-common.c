@@ -405,7 +405,7 @@ int check_ocsp_response(gnutls_x509_crt_t cert, gnutls_x509_crt_t issuer,
 		}
 
 		if (rnonce.size != nonce->size ||
-		    memcmp(nonce->data, rnonce.data, nonce->size) != 0) {
+		    !memeq(nonce->data, rnonce.data, nonce->size)) {
 			fprintf(stderr,
 				"nonce in the response doesn't match\n");
 			exit(1);

@@ -979,7 +979,7 @@ int gnutls_dtls_cookie_verify(gnutls_datum_t *key, void *client_data,
 	if (ret < 0)
 		return gnutls_assert_val(ret);
 
-	if (memcmp(digest, cookie.data, COOKIE_MAC_SIZE) != 0)
+	if (!memeq(digest, cookie.data, COOKIE_MAC_SIZE))
 		return gnutls_assert_val(GNUTLS_E_BAD_COOKIE);
 
 	prestate->record_seq = msg[10]; /* client's record seq */

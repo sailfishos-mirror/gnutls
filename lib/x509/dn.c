@@ -937,7 +937,7 @@ int _gnutls_x509_compare_raw_dn(const gnutls_datum_t *dn1,
 	/* Simple case of completely identical? */
 
 	if (dn1->size == dn2->size) {
-		if (memcmp(dn1->data, dn2->data, dn2->size) == 0) {
+		if (memeq(dn1->data, dn2->data, dn2->size)) {
 			return 1;
 		}
 	}
@@ -970,7 +970,7 @@ int _gnutls_x509_compare_raw_dn(const gnutls_datum_t *dn1,
 		ret = 0;
 		goto cleanup;
 	}
-	if (memcmp(str1.data, str2.data, str2.size) != 0) {
+	if (!memeq(str1.data, str2.data, str2.size)) {
 		gnutls_assert();
 		ret = 0;
 		goto cleanup;

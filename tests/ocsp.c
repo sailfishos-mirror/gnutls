@@ -876,7 +876,7 @@ static void req_parse(void)
 			fail("unexpected critical %d\n", critical);
 
 		if (expect.size != got.size ||
-		    memcmp(expect.data, got.data, got.size) != 0)
+		    !memeq(expect.data, got.data, got.size))
 			fail("ocsp request nonce memcmp failed\n");
 
 		gnutls_free(got.data);
@@ -889,7 +889,7 @@ static void req_parse(void)
 		fail("gnutls_ocsp_req_print\n");
 
 	if (strlen(REQ1INFO) != d.size ||
-	    memcmp(REQ1INFO, d.data, strlen(REQ1INFO)) != 0) {
+	    !memeq(REQ1INFO, d.data, strlen(REQ1INFO))) {
 		printf("expected (len %ld):\n%s\ngot (len %d):\n%.*s\n",
 		       strlen(REQ1INFO), REQ1INFO, (int)d.size, (int)d.size,
 		       d.data);
@@ -904,7 +904,7 @@ static void req_parse(void)
 
 	/* compare against earlier imported bytes */
 
-	if (req1.size != d.size || memcmp(req1.data, d.data, d.size) != 0)
+	if (req1.size != d.size || !memeq(req1.data, d.data, d.size))
 		fail("ocsp request export memcmp failed\n");
 	gnutls_free(d.data);
 
@@ -926,8 +926,7 @@ static void req_parse(void)
 		if (critical != 0)
 			fail("unexpected critical %d\n", critical);
 
-		if (n1.size != got.size ||
-		    memcmp(n1.data, got.data, got.size) != 0)
+		if (n1.size != got.size || !memeq(n1.data, got.data, got.size))
 			fail("ocsp request parse nonce memcmp failed\n");
 
 		gnutls_free(got.data);
@@ -945,8 +944,7 @@ static void req_parse(void)
 		if (critical != 1)
 			fail("unexpected critical %d\n", critical);
 
-		if (n2.size != got.size ||
-		    memcmp(n2.data, got.data, got.size) != 0)
+		if (n2.size != got.size || !memeq(n2.data, got.data, got.size))
 			fail("ocsp request parse2 nonce memcmp failed\n");
 
 		gnutls_free(got.data);
@@ -975,8 +973,7 @@ static void req_parse(void)
 		if (critical != 0)
 			fail("unexpected random critical %d\n", critical);
 
-		if (n2.size == got.size &&
-		    memcmp(n1.data, n2.data, n1.size) == 0)
+		if (n2.size == got.size && memeq(n1.data, n2.data, n1.size))
 			fail("ocsp request random nonce memcmp failed\n");
 
 		gnutls_free(n1.data);
@@ -1038,7 +1035,7 @@ static void req_addcert_id(void)
 		fail("gnutls_ocsp_req_print\n");
 
 	if (strlen(REQ1INFO) != d.size ||
-	    memcmp(REQ1INFO, d.data, strlen(REQ1INFO)) != 0) {
+	    !memeq(REQ1INFO, d.data, strlen(REQ1INFO))) {
 		printf("expected (len %ld):\n%s\ngot (len %d):\n%.*s\n",
 		       strlen(REQ1INFO), REQ1INFO, (int)d.size, (int)d.size,
 		       d.data);
@@ -1053,7 +1050,7 @@ static void req_addcert_id(void)
 
 	/* compare against earlier imported bytes */
 
-	if (req1.size != d.size || memcmp(req1.data, d.data, d.size) != 0)
+	if (req1.size != d.size || !memeq(req1.data, d.data, d.size))
 		fail("ocsp request export memcmp failed\n");
 	gnutls_free(d.data);
 
@@ -1126,7 +1123,7 @@ static void req_addcert(void)
 		fail("gnutls_ocsp_req_print\n");
 
 	if (strlen(REQ1INFO) != d.size ||
-	    memcmp(REQ1INFO, d.data, strlen(REQ1INFO)) != 0) {
+	    !memeq(REQ1INFO, d.data, strlen(REQ1INFO))) {
 		printf("expected (len %ld):\n%s\ngot (len %d):\n%.*s\n",
 		       strlen(REQ1INFO), REQ1INFO, (int)d.size, (int)d.size,
 		       d.data);
@@ -1141,7 +1138,7 @@ static void req_addcert(void)
 
 	/* compare against earlier imported bytes */
 
-	if (req1.size != d.size || memcmp(req1.data, d.data, d.size) != 0)
+	if (req1.size != d.size || !memeq(req1.data, d.data, d.size))
 		fail("ocsp request export memcmp failed\n");
 	gnutls_free(d.data);
 
@@ -1223,7 +1220,7 @@ static void resp_import(void)
 		fail("gnutls_ocsp_resp_print\n");
 
 	if (strlen(RESP1INFO) != d.size ||
-	    memcmp(RESP1INFO, d.data, strlen(RESP1INFO)) != 0) {
+	    !memeq(RESP1INFO, d.data, strlen(RESP1INFO))) {
 		printf("expected (len %ld):\n%s\ngot (len %d):\n%.*s\n",
 		       strlen(RESP1INFO), RESP1INFO, (int)d.size, (int)d.size,
 		       d.data);
@@ -1245,7 +1242,7 @@ static void resp_import(void)
 	if (ret != 0)
 		fail("gnutls_ocsp_resp_print\n");
 
-	if (memcmp(RESP2INFO, d.data, strlen(RESP2INFO)) != 0) {
+	if (!memeq(RESP2INFO, d.data, strlen(RESP2INFO))) {
 		printf("expected (len %ld):\n%s\ngot (len %d):\n%.*s\n",
 		       strlen(RESP2INFO), RESP2INFO, (int)d.size, (int)d.size,
 		       d.data);
@@ -1274,7 +1271,7 @@ static void resp_import(void)
 	if (ret != 0)
 		fail("gnutls_ocsp_resp_print 3\n");
 
-	if (memcmp(RESP3INFO, d.data, strlen(RESP3INFO)) != 0) {
+	if (!memeq(RESP3INFO, d.data, strlen(RESP3INFO))) {
 		printf("expected (len %ld):\n%s\ngot (len %d):\n%.*s\n",
 		       strlen(RESP3INFO), RESP3INFO, (int)d.size, (int)d.size,
 		       d.data);

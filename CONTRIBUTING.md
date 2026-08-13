@@ -88,6 +88,8 @@ functions over raw comparisons when available.
 
 - Use `streq(a, b)` instead of `strcmp(a, b) == 0` or `!strcmp(a, b)`
   for string equality checks.
+- Use `memeq(a, b, l)` instead of `memcmp(a, b, l) == 0` or `!memcmp(a, b, l)`
+  for equality checks on binary blobs.
 
 This reduces the risk of errors, especially in more complex conditions.
 

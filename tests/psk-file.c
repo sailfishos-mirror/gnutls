@@ -341,8 +341,7 @@ static void server(int sd, const char *prio, const gnutls_datum_t *user,
 							    &pskid_binary))
 				fail("server: Could not get binary pskid\n");
 
-			if (memcmp(pskid_binary.data, user->data, user->size) !=
-			    0) {
+			if (!memeq(pskid_binary.data, user->data, user->size)) {
 				hex_encode(user->data, user->size, userdata_bin,
 					   sizeof(userdata_bin));
 				hex_encode(pskid_binary.data, pskid_binary.size,
