@@ -2381,8 +2381,10 @@ int gnutls_x509_privkey_verify_seed(gnutls_x509_privkey_t key,
 		seed_size = key->params.seed_size;
 	}
 
-	if (seed == NULL || seed_size == 0)
-		return gnutls_assert_val(GNUTLS_E_PK_NO_VALIDATION_PARAMS);
+	if (seed == NULL || seed_size == 0) {
+		ret = gnutls_assert_val(GNUTLS_E_PK_NO_VALIDATION_PARAMS);
+		goto cleanup;
+	}
 
 	data.type = GNUTLS_KEYGEN_SEED;
 	data.data = (void *)seed;
