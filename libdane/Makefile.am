@@ -32,10 +32,6 @@ AM_CPPFLAGS += \
 	-I$(srcdir)/../lib		\
 	$(LIBTASN1_CFLAGS)
 
-if ENABLE_MINITASN1
-AM_CPPFLAGS += -I$(srcdir)/minitasn1
-endif
-
 SUBDIRS = includes
 
 libgnutls_dane_la_LDFLAGS = -no-undefined $(COMMON_LINK_FLAGS)

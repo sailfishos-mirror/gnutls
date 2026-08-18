@@ -5,6 +5,13 @@ Copyright (C) 2000-2016 Free Software Foundation, Inc.
 Copyright (C) 2013-2019 Nikos Mavrogiannopoulos
 See the end for copying conditions.
 
+** minitasn1: The internal copy of libtasn1 has now been removed.
+The ./configure --with-included-libtasn1 parameter is also removed.
+If you are building GnuTLS in an environment without libtasn1, please
+modify your scripts to also build and install libtasn1 first.  This
+decision is made to reduce maintainance in the long-term, as we no
+longer have to keep track of minitasn1-related issues.
+
 * Version 3.8.13 (released 2026-04-29)
 
 ** libgnutls: Add more checks to DTLS reassembly
