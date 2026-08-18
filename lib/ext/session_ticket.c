@@ -82,7 +82,7 @@ typedef struct {
 
 static void deinit_ticket(struct ticket_st *ticket)
 {
-	free(ticket->encrypted_state);
+	gnutls_free(ticket->encrypted_state);
 }
 
 static int unpack_ticket(const gnutls_datum_t *ticket_data,
