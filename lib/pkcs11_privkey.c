@@ -240,12 +240,14 @@ static int reopen_privkey_session(void *_privkey)
 	return 0;
 }
 
-#define REPEAT_ON_INVALID_HANDLE(expr)                 \
-	if ((expr) == CKR_SESSION_HANDLE_INVALID) {    \
-		ret = reopen_privkey_session(key);     \
-		if (ret < 0)                           \
-			return gnutls_assert_val(ret); \
-		expr;                                  \
+#define REPEAT_ON_INVALID_HANDLE(expr)              \
+	if ((expr) == CKR_SESSION_HANDLE_INVALID) { \
+		ret = reopen_privkey_session(key);  \
+		if (ret < 0) {                      \
+			gnutls_assert();            \
+			goto cleanup;               \
+		}                                   \
+		expr;                               \
 	}
 
 struct hash_mappings_st {
