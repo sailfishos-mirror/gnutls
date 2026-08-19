@@ -126,8 +126,9 @@ int gnutls_subject_alt_names_get(gnutls_subject_alt_names_t sans,
  * copy the strings. It expects all the provided input to be already
  * allocated by gnutls. */
 static int subject_alt_names_set(struct name_st **names, unsigned int *size,
-				 unsigned int san_type, gnutls_datum_t *san,
-				 char *othername_oid, unsigned raw)
+				 unsigned int san_type,
+				 const gnutls_datum_t *san,
+				 const char *othername_oid, unsigned raw)
 {
 	void *tmp;
 	int ret;
@@ -174,26 +175,13 @@ int gnutls_subject_alt_names_set(gnutls_subject_alt_names_t sans,
 				 const char *othername_oid)
 {
 	int ret;
-	gnutls_datum_t copy;
-	char *ooc;
 
-	ret = _gnutls_set_strdatum(&copy, san->data, san->size);
+	ret = subject_alt_names_set(&sans->names, &sans->size, san_type, san,
+				    othername_oid, 0);
 	if (ret < 0)
-		return gnutls_assert_val(ret);
+		gnutls_assert();
 
-	if (othername_oid != NULL)
-		ooc = gnutls_strdup(othername_oid);
-	else
-		ooc = NULL;
-	ret = subject_alt_names_set(&sans->names, &sans->size, san_type, &copy,
-				    ooc, 0);
-	if (ret < 0) {
-		gnutls_free(ooc);
-		gnutls_free(copy.data);
-		return gnutls_assert_val(ret);
-	}
-
-	return 0;
+	return ret;
 }
 
 /**
@@ -220,7 +208,7 @@ int gnutls_x509_ext_import_subject_alt_names(const gnutls_datum_t *ext,
 	asn1_node c2 = NULL;
 	int result, ret;
 	unsigned int i;
-	gnutls_datum_t san, othername_oid;
+	gnutls_datum_t san = {}, othername_oid = {};
 	unsigned type;
 
 	result = asn1_create_element(_gnutls_get_pkix(), "PKIX1.GeneralNames",
@@ -238,9 +226,8 @@ int gnutls_x509_ext_import_subject_alt_names(const gnutls_datum_t *ext,
 	}
 
 	for (i = 0;; i++) {
-		san.data = NULL;
-		san.size = 0;
-		othername_oid.data = NULL;
+		_gnutls_free_datum(&san);
+		_gnutls_free_datum(&othername_oid);
 
 		ret = _gnutls_parse_general_name2(c2, "", i, &san, &type, 0);
 		if (ret < 0)
@@ -258,16 +245,18 @@ int gnutls_x509_ext_import_subject_alt_names(const gnutls_datum_t *ext,
 		}
 
 		ret = subject_alt_names_set(&sans->names, &sans->size, type,
-					    &san, (char *)othername_oid.data,
+					    &san,
+					    (const char *)othername_oid.data,
 					    1);
 		if (ret < 0)
 			break;
 	}
 
+	_gnutls_free_datum(&san);
+	_gnutls_free_datum(&othername_oid);
+
 	sans->size = i;
 	if (ret < 0 && ret != GNUTLS_E_REQUESTED_DATA_NOT_AVAILABLE) {
-		gnutls_free(san.data);
-		gnutls_free(othername_oid.data);
 		gnutls_assert();
 		goto cleanup;
 	}
@@ -776,7 +765,6 @@ int gnutls_x509_aki_set_cert_issuer(gnutls_x509_aki_t aki,
 				    const gnutls_datum_t *serial)
 {
 	int ret;
-	gnutls_datum_t t_san, t_othername_oid = { NULL, 0 };
 
 	ret = _gnutls_set_datum(&aki->serial, serial->data, serial->size);
 	if (ret < 0)
@@ -784,30 +772,13 @@ int gnutls_x509_aki_set_cert_issuer(gnutls_x509_aki_t aki,
 
 	aki->cert_issuer.names[aki->cert_issuer.size].type = san_type;
 
-	ret = _gnutls_set_strdatum(&t_san, san->data, san->size);
-	if (ret < 0)
-		return gnutls_assert_val(ret);
-
-	if (othername_oid) {
-		t_othername_oid.data = (uint8_t *)gnutls_strdup(othername_oid);
-		if (t_othername_oid.data == NULL) {
-			gnutls_free(t_san.data);
-			return gnutls_assert_val(GNUTLS_E_MEMORY_ERROR);
-		}
-		t_othername_oid.size = strlen(othername_oid);
-	}
-
 	ret = subject_alt_names_set(&aki->cert_issuer.names,
-				    &aki->cert_issuer.size, san_type, &t_san,
-				    (char *)t_othername_oid.data, 0);
-	if (ret < 0) {
-		gnutls_free(t_othername_oid.data);
-		gnutls_free(t_san.data);
+				    &aki->cert_issuer.size, san_type, san,
+				    othername_oid, 0);
+	if (ret < 0)
 		gnutls_assert();
-		return ret;
-	}
 
-	return 0;
+	return ret;
 }
 
 /**
@@ -921,18 +892,21 @@ int gnutls_x509_ext_import_authority_key_id(const gnutls_datum_t *ext,
 
 		ret = subject_alt_names_set(&aki->cert_issuer.names,
 					    &aki->cert_issuer.size, type, &san,
-					    (char *)othername_oid.data, 1);
+					    (const char *)othername_oid.data,
+					    1);
+		gnutls_free(othername_oid.data);
 		if (ret < 0)
 			break;
+
+		gnutls_free(san.data);
 	}
+	gnutls_free(san.data);
 
 	assert(ret < 0);
 	aki->cert_issuer.size = i;
 	if (ret != GNUTLS_E_REQUESTED_DATA_NOT_AVAILABLE &&
 	    ret != GNUTLS_E_ASN1_ELEMENT_NOT_FOUND) {
 		gnutls_assert();
-		gnutls_free(san.data);
-		gnutls_free(othername_oid.data);
 		goto cleanup;
 	}
 
