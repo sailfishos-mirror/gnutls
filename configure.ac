@@ -1114,10 +1114,7 @@ fi
 AC_DEFINE_UNQUOTED([TROUSERS_LIB], ["$ac_trousers_lib"], [the location of the trousers library])
 AC_SUBST(TROUSERS_LIB)
 
-
-# For minitasn1.
 AC_CHECK_SIZEOF(unsigned long int, 4)
-AC_CHECK_SIZEOF(unsigned int, 4)
 AC_CHECK_SIZEOF(time_t, 4)
 
 AC_ARG_WITH(zlib,
@@ -1531,7 +1528,6 @@ AC_CONFIG_FILES([
   lib/gnutls.pc
   lib/includes/Makefile
   lib/includes/gnutls/gnutls.h
-  lib/minitasn1/Makefile
   lib/nettle/Makefile
   lib/pkcs11/Makefile
   lib/x509/Makefile
@@ -1562,7 +1558,6 @@ AC_MSG_NOTICE([summary of build options:
   Valgrind:             $opt_valgrind_tests ${VALGRIND}
   CFlags:               ${CFLAGS}
   Library types:        Shared=${enable_shared}, Static=${enable_static}
-  Local libtasn1:       ${included_libtasn1}
   Local unistring:      ${included_unistring}
   Use nettle-mini:      ${mini_nettle}
   Documentation:        ${enable_doc} (manpages: ${enable_manpages})

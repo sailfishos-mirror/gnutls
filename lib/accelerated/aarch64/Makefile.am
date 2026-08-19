@@ -29,10 +29,6 @@ AM_CPPFLAGS += -I$(srcdir)/../../../gl		\
 	-I$(srcdir)/../../ \
 	-I$(srcdir)/../
 
-if ENABLE_MINITASN1
-AM_CPPFLAGS += -I$(srcdir)/../../minitasn1
-endif
-
 AM_CPPFLAGS += -D__ARM_MAX_ARCH__=8
 
 #ensure that we have all aarch64 instruction sets enabled for the assembler

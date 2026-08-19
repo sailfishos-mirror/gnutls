@@ -108,26 +108,14 @@ AC_MSG_ERROR([[
   AC_SUBST(GMP_LIBS)
 
 LIBTASN1_MINIMUM=4.9
-  AC_ARG_WITH(included-libtasn1,
-    AS_HELP_STRING([--with-included-libtasn1], [use the included libtasn1]),
-      included_libtasn1=$withval,
-      included_libtasn1=no)
-  if test "$included_libtasn1" = "no"; then
-    PKG_CHECK_MODULES(LIBTASN1, [libtasn1 >= $LIBTASN1_MINIMUM], [], [included_libtasn1=yes])
-    if test "$included_libtasn1" = yes; then
-      AC_MSG_ERROR([[
+  PKG_CHECK_MODULES(LIBTASN1, [libtasn1 >= $LIBTASN1_MINIMUM], [], [
+AC_MSG_ERROR([[
   ***
-  *** Libtasn1 $LIBTASN1_MINIMUM was not found. To use the included one, use --with-included-libtasn1
-  ]])
-    fi
-  fi
-  AC_MSG_CHECKING([whether to use the included minitasn1])
-  AC_MSG_RESULT($included_libtasn1)
-  AM_CONDITIONAL(ENABLE_MINITASN1, test "$included_libtasn1" = "yes")
+  *** Libtasn1 $LIBTASN1_MINIMUM was not found.
+]])
+  ])
 
-  if test "$included_libtasn1" = "no"; then
-    GNUTLS_REQUIRES_PRIVATE="${GNUTLS_REQUIRES_PRIVATE}, libtasn1"
-  fi
+  GNUTLS_REQUIRES_PRIVATE="${GNUTLS_REQUIRES_PRIVATE}, libtasn1"
 
   ac_strict_der_time=yes
   AC_MSG_CHECKING([whether to disable strict DER time encodings for backwards compatibility])

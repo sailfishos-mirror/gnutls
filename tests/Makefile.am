@@ -100,10 +100,6 @@ AM_CPPFLAGS =					\
 	-I$(top_builddir)/gl			\
 	-I$(top_srcdir)/gl
 
-if ENABLE_MINITASN1
-AM_CPPFLAGS += -I$(srcdir)/../lib/minitasn1
-endif
-
 AM_LDFLAGS = -no-install
 
 DEPS_LDADD = ../gl/libgnu.la			\

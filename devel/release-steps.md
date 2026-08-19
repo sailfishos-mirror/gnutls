@@ -3,8 +3,7 @@
 ## General steps
 
 1. Prepare and test the security fixes in private.
-1. Consider updating every submodule,
-   update minitasn1 (`devel/import-minitasn1.sh`).
+1. Consider updating every submodule.
 1. Create a new 'milestone' for the next release and move all issues
    present in the current release milestone.
 1. Verification of release notes: ensure that release notes

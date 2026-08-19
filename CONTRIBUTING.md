@@ -51,7 +51,7 @@ For example, see [x509cert-tl.c](tests/x509cert-tl.c).
 # File names:
 
   Files are split to directories according to the subsystem
-they belong to. Examples are x509/, minitasn1/, openpgp/,
+they belong to. Examples are x509/, openpgp/,
 opencdk/ etc. The files in the root directory related
 to the main TLS protocol implementation.
 
