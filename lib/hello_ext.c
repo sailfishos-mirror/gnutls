@@ -246,7 +246,8 @@ static int hello_ext_parse(void *_ctx, unsigned tls_id, const uint8_t *data,
 	}
 
 	ext = tls_id_to_ext_entry(session, tls_id, ctx->parse_point);
-	if (ext == NULL || ext->recv_func == NULL) {
+	if (ext == NULL ||
+	    (ext->parse_func == NULL && ext->recv_func == NULL)) {
 		goto ignore;
 	}
 
@@ -294,10 +295,23 @@ static int hello_ext_parse(void *_ctx, unsigned tls_id, const uint8_t *data,
 			      session, ext->name, (int)tls_id, data_size);
 
 	_gnutls_ext_set_msg(session, ctx->msg);
-	if ((ret = ext->recv_func(session, data, data_size)) < 0) {
-		gnutls_assert();
-		return ret;
+	if (ext->parse_func) {
+		gnutls_buffer_st buf;
+
+		_gnutls_ro_buffer_init(&buf, data, data_size);
+		ret = ext->parse_func(session, &buf);
+
+		/* Check that there are no trailing bytes */
+		if (ret == 0 && buf.length > 0) {
+			ret = gnutls_assert_val(
+				GNUTLS_E_UNEXPECTED_PACKET_LENGTH);
+		}
+	} else {
+		ret = ext->recv_func(session, data, data_size);
 	}
+
+	if (ret < 0)
+		return gnutls_assert_val(ret);
 
 	return 0;
 
