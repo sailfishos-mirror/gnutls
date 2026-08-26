@@ -1559,7 +1559,6 @@ AC_MSG_NOTICE([summary of build options:
   CFlags:               ${CFLAGS}
   Library types:        Shared=${enable_shared}, Static=${enable_static}
   Local unistring:      ${included_unistring}
-  Use nettle-mini:      ${mini_nettle}
   Documentation:        ${enable_doc} (manpages: ${enable_manpages})
 ])
 
