@@ -5,6 +5,11 @@ Copyright (C) 2000-2016 Free Software Foundation, Inc.
 Copyright (C) 2013-2019 Nikos Mavrogiannopoulos
 See the end for copying conditions.
 
+** build: The --with-nettle-mini configure option has been removed.
+GnuTLS builds must now link against GMP. Mini-GMP lacks relevant
+optimizations and side-channel protections.
+[#1946]
+
 ** minitasn1: The internal copy of libtasn1 has now been removed.
 The ./configure --with-included-libtasn1 parameter is also removed.
 If you are building GnuTLS in an environment without libtasn1, please
@@ -1444,7 +1449,7 @@ No changes since last version.
 
 ** API and ABI modifications:
 GNUTLS_ENABLE_RAWPK: Added
-GNUTLS_ENABLE_CERT_TYPE_NEG: Removed (was no-op; replaced by GNUTLS_ENABLE_RAWPK) 
+GNUTLS_ENABLE_CERT_TYPE_NEG: Removed (was no-op; replaced by GNUTLS_ENABLE_RAWPK)
 GNUTLS_X509_NO_WELL_DEFINED_EXPIRATION: Deprecated
 GNUTLS_PCERT_NO_CERT: Deprecated
 
